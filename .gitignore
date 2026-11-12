@@ -1,0 +1,10 @@
+# Godot 4 cache
+.godot/
+
+# macOS / Windows system files
+.DS_Store
+Thumbs.db
+
+# Builds / exports
+build/
+exports/
