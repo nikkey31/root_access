@@ -1,0 +1,388 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0" pages="4">
+  <diagram id="terminal_win98" name="1. Терминал (Windows 98 UI)">
+    <mxGraphModel dx="1736" dy="1415" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="w98_outer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#404040;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="560" width="780" x="50" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_titlebar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#000080;gradientColor=#1084d0;gradientDirection=east;strokeColor=none;fontColor=#ffffff;fontStyle=1;align=left;fontSize=12;fontFamily=Tahoma;" value=" 🖥️  Командная строка RootAccess - [alex@win98-pc]" vertex="1">
+          <mxGeometry height="24" width="772" x="54" y="34" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_btn_min" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;fontStyle=1;fontSize=10;fontFamily=Tahoma;" value="_" vertex="1">
+          <mxGeometry height="18" width="18" x="765" y="37" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_btn_max" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;fontStyle=1;fontSize=10;fontFamily=Tahoma;" value="□" vertex="1">
+          <mxGeometry height="18" width="18" x="786" y="37" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_btn_close" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;fontStyle=1;fontSize=10;fontFamily=Tahoma;" value="✕" vertex="1">
+          <mxGeometry height="18" width="18" x="807" y="37" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_menu" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;align=left;fontSize=11;fontFamily=Tahoma;" value="  Файл(F)    Правка(E)    Вид(V)    Терминал(T)    Справка(H)" vertex="1">
+          <mxGeometry height="22" width="772" x="54" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_toolbar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;strokeWidth=1;" value="" vertex="1">
+          <mxGeometry height="30" width="772" x="54" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_font" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#808080;fontSize=10;fontFamily=Tahoma;align=left;spacingLeft=5;" value="Шрифт: [ Авто / 8x12  ▼]" vertex="1">
+          <mxGeometry height="22" width="130" x="62" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_copy" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;fontSize=10;fontFamily=Tahoma;" value="[ 📋 Копировать ]" vertex="1">
+          <mxGeometry height="22" width="105" x="200" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_paste" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;fontSize=10;fontFamily=Tahoma;" value="[ 📄 Вставить ]" vertex="1">
+          <mxGeometry height="22" width="95" x="310" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_clear" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;fontSize=10;fontFamily=Tahoma;" value="[ 🧹 Очистить (Ctrl+L) ]" vertex="1">
+          <mxGeometry height="22" width="130" x="410" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_props" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;fontSize=10;fontFamily=Tahoma;" value="[ ⚙️ Свойства ]" vertex="1">
+          <mxGeometry height="22" width="95" x="545" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_console_border" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#000000;strokeColor=#808080;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="414" width="760" x="60" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_console_text" parent="1" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;whiteSpace=wrap;rounded=0;fontColor=#FFFFFF;fontFamily=Lucida Console;fontSize=12;" value="Microsoft(R) Windows 98&#xa;(C) Корпорация Microsoft 1981-1998. Подсистема RootAccess Terminal v2.4.&#xa;&#xa;C:\MYDOCU~1\ALEX&gt; dir&#xa; Содержимое папки C:\MYDOCU~1\ALEX&#xa;&#xa;[DIR]          DOCUMENTS               14.10.98  10:15&#xa;[DIR]          PICTURES                14.10.98  10:16&#xa;ARCHIVE  ENC            14 336         14.10.98  18:30  archive.enc&#xa;NOTES    TXT             1 024         12.10.98  19:42  notes.txt&#xa;               2 файлов         15 360 байт&#xa;               2 папок     184 320 000 байт свободно&#xa;&#xa;C:\MYDOCU~1\ALEX&gt; type notes.txt&#xa;&quot;Пароль от архива спрятан в фото с дня рождения (см. свойства в Галерее)&quot;&#xa;&#xa;C:\MYDOCU~1\ALEX&gt; decrypt archive.enc -k 1998-10-14&#xa;[SUCCESS] Ключ дешифрования подтвержден!&#xa;Расшифровка завершена: C:\MYDOCU~1\ALEX\ARCHIVE.TXT&#xa;[!] Найдена новая улика: Протокол встречи #14&#xa;&#xa;C:\MYDOCU~1\ALEX&gt; decrypt _" vertex="1">
+          <mxGeometry height="375" width="725" x="70" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_cur" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=none;" value="" vertex="1">
+          <mxGeometry height="15" width="8" x="272" y="473" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_scroll" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dfdfdf;strokeColor=#808080;" value="" vertex="1">
+          <mxGeometry height="414" width="18" x="802" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_up" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;fontSize=8;" value="▲" vertex="1">
+          <mxGeometry height="18" width="18" x="802" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_thumb" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;" value="" vertex="1">
+          <mxGeometry height="50" width="18" x="802" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="sb_down" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;fontSize=8;" value="▼" vertex="1">
+          <mxGeometry height="18" width="18" x="802" y="512" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_status_1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;align=left;fontSize=11;fontFamily=Tahoma;" value=" Готов к вводу | Tab - дополнение" vertex="1">
+          <mxGeometry height="22" width="460" x="54" y="534" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_status_2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;align=left;fontSize=11;fontFamily=Tahoma;" value=" C:\MYDOCU~1\ALEX" vertex="1">
+          <mxGeometry height="22" width="200" x="516" y="534" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_status_3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;align=center;fontSize=11;fontFamily=Tahoma;" value=" DOS / WIN98" vertex="1">
+          <mxGeometry height="22" width="108" x="718" y="534" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_note_title" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#ffffcc;strokeColor=#d6b656;fontSize=10;fontFamily=Tahoma;align=left;" value="Заголовок Windows 98:&#xa;Сине-голубой градиент, название окна, классические 3D кнопки управления [ _ ] [ □ ] [ ✕ ]" vertex="1">
+          <mxGeometry height="60" width="250" x="860" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_w98_title" edge="1" parent="1" source="w98_note_title" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=1;" target="w98_titlebar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_note_toolbar" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#ffffcc;strokeColor=#d6b656;fontSize=10;fontFamily=Tahoma;align=left;" value="Панель инструментов:&#xa;Быстрые кнопки копирования/вставки, очистки терминала (Ctrl+L) и смены шрифта" vertex="1">
+          <mxGeometry height="60" width="250" x="860" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_w98_tb" edge="1" parent="1" source="w98_note_toolbar" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=1;" target="w98_toolbar">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="w98_note_console" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#ffffcc;strokeColor=#d6b656;fontSize=10;fontFamily=Tahoma;align=left;" value="Консольная область (RichTextLabel + LineEdit):&#xa;• Аутентичный вид консольного окна Windows 98&#xa;• Белый моноширинный текст Lucida Console / Courier&#xa;• Поддержка подсветки ключевых слов (SUCCESS, ERROR, DIR)&#xa;• Автоскролл к последней строке и история команд (стрелки вверх/вниз)" vertex="1">
+          <mxGeometry height="110" width="250" x="860" y="268" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_w98_console" edge="1" parent="1" source="w98_note_console" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=1;" target="w98_console_border">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="notes_win98" name="2. Заметки (Windows 98 UI)">
+    <mxGraphModel dx="1648" dy="1041" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="nw98_outer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#404040;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="560" width="780" x="50" y="30" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_title" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#000080;gradientColor=#1084d0;gradientDirection=east;strokeColor=none;fontColor=#ffffff;fontStyle=1;align=left;fontSize=12;fontFamily=Tahoma;" value=" 📝  Блокнот расследования - [Заметки и документы alex]" vertex="1">
+          <mxGeometry height="24" width="772" x="54" y="34" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_min" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;fontStyle=1;fontSize=10;fontFamily=Tahoma;" value="_" vertex="1">
+          <mxGeometry height="18" width="18" x="765" y="37" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_max" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;fontStyle=1;fontSize=10;fontFamily=Tahoma;" value="□" vertex="1">
+          <mxGeometry height="18" width="18" x="786" y="37" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_close" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;fontStyle=1;fontSize=10;fontFamily=Tahoma;" value="✕" vertex="1">
+          <mxGeometry height="18" width="18" x="807" y="37" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_menu" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;align=left;fontSize=11;fontFamily=Tahoma;" value="  Файл(F)    Правка(E)    Вид(V)    Вставка(I)    Формат(O)    Справка(H)" vertex="1">
+          <mxGeometry height="22" width="772" x="54" y="58" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_tb" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;" value="" vertex="1">
+          <mxGeometry height="30" width="772" x="54" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_nnew" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;fontSize=10;fontFamily=Tahoma;" value="[ 📄 Создать ]" vertex="1">
+          <mxGeometry height="22" width="95" x="62" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_nsave" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;fontSize=10;fontFamily=Tahoma;" value="[ 💾 Сохранить ]" vertex="1">
+          <mxGeometry height="22" width="105" x="162" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_nfind" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;fontSize=10;fontFamily=Tahoma;" value="[ 🔍 Найти ]" vertex="1">
+          <mxGeometry height="22" width="85" x="272" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="tb_ncopycmd" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#404040;fontSize=10;fontFamily=Tahoma;fontStyle=1;" value="[ 📋 Передать команду в терминал ]" vertex="1">
+          <mxGeometry height="22" width="225" x="365" y="84" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_left_panel" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#808080;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="414" width="250" x="60" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_search" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7f9db9;align=left;fontSize=11;fontFamily=Tahoma;fontColor=#666666;" value=" 🔍 Найти: [____________________]" vertex="1">
+          <mxGeometry height="24" width="240" x="65" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_col_header" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;align=left;fontStyle=1;fontSize=10;fontFamily=Tahoma;" value="  Имя записи                     Дата" vertex="1">
+          <mxGeometry height="20" width="240" x="65" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_item1" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#000080;strokeColor=#000080;fontColor=#ffffff;align=left;fontSize=10;fontFamily=Tahoma;" value=" ★ Пароли и доступы            12.10.98&#xa;   &quot;Опять забыл пароль от архива...&quot;" vertex="1">
+          <mxGeometry height="44" width="240" x="65" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_item2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8f9fa;strokeColor=#e0e0e0;fontColor=#333333;align=left;fontSize=10;fontFamily=Tahoma;" value=" 🔒 Личный дневник #42          15.10.98&#xa;   [Заблокировано PIN-кодом]" vertex="1">
+          <mxGeometry height="44" width="240" x="65" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_item3" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e0e0e0;fontColor=#333333;align=left;fontSize=10;fontFamily=Tahoma;" value=" • Список покупок и дел         08.10.98&#xa;   &quot;Кофе, дискеты 3.5, батарейки...&quot;" vertex="1">
+          <mxGeometry height="44" width="240" x="65" y="268" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_item4" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#e0e0e0;fontColor=#333333;align=left;fontSize=10;fontFamily=Tahoma;" value=" • Черновик письма Виктору      05.10.98&#xa;   &quot;Высылаю копию отчета...&quot;" vertex="1">
+          <mxGeometry height="44" width="240" x="65" y="316" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_count" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontColor=#666666;fontSize=10;fontFamily=Tahoma;" value="Всего заметок: 4 | Найдено улик: 1" vertex="1">
+          <mxGeometry height="20" width="240" x="65" y="502" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_right_panel" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#808080;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="414" width="500" x="320" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_doc_title" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontStyle=1;fontSize=14;fontFamily=Tahoma;" value="Пароли и доступы" vertex="1">
+          <mxGeometry height="24" width="300" x="335" y="124" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_badge" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=10;fontColor=#274e13;fontFamily=Tahoma;" value="[ ★ Ключевая улика ]" vertex="1">
+          <mxGeometry height="22" width="140" x="665" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_doc_meta" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontColor=#888888;fontSize=10;fontFamily=Tahoma;" value="Дата: 12 октября 1998 г., 18:30 | Автор: Александр | Категория: Безопасность" vertex="1">
+          <mxGeometry height="18" width="470" x="335" y="148" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_line" parent="1" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;strokeColor=#cccccc;" value="" vertex="1">
+          <mxGeometry height="6" width="470" x="335" y="168" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_content" parent="1" style="text;html=1;align=left;verticalAlign=top;whiteSpace=wrap;fontSize=11;fontFamily=Tahoma;spacing=4;" value="Опять забыл пароль от рабочего хранилища и архива ARCHIVE.ENC.&#xa;&#xa;Записал сюда подсказку, чтобы не потерять:&#xa;Ключ дешифрования — это точная дата моего дня рождения в формате ГГГГ-ММ-ДД.&#xa;&#xa;Если забыл точную дату — открой Галерею, найди в папке PICTURES фото с именинным тортом со свечами и посмотри свойства файла (метаданные даты съёмки).&#xa;&#xa;Команда для дешифровки через терминал:" vertex="1">
+          <mxGeometry height="140" width="470" x="335" y="178" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_cmd_box" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f0f4f9;strokeColor=#000080;strokeWidth=1;fontFamily=Courier New;fontSize=11;fontStyle=1;align=left;fontColor=#000080;" value="  decrypt archive.enc -k &lt;ДАТА_ГГГГ-ММ-ДД&gt;" vertex="1">
+          <mxGeometry height="30" width="455" x="340" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_btn_paste" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#404040;fontStyle=1;fontSize=11;fontFamily=Tahoma;" value="[ 📋 Вставить команду в Командную строку ]" vertex="1">
+          <mxGeometry height="28" width="290" x="340" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_dialog" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#000000;strokeWidth=2;shadow=1;" value="" vertex="1">
+          <mxGeometry height="115" width="320" x="460" y="405" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_diag_title" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#000080;strokeColor=none;fontColor=#ffffff;fontStyle=1;fontSize=10;align=left;fontFamily=Tahoma;" value=" 🔒  Защищенный документ" vertex="1">
+          <mxGeometry height="18" width="316" x="462" y="407" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_diag_msg" parent="1" style="text;html=1;align=center;verticalAlign=middle;fontSize=10;fontFamily=Tahoma;" value="Введите 4-значный PIN-код для доступа к заметке:" vertex="1">
+          <mxGeometry height="20" width="300" x="470" y="428" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_diag_input" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7f9db9;align=center;fontStyle=1;fontSize=12;" value="  *  *  *  *  " vertex="1">
+          <mxGeometry height="22" width="120" x="560" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_diag_ok" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;fontSize=10;fontStyle=1;fontFamily=Tahoma;" value="OK" vertex="1">
+          <mxGeometry height="22" width="55" x="560" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_diag_cancel" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d4d0c8;strokeColor=#808080;fontSize=10;fontFamily=Tahoma;" value="Отмена" vertex="1">
+          <mxGeometry height="22" width="55" x="625" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="nw98_stat" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#c0c0c0;strokeColor=#808080;align=left;fontSize=11;fontFamily=Tahoma;" value=" Документ открыт | Строк: 14 | Windows 98 RichText" vertex="1">
+          <mxGeometry height="22" width="772" x="54" y="534" as="geometry" />
+        </mxCell>
+        <mxCell id="note_nmaster" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#ffffcc;strokeColor=#d6b656;fontSize=10;fontFamily=Tahoma;align=left;" value="Master-Detail архитектура:&#xa;• Слева: список заметок с фильтрацией (поиск)&#xa;• Справа: просмотр текста и метаданных&#xa;• Интерактивная кнопка вставки команды в окно терминала&#xa;• Всплывающее окно ввода PIN-кода для закрытых записей" vertex="1">
+          <mxGeometry height="90" width="250" x="880" y="278" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_nmaster" edge="1" parent="1" source="note_nmaster" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=1;" target="nw98_right_panel">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="parser_flowchart" name="3. Алгоритм парсера команд">
+    <mxGraphModel dx="1992" dy="1258" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="p_start" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;fontFamily=Tahoma;" value="НАЧАЛО:&#xa;Игрок ввел команду в строку терминала&#xa;и нажал Enter" vertex="1">
+          <mxGeometry height="55" width="240" x="430" y="25" as="geometry" />
+        </mxCell>
+        <mxCell id="p_check_empty" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontFamily=Tahoma;" value="Строка пустая?" vertex="1">
+          <mxGeometry height="70" width="150" x="475" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e1" edge="1" parent="1" source="p_start" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_check_empty">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_wait" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontFamily=Tahoma;" value="Очистить строку ввода&#xa;Ожидать следующий ввод" vertex="1">
+          <mxGeometry height="50" width="180" x="720" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e_empty_yes" edge="1" parent="1" source="p_check_empty" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=11;" target="p_wait" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_add_history" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontFamily=Tahoma;" value="Сохранить команду в историю&#xa;(массив history для навигации ↑ / ↓)" vertex="1">
+          <mxGeometry height="40" width="220" x="440" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e_empty_no" edge="1" parent="1" source="p_check_empty" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=11;" target="p_add_history" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_tokenize" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontFamily=Tahoma;" value="Токенизация строки:&#xa;Выделение cmd_name и массива аргументов args&#xa;(с учетом кавычек)" vertex="1">
+          <mxGeometry height="55" width="220" x="440" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e2" edge="1" parent="1" source="p_add_history" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_tokenize">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_check_cmd" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;fontFamily=Tahoma;" value="Команда есть в списке&#xa;поддерживаемых?" vertex="1">
+          <mxGeometry height="80" width="180" x="460" y="355" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e3" edge="1" parent="1" source="p_tokenize" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_check_cmd">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_err_unknown" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;fontFamily=Tahoma;" value="Сформировать ошибку:&#xa;&#39;Команда не найдена. Введите help&#39;" vertex="1">
+          <mxGeometry height="45" width="220" x="150" y="372.5" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e_unknown" edge="1" parent="1" source="p_check_cmd" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=11;" target="p_err_unknown" value="Нет">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_dispatch" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;fontFamily=Tahoma;" value="Диспетчеризация по имени команды (match cmd):" vertex="1">
+          <mxGeometry height="30" width="300" x="400" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="p_e4" edge="1" parent="1" source="p_check_cmd" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;fontStyle=1;fontSize=11;" target="p_dispatch" value="Да">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_cmd_help" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontFamily=Tahoma;" value="help:&#xa;Список команд / справка" vertex="1">
+          <mxGeometry height="40" width="140" x="40" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="p_cmd_fs" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontFamily=Tahoma;" value="dir/ls, cd, pwd, type/cat:&#xa;Запрос к VFS Никиты" vertex="1">
+          <mxGeometry height="40" width="150" x="230" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="p_cmd_history" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontFamily=Tahoma;" value="history, whoami, find:&#xa;Вывод данных сессии" vertex="1">
+          <mxGeometry height="40" width="140" x="710" y="570" as="geometry" />
+        </mxCell>
+        <mxCell id="p_cmd_clear" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=10;fontFamily=Tahoma;" value="clear/cls, exit:&#xa;Очистить экран / закрыть" vertex="1">
+          <mxGeometry height="40" width="140" x="850" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ed1" edge="1" parent="1" source="p_dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_cmd_help">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ed2" edge="1" parent="1" source="p_dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_cmd_fs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ed3" edge="1" parent="1" source="p_dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_cmd_decrypt">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ed4" edge="1" parent="1" source="p_dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_cmd_history">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ed5" edge="1" parent="1" source="p_dispatch" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_cmd_clear">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_output" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;fontFamily=Tahoma;" value="Форматирование BBCode:&#xa;Добавление текста в RichTextLabel консоли + автоскролл вниз" vertex="1">
+          <mxGeometry height="40" width="350" x="370" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ef1" edge="1" parent="1" source="p_cmd_help" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ef2" edge="1" parent="1" source="p_cmd_decrypt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ef3" edge="1" parent="1" source="p_cmd_decrypt" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ef4" edge="1" parent="1" source="p_cmd_history" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_output">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ef_err" edge="1" parent="1" source="p_err_unknown" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_output">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="260" y="540" />
+              <mxPoint x="545" y="540" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_end" parent="1" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.terminator;whiteSpace=wrap;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;fontFamily=Tahoma;" value="КОНЕЦ:&#xa;Консоль готова к приему следующей команды" vertex="1">
+          <mxGeometry height="45" width="270" x="410" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="p_ef_final" edge="1" parent="1" source="p_output" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="f4fwgj2t1XAj_RadYZ6--1" edge="1" parent="1" source="p_cmd_fs" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="p_cmd_decrypt" value="">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="380" y="590" as="sourcePoint" />
+            <mxPoint x="585" y="630" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="p_cmd_decrypt" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=10;fontFamily=Tahoma;fontStyle=1;" value="decrypt &lt;file&gt; -k &lt;key&gt;:&#xa;Сверка ключа в VFS +&#xa;сигнал улики в GameState" vertex="1">
+          <mxGeometry height="50" width="160" x="465" y="565" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="modules_architecture" name="4. Архитектура и связи модулей">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="box_sema" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=12;fontFamily=Tahoma;verticalAlign=top;align=left;spacingLeft=10;" value="МОДУЛЬ СЁМЫ: Рабочий стол и Оконный менеджер (Windows 98 Desktop)" vertex="1">
+          <mxGeometry height="110" width="980" x="50" y="40" as="geometry" />
+        </mxCell>
+        <mxCell id="s_winmgr" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;fontFamily=Tahoma;" value="WindowManager (Win98 Style)&#xa;• Рамки окон со скошенными углами&#xa;• Перетаскивание, сворачивание, закрытие&#xa;• Z-Index (активное окно, синий заголовок)" vertex="1">
+          <mxGeometry height="60" width="250" x="80" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="s_gallery" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;fontFamily=Tahoma;" value="Приложение «Галерея фото»&#xa;• Фото торта с ДР&#xa;• Окно «Свойства файла» (метаданные)&#xa;-&gt; Источник ключа дешифровки" vertex="1">
+          <mxGeometry height="60" width="240" x="380" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="s_explorer" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;fontSize=10;fontFamily=Tahoma;" value="Приложение «Проводник»&#xa;• Обзор виртуальных папок и дисков C:\&#xa;• Отображение заблокированных .enc" vertex="1">
+          <mxGeometry height="60" width="240" x="670" y="75" as="geometry" />
+        </mxCell>
+        <mxCell id="box_zhenya" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=12;fontFamily=Tahoma;verticalAlign=top;align=left;spacingLeft=10;" value="МОДУЛИ ЖЕНИ: Командная строка и Заметки" vertex="1">
+          <mxGeometry height="230" width="980" x="50" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="z_notes" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;fontFamily=Tahoma;align=left;spacingLeft=8;" value="Приложение «Заметки» (NotesApp)&#xa;• Окно в стиле Блокнота Windows 98&#xa;• Список заметок с живым поиском&#xa;• Защита записей PIN-кодом&#xa;• Подсказки синтаксиса команд&#xa;• Кнопка передачи команды в терминал" vertex="1">
+          <mxGeometry height="150" width="280" x="80" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="z_terminal" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#6c8ebf;fontSize=11;fontFamily=Tahoma;align=left;spacingLeft=8;" value="Командная строка (TerminalApp)&#xa;• Окно консоли в стиле Windows 98&#xa;• Тулбар: копировать, вставить, очистить&#xa;• Парсер команд (CommandParser)&#xa;• История (50 команд) и Tab-дополнение&#xa;• Выполнение: dir, cd, type, decrypt, find..." vertex="1">
+          <mxGeometry height="150" width="280" x="540" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="z_edge_copy" edge="1" parent="1" source="z_notes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#000080;strokeWidth=2;fontStyle=1;fontSize=9;fontColor=#000080;" target="z_terminal" value="Копирование шаблона команды:&#xa;decrypt archive.enc -k &lt;key&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="box_nikita" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=12;fontFamily=Tahoma;verticalAlign=top;align=left;spacingLeft=10;" value="МОДУЛЬ НИКИТЫ: Ядро игры (Core &amp; State)" vertex="1">
+          <mxGeometry height="150" width="1050" x="30" y="600" as="geometry" />
+        </mxCell>
+        <mxCell id="n_vfs" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=11;fontFamily=Tahoma;align=left;spacingLeft=8;" value="Виртуальная ФС (VFS)&#xa;• get_files(path)&#xa;• read_file(path)&#xa;• change_dir(path)&#xa;• decrypt_file(path, key)" vertex="1">
+          <mxGeometry height="90" width="220" x="490" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="n_gamestate" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#82b366;fontSize=11;fontFamily=Tahoma;align=left;spacingLeft=8;" value="GameState &amp; Концовки&#xa;• Регистрация найденных улик&#xa;• Статус расшифровки архивов&#xa;• Ветвление сюжетных концовок" vertex="1">
+          <mxGeometry height="90" width="250" x="760" y="640" as="geometry" />
+        </mxCell>
+        <mxCell id="e_term_vfs" edge="1" parent="1" source="z_terminal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#274e13;strokeWidth=2;fontSize=9;fontColor=#274e13;" target="n_vfs" value="Запросы файловых операций&#xa;(dir, cd, type, decrypt)">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e_term_clue" edge="1" parent="1" source="z_terminal" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=2;fontStyle=1;fontSize=9;fontColor=#b85450;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" target="n_gamestate" value="Сигнал: clue_unlocked(id)&#xa;(успешно расшифрован архив)">
+          <mxGeometry relative="1" x="-0.1795" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_notes_clue" edge="1" parent="1" source="z_notes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#b85450;strokeWidth=1;fontSize=9;fontColor=#b85450;" target="n_gamestate" value="Сигнал: note_read(id)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="450" />
+              <mxPoint x="865" y="450" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e_win_wrap" edge="1" parent="1" source="s_winmgr" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#d6b656;strokeWidth=1;dashed=1;fontSize=9;" target="z_notes" value="Оконный менеджер оборачивает окна">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
