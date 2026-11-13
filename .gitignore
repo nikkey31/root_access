@@ -8,3 +8,7 @@ Thumbs.db
 # Builds / exports
 build/
 exports/
+
+# Word temporary lock files
+~$*
+*.tmp
