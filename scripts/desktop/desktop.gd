@@ -230,8 +230,14 @@ func open_app(app_id: String) -> void:
 		push_warning("Неизвестное приложение: %s" % app_id)
 		return
 
-	var preview: AppPreview = APP_PREVIEW.instantiate()
-	preview.kind = app["kind"]
+	var app_content: Control
+	if app_id == "terminal":
+		var term_scene: PackedScene = load("res://scenes/apps/Terminal.tscn")
+		app_content = term_scene.instantiate()
+	else:
+		var preview: AppPreview = APP_PREVIEW.instantiate()
+		preview.kind = app["kind"]
+		app_content = preview
 
 	var frame: WindowFrame = WINDOW_FRAME.instantiate()
 	frame.window_title = app["title"]
@@ -239,7 +245,7 @@ func open_app(app_id: String) -> void:
 	frame.min_window_size = app["min_size"]
 	frame.set_meta("app_id", app_id)
 	window_layer.add_child(frame)
-	frame.embed_app(preview)
+	frame.embed_app(app_content)
 	frame.close_requested.connect(_on_window_close.bind(frame))
 	frame.minimize_requested.connect(_on_window_minimize.bind(frame))
 	frame.focus_requested.connect(_on_window_focus.bind(frame))

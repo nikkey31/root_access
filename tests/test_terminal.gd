@@ -9,7 +9,7 @@ func _ready() -> void:
 	var terminal_scene = load("res://scenes/apps/Terminal.tscn")
 	assert(terminal_scene != null, "Сцена scenes/apps/Terminal.tscn должна успешно загружаться")
 	
-	var terminal = terminal_scene.instantiate() as TerminalApp
+	var terminal = terminal_scene.instantiate()
 	add_child(terminal)
 	
 	# Проверка DoD 1: Зеленый ретро-стиль текста на черном фоне
@@ -58,7 +58,7 @@ func _ready() -> void:
 	var frame = frame_scene.instantiate() as WindowFrame
 	add_child(frame)
 	
-	var embedded_terminal = terminal_scene.instantiate() as TerminalApp
+	var embedded_terminal = terminal_scene.instantiate()
 	frame.embed_app(embedded_terminal)
 	
 	assert(frame.content_container.get_child_count() == 1, "Terminal должен успешно встроиться в content_container WindowFrame")

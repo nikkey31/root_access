@@ -1,4 +1,3 @@
-class_name VFS
 extends Node
 
 ## Виртуальная файловая система (VFS) игры «Root Access».

@@ -13,7 +13,7 @@ signal command_executed(command_name: String, args: Array)
 @onready var prompt_label: Label = $MarginContainer/VBoxContainer/InputBar/PromptLabel
 @onready var command_input: LineEdit = $MarginContainer/VBoxContainer/InputBar/CommandInput
 
-var vfs: VFS
+var vfs: Node
 var history: Array[String] = []
 var history_index: int = -1
 
