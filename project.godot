@@ -1,5 +1,10 @@
 ; Engine configuration file.
-; Root Access — ретро-детектив на Godot 4.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
@@ -8,8 +13,8 @@ config_version=5
 config/name="Root Access"
 config/description="Психологический детективный триллер в стилистике ретро-ОС."
 run/main_scene="res://scenes/desktop/Desktop.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://assets/icons/root_access.svg"
-config/features=PackedStringArray("4.6", "GL Compatibility")
 
 [autoload]
 
@@ -24,6 +29,8 @@ window/size/window_width_override=1280
 window/size/window_height_override=720
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+mouse_cursor/custom_image="res://assets/ui/cursor.png"
+mouse_cursor/custom_image_hotspot=Vector2(0, 0)
 
 [gui]
 
@@ -31,7 +38,7 @@ theme/custom="res://assets/theme/retro_theme.tres"
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-textures/canvas_textures/default_texture_filter=0
 environment/defaults/default_clear_color=Color(0, 0.501961, 0.501961, 1)

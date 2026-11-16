@@ -1,6 +1,8 @@
-[gd_scene format=3]
+[gd_scene load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://scripts/apps/terminal.gd" id="1_terminal"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_term"]
 
 [node name="Terminal" type="Control"]
 layout_mode = 3
@@ -67,5 +69,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.2, 1, 0.2, 1)
 theme_override_colors/caret_color = Color(0.2, 1, 0.2, 1)
+theme_override_styles/normal = SubResource("StyleBoxEmpty_term")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_term")
+theme_override_styles/read_only = SubResource("StyleBoxEmpty_term")
 flat = true
 caret_blink = true
