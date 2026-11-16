@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <!-- Tray battery, 80% charged. -->
+  <rect x="1" y="4" width="12" height="8" fill="#c0c0c0" stroke="#000000" stroke-width="1"/>
+  <rect x="13" y="6" width="2" height="4" fill="#000000"/>
+  <rect x="2" y="5" width="8" height="6" fill="#20a020"/>
+  <rect x="2" y="5" width="8" height="1" fill="#60d060"/>
+  <rect x="10" y="5" width="2" height="6" fill="#c0c0c0"/>
+</svg>

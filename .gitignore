@@ -12,3 +12,6 @@ exports/
 # Word temporary lock files
 ~$*
 *.tmp
+
+# Local Godot run logs
+godot*.log

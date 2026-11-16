@@ -1,0 +1,103 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://scripts/apps/previews/app_preview.gd" id="1_preview"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_sunken.png" id="2_sunken"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_status"]
+content_margin_left = 5.0
+content_margin_top = 1.0
+content_margin_right = 5.0
+content_margin_bottom = 1.0
+texture = ExtResource("2_sunken")
+texture_margin_left = 1.0
+texture_margin_top = 1.0
+texture_margin_right = 1.0
+texture_margin_bottom = 1.0
+
+[node name="AppPreview" type="Control"]
+custom_minimum_size = Vector2(320, 200)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_preview")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.752941, 0.752941, 0.752941, 1)
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="MenuBar" type="MarginContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 21)
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 1
+
+[node name="MenuRow" type="HBoxContainer" parent="VBox/MenuBar"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MenuSeparator" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="Toolbar" type="MarginContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 29)
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 2
+
+[node name="ToolbarRow" type="HBoxContainer" parent="VBox/Toolbar"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="ToolbarSeparator" type="HSeparator" parent="VBox"]
+layout_mode = 2
+
+[node name="ContentMargin" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="Content" type="MarginContainer" parent="VBox/ContentMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+clip_contents = true
+
+[node name="StatusBar" type="PanelContainer" parent="VBox"]
+custom_minimum_size = Vector2(0, 21)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_status")
+
+[node name="StatusMargin" type="MarginContainer" parent="VBox/StatusBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 1
+
+[node name="StatusRow" type="HBoxContainer" parent="VBox/StatusBar/StatusMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
