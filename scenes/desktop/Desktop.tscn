@@ -1,0 +1,423 @@
+[gd_scene load_steps=24 format=3]
+
+[ext_resource type="Script" path="res://scripts/desktop/desktop.gd" id="1_desktop"]
+[ext_resource type="Script" path="res://scripts/desktop/scanlines.gd" id="2_scanlines"]
+[ext_resource type="PackedScene" path="res://scenes/ui/DesktopIcon.tscn" id="3_icon_scene"]
+[ext_resource type="Texture2D" path="res://assets/icons/computer.svg" id="4_computer"]
+[ext_resource type="Texture2D" path="res://assets/icons/terminal.svg" id="5_terminal"]
+[ext_resource type="Texture2D" path="res://assets/icons/maps.svg" id="6_maps"]
+[ext_resource type="Texture2D" path="res://assets/icons/gallery.svg" id="7_gallery"]
+[ext_resource type="Texture2D" path="res://assets/icons/notes.svg" id="8_notes"]
+[ext_resource type="Texture2D" path="res://assets/icons/recycle_bin.svg" id="9_recycle"]
+[ext_resource type="Texture2D" path="res://assets/icons/start.svg" id="10_start"]
+[ext_resource type="Texture2D" path="res://assets/icons/speaker.svg" id="11_speaker"]
+[ext_resource type="Texture2D" path="res://assets/icons/network.svg" id="12_network"]
+[ext_resource type="Texture2D" path="res://assets/icons/battery.svg" id="13_battery"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_raised.png" id="14_raised"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_sunken.png" id="15_sunken"]
+[ext_resource type="Texture2D" path="res://assets/ui/startmenu_header.png" id="16_header"]
+[ext_resource type="Texture2D" path="res://assets/ui/vignette.png" id="17_vignette"]
+
+[sub_resource type="SystemFont" id="SystemFont_bold"]
+font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
+font_weight = 700
+antialiasing = 0
+subpixel_positioning = 0
+hinting = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_taskbar"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+texture = ExtResource("14_raised")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_startmenu"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+texture = ExtResource("14_raised")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_header"]
+content_margin_left = 8.0
+content_margin_top = 4.0
+content_margin_right = 8.0
+content_margin_bottom = 4.0
+texture = ExtResource("16_header")
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_tray"]
+content_margin_left = 2.0
+content_margin_top = 1.0
+content_margin_right = 2.0
+content_margin_bottom = 1.0
+texture = ExtResource("15_sunken")
+texture_margin_left = 1.0
+texture_margin_top = 1.0
+texture_margin_right = 1.0
+texture_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_popup"]
+content_margin_left = 6.0
+content_margin_top = 5.0
+content_margin_right = 6.0
+content_margin_bottom = 5.0
+texture = ExtResource("14_raised")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[node name="Desktop" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_desktop")
+
+[node name="Wallpaper" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0.501961, 0.501961, 1)
+
+[node name="DesktopSurface" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_bottom = -48.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Icons" type="GridContainer" parent="DesktopSurface"]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 10.0
+offset_right = 104.0
+offset_bottom = 650.0
+mouse_filter = 2
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 6
+columns = 1
+
+[node name="ComputerIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
+layout_mode = 2
+app_id = "computer"
+icon_title = "Мой компьютер"
+icon_texture = ExtResource("4_computer")
+
+[node name="TerminalIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
+layout_mode = 2
+app_id = "terminal"
+icon_title = "Терминал"
+icon_texture = ExtResource("5_terminal")
+
+[node name="MapsIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
+layout_mode = 2
+app_id = "maps"
+icon_title = "Карты"
+icon_texture = ExtResource("6_maps")
+
+[node name="GalleryIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
+layout_mode = 2
+app_id = "gallery"
+icon_title = "Галерея"
+icon_texture = ExtResource("7_gallery")
+
+[node name="NotesIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
+layout_mode = 2
+app_id = "notes"
+icon_title = "Заметки"
+icon_texture = ExtResource("8_notes")
+
+[node name="RecycleIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
+layout_mode = 2
+app_id = "recycle"
+icon_title = "Корзина"
+icon_texture = ExtResource("9_recycle")
+
+[node name="WindowLayer" type="Control" parent="DesktopSurface"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Taskbar" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -48.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBox_taskbar")
+
+[node name="MainMargin" type="MarginContainer" parent="Taskbar"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 2
+
+[node name="MainRow" type="HBoxContainer" parent="Taskbar/MainMargin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="StartButton" type="Button" parent="Taskbar/MainMargin/MainRow"]
+custom_minimum_size = Vector2(92, 38)
+layout_mode = 2
+size_flags_vertical = 4
+toggle_mode = true
+theme_override_constants/icon_max_width = 22
+theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = SubResource("SystemFont_bold")
+icon = ExtResource("10_start")
+text = "Пуск"
+icon_alignment = 0
+
+[node name="TaskSep" type="VSeparator" parent="Taskbar/MainMargin/MainRow"]
+custom_minimum_size = Vector2(7, 0)
+layout_mode = 2
+
+[node name="TaskButtons" type="HBoxContainer" parent="Taskbar/MainMargin/MainRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 4
+
+[node name="Tray" type="PanelContainer" parent="Taskbar/MainMargin/MainRow"]
+custom_minimum_size = Vector2(214, 38)
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = SubResource("StyleBox_tray")
+
+[node name="TrayMargin" type="MarginContainer" parent="Taskbar/MainMargin/MainRow/Tray"]
+layout_mode = 2
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 1
+
+[node name="TrayRow" type="HBoxContainer" parent="Taskbar/MainMargin/MainRow/Tray/TrayMargin"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="VolumeButton" type="Button" parent="Taskbar/MainMargin/MainRow/Tray/TrayMargin/TrayRow"]
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+tooltip_text = "Громкость: 68%"
+flat = true
+icon = ExtResource("11_speaker")
+
+[node name="NetworkButton" type="Button" parent="Taskbar/MainMargin/MainRow/Tray/TrayMargin/TrayRow"]
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+tooltip_text = "Сеть: нет подключения"
+flat = true
+icon = ExtResource("12_network")
+
+[node name="BatteryButton" type="Button" parent="Taskbar/MainMargin/MainRow/Tray/TrayMargin/TrayRow"]
+custom_minimum_size = Vector2(22, 22)
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+tooltip_text = "Батарея: 84%"
+flat = true
+icon = ExtResource("13_battery")
+
+[node name="TraySep" type="VSeparator" parent="Taskbar/MainMargin/MainRow/Tray/TrayMargin/TrayRow"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="Clock" type="VBoxContainer" parent="Taskbar/MainMargin/MainRow/Tray/TrayMargin/TrayRow"]
+custom_minimum_size = Vector2(86, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="TimeLabel" type="Label" parent="Taskbar/MainMargin/MainRow/Tray/TrayMargin/TrayRow/Clock"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 11
+text = "02:15"
+horizontal_alignment = 2
+
+[node name="DateLabel" type="Label" parent="Taskbar/MainMargin/MainRow/Tray/TrayMargin/TrayRow/Clock"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 10
+text = "02.10.2009"
+horizontal_alignment = 2
+
+[node name="StartMenu" type="PanelContainer" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 4.0
+offset_top = -392.0
+offset_right = 290.0
+offset_bottom = -54.0
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBox_startmenu")
+
+[node name="StartVBox" type="VBoxContainer" parent="StartMenu"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Header" type="PanelContainer" parent="StartMenu/StartVBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_header")
+
+[node name="HeaderMargin" type="MarginContainer" parent="StartMenu/StartVBox/Header"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 2
+
+[node name="HeaderBox" type="VBoxContainer" parent="StartMenu/StartVBox/Header/HeaderMargin"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleLabel" type="Label" parent="StartMenu/StartVBox/Header/HeaderMargin/HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 14
+theme_override_fonts/font = SubResource("SystemFont_bold")
+text = "ROOT ACCESS 98"
+
+[node name="UserLabel" type="Label" parent="StartMenu/StartVBox/Header/HeaderMargin/HeaderBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.84, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 10
+text = "Ник Будхайм  ·  02.10.2009"
+
+[node name="SearchMargin" type="MarginContainer" parent="StartMenu/StartVBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 5
+
+[node name="Search" type="LineEdit" parent="StartMenu/StartVBox/SearchMargin"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+placeholder_text = "Поиск приложений..."
+clear_button_enabled = true
+
+[node name="MenuSep" type="HSeparator" parent="StartMenu/StartVBox"]
+layout_mode = 2
+
+[node name="Scroll" type="ScrollContainer" parent="StartMenu/StartVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="Items" type="VBoxContainer" parent="StartMenu/StartVBox/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 0
+
+[node name="FooterSep" type="HSeparator" parent="StartMenu/StartVBox"]
+layout_mode = 2
+
+[node name="Footer" type="Button" parent="StartMenu/StartVBox"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 11
+text = "Завершить сеанс…"
+alignment = 0
+flat = true
+
+[node name="TrayPopup" type="PanelContainer" parent="."]
+visible = false
+custom_minimum_size = Vector2(232, 64)
+layout_mode = 0
+offset_right = 232.0
+offset_bottom = 64.0
+theme_override_styles/panel = SubResource("StyleBox_popup")
+
+[node name="PopupMargin" type="MarginContainer" parent="TrayPopup"]
+layout_mode = 2
+theme_override_constants/margin_left = 7
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 7
+theme_override_constants/margin_bottom = 5
+
+[node name="PopupLabel" type="Label" parent="TrayPopup/PopupMargin"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "Состояние"
+autowrap_mode = 2
+
+[node name="ShutdownDialog" type="AcceptDialog" parent="."]
+title = "Завершение работы"
+dialog_text = "Завершение сеанса будет доступно после подключения игрового ядра.\n\nСейчас это макет рабочего стола."
+ok_button_text = "Отмена"
+exclusive = true
+unresizable = true
+
+[node name="CRTOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("2_scanlines")
+
+[node name="Vignette" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+texture = ExtResource("17_vignette")
+expand_mode = 1
+stretch_mode = 0
+
+[connection signal="pressed" from="StartMenu/StartVBox/Footer" to="." method="_on_shutdown_pressed"]

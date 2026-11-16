@@ -1,0 +1,53 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/desktop/start_menu_item.gd" id="1_item"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_normal"]
+bg_color = Color(0, 0, 0, 0)
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_hover"]
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 6.0
+content_margin_bottom = 2.0
+bg_color = Color(0, 0, 0.502, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_pressed"]
+content_margin_left = 7.0
+content_margin_top = 3.0
+content_margin_right = 5.0
+content_margin_bottom = 1.0
+bg_color = Color(0, 0, 0.35, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_focus"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 0.65)
+
+[node name="StartMenuItem" type="Button"]
+custom_minimum_size = Vector2(0, 34)
+offset_right = 260.0
+offset_bottom = 34.0
+focus_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_constants/icon_max_width = 24
+theme_override_font_sizes/font_size = 12
+theme_override_styles/focus = SubResource("StyleBox_focus")
+theme_override_styles/hover = SubResource("StyleBox_hover")
+theme_override_styles/normal = SubResource("StyleBox_normal")
+theme_override_styles/pressed = SubResource("StyleBox_pressed")
+text = "Приложение"
+alignment = 0
+icon_alignment = 0
+script = ExtResource("1_item")

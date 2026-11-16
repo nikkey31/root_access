@@ -1,0 +1,173 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/window_frame.gd" id="1_frame"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_raised.png" id="2_raised"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_raised_hover.png" id="3_hover"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_pressed.png" id="4_pressed"]
+[ext_resource type="Texture2D" path="res://assets/ui/titlebar_active.png" id="5_title_active"]
+[ext_resource type="Texture2D" path="res://assets/ui/titlebar_inactive.png" id="6_title_inactive"]
+
+[sub_resource type="SystemFont" id="SystemFont_title"]
+font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
+font_weight = 700
+antialiasing = 0
+subpixel_positioning = 0
+hinting = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_window"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+texture = ExtResource("2_raised")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_title_active"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
+texture = ExtResource("5_title_active")
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_title_inactive"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
+texture = ExtResource("6_title_inactive")
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_btn_normal"]
+content_margin_left = 1.0
+content_margin_top = 1.0
+content_margin_right = 1.0
+content_margin_bottom = 1.0
+texture = ExtResource("2_raised")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_btn_hover"]
+content_margin_left = 1.0
+content_margin_top = 1.0
+content_margin_right = 1.0
+content_margin_bottom = 1.0
+texture = ExtResource("3_hover")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_btn_pressed"]
+content_margin_left = 2.0
+content_margin_top = 2.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+texture = ExtResource("4_pressed")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+axis_stretch_horizontal = 0
+axis_stretch_vertical = 0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBox_empty"]
+
+[node name="WindowFrame" type="PanelContainer"]
+custom_minimum_size = Vector2(360, 220)
+offset_right = 760.0
+offset_bottom = 500.0
+theme_override_styles/panel = SubResource("StyleBox_window")
+script = ExtResource("1_frame")
+title_active_style = SubResource("StyleBox_title_active")
+title_inactive_style = SubResource("StyleBox_title_inactive")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+mouse_filter = 1
+
+[node name="TitleBar" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 27)
+layout_mode = 2
+mouse_filter = 0
+theme_override_styles/panel = SubResource("StyleBox_title_active")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/TitleBar"]
+layout_mode = 2
+theme_override_constants/separation = 3
+mouse_filter = 1
+
+[node name="TitleIcon" type="TextureRect" parent="VBoxContainer/TitleBar/HBoxContainer"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+mouse_filter = 2
+texture_filter = 1
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TitleLabel" type="Label" parent="VBoxContainer/TitleBar/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.55)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = SubResource("SystemFont_title")
+text = "Окно"
+vertical_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
+
+[node name="Spacer" type="Control" parent="VBoxContainer/TitleBar/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+
+[node name="BtnMinimize" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer"]
+custom_minimum_size = Vector2(20, 18)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 14
+theme_override_styles/focus = SubResource("StyleBox_empty")
+theme_override_styles/hover = SubResource("StyleBox_btn_hover")
+theme_override_styles/normal = SubResource("StyleBox_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBox_btn_pressed")
+text = "_"
+flat = false
+
+[node name="BtnClose" type="Button" parent="VBoxContainer/TitleBar/HBoxContainer"]
+custom_minimum_size = Vector2(20, 18)
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 14
+theme_override_styles/focus = SubResource("StyleBox_empty")
+theme_override_styles/hover = SubResource("StyleBox_btn_hover")
+theme_override_styles/normal = SubResource("StyleBox_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBox_btn_pressed")
+text = "×"
+flat = false
+
+[node name="ContentContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" shape-rendering="crispEdges">
+  <!-- Tray speaker. -->
+  <path d="M2 6 L5 6 L8 3 L8 13 L5 10 L2 10 Z" fill="#c0c0c0" stroke="#000000" stroke-width="1"/>
+  <path d="M10 5 C12 7 12 9 10 11" fill="none" stroke="#000000" stroke-width="1"/>
+  <path d="M12 3 C15 6 15 10 12 13" fill="none" stroke="#000000" stroke-width="1"/>
+  <rect x="3" y="7" width="3" height="2" fill="#ffffff"/>
+</svg>
