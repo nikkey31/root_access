@@ -11,6 +11,11 @@ run/main_scene="res://scenes/desktop/Desktop.tscn"
 config/icon="res://assets/icons/root_access.svg"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 
+[autoload]
+
+GameState="*res://scripts/core/GameState.gd"
+VFS="*res://scripts/core/VFS.gd"
+
 [display]
 
 window/size/viewport_width=1280
