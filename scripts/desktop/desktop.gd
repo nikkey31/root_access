@@ -234,6 +234,21 @@ func open_app(app_id: String) -> void:
 	if app_id == "terminal":
 		var term_scene: PackedScene = load("res://scenes/apps/Terminal.tscn")
 		app_content = term_scene.instantiate()
+	elif app_id == "notes":
+		var notes_scene: PackedScene = load("res://scenes/apps/Notes.tscn")
+		app_content = notes_scene.instantiate()
+	elif app_id == "computer":
+		var explorer_scene: PackedScene = load("res://scenes/apps/Explorer.tscn")
+		var explorer: ExplorerApp = explorer_scene.instantiate()
+		explorer.mode = "computer"
+		explorer.initial_path = "C:\\ROOT_ACCESS"
+		app_content = explorer
+	elif app_id == "recycle":
+		var explorer_scene: PackedScene = load("res://scenes/apps/Explorer.tscn")
+		var explorer: ExplorerApp = explorer_scene.instantiate()
+		explorer.mode = "recycle"
+		explorer.initial_path = "C:\\ROOT_ACCESS\\Корзина"
+		app_content = explorer
 	else:
 		var preview: AppPreview = APP_PREVIEW.instantiate()
 		preview.kind = app["kind"]
