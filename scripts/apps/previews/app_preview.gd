@@ -110,8 +110,13 @@ var _map_info_card: InfoCard
 var _active_map_marker: Dictionary = {}
 var _photo_info_card: InfoCard
 var _photo_viewer_overlay: PanelContainer = null
+var _photo_viewer_viewport: Control = null
 var _photo_viewer_texture: TextureRect = null
 var _photo_viewer_title: Label = null
+var _photo_missing_label: Label = null
+var _photo_zoom: float = 1.0
+var _photo_pan: Vector2 = Vector2.ZERO
+var _photo_dragging: bool = false
 
 func _ready() -> void:
 	_bold_font = SystemFont.new()
@@ -574,11 +579,10 @@ func _load_gallery_photos() -> Array[Dictionary]:
 							var img := Image.load_from_file(abs_path)
 							if img != null and not img.is_empty():
 								tex = ImageTexture.create_from_image(img)
-					if tex == null:
-						tex = PHOTO_TRUCK
 					result.append({
 						"id": str(entry.get("id", "")),
 						"texture": tex,
+						"missing": tex == null,
 						"file": str(entry.get("filename", "IMG.JPG")),
 						"title": str(entry.get("title", "")),
 						"date": str(entry.get("date", "01.09.2009")),
@@ -631,7 +635,7 @@ func _build_gallery() -> void:
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sidebar.add_child(spacer)
-	var hint := _make_label("Клик — выбрать,\n2× клик — открыть,\n«Подробнее» — EXIF", 10, C_DARK_GRAY)
+	var hint := _make_label("Клик — выбрать,\n2× клик — открыть,\nколесо — зум,\ndrag — панорама", 10, C_DARK_GRAY)
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sidebar.add_child(hint)
 
@@ -727,25 +731,54 @@ func _build_photo_viewer_overlay() -> void:
 	props_btn.pressed.connect(_open_photo_properties)
 	top_bar.add_child(props_btn)
 
+	_photo_viewer_viewport = Control.new()
+	_photo_viewer_viewport.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_photo_viewer_viewport.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_photo_viewer_viewport.clip_contents = true
+	_photo_viewer_viewport.mouse_filter = Control.MOUSE_FILTER_STOP
+	_photo_viewer_viewport.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_photo_viewer_viewport.gui_input.connect(_on_photo_viewer_gui_input)
+	_photo_viewer_viewport.resized.connect(_update_photo_transform)
+	vbox.add_child(_photo_viewer_viewport)
+
+	_photo_missing_label = _make_label("", 13, Color(0.88, 0.88, 0.88, 1.0))
+	_photo_missing_label.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_photo_missing_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_photo_missing_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_photo_missing_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_photo_missing_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_photo_missing_label.visible = false
+	_photo_viewer_viewport.add_child(_photo_missing_label)
+
 	_photo_viewer_texture = TextureRect.new()
 	_photo_viewer_texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_photo_viewer_texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_photo_viewer_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_photo_viewer_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	vbox.add_child(_photo_viewer_texture)
+	_photo_viewer_texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_photo_viewer_viewport.add_child(_photo_viewer_texture)
 
 func _open_photo_viewer() -> void:
 	if _photo_viewer_overlay == null or _photos.is_empty():
 		return
 	var data: Dictionary = _photos[_selected_photo_index]
-	_photo_viewer_texture.texture = data["texture"]
+	var texture: Texture2D = data.get("texture", null)
+	_photo_viewer_texture.texture = texture
+	_photo_viewer_texture.visible = texture != null
+	_photo_missing_label.visible = texture == null
+	_photo_missing_label.text = "%s\n\nФайл не найден в res://assets/photos/\nПоказан плейсхолдер." % data["file"]
+	_reset_photo_view()
 	_photo_viewer_title.text = "%s  (%d / %d)" % [data["file"], _selected_photo_index + 1, _photos.size()]
 	_photo_viewer_overlay.visible = true
+	_update_photo_title()
 	_notify_photo_viewed(data)
 
 func _close_photo_viewer() -> void:
 	if _photo_viewer_overlay:
 		_photo_viewer_overlay.visible = false
+	_photo_dragging = false
+	if _photo_viewer_viewport:
+		_photo_viewer_viewport.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
 func _step_photo_viewer(delta: int) -> void:
 	if _photos.is_empty():
@@ -754,8 +787,78 @@ func _step_photo_viewer(delta: int) -> void:
 	_apply_photo_selection()
 	_open_photo_viewer()
 
+func _reset_photo_view() -> void:
+	_photo_zoom = 1.0
+	_photo_pan = Vector2.ZERO
+	_photo_dragging = false
+	_update_photo_transform()
+
+func _update_photo_transform() -> void:
+	if _photo_viewer_texture == null or _photo_viewer_viewport == null:
+		return
+	_photo_viewer_texture.size = _photo_viewer_viewport.size
+	_photo_viewer_texture.position = Vector2.ZERO
+	_photo_viewer_texture.pivot_offset = _photo_viewer_texture.size * 0.5
+	_photo_viewer_texture.scale = Vector2(_photo_zoom, _photo_zoom)
+	_photo_viewer_texture.position = _photo_pan
+	_update_photo_title()
+
+func _update_photo_title() -> void:
+	if _photo_viewer_title == null or _photos.is_empty():
+		return
+	var data: Dictionary = _photos[_selected_photo_index]
+	_photo_viewer_title.text = "%s  (%d / %d)  ·  %d%%" % [
+		data["file"],
+		_selected_photo_index + 1,
+		_photos.size(),
+		int(round(_photo_zoom * 100.0)),
+	]
+
+func _on_photo_viewer_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		var mouse := event as InputEventMouseButton
+		if mouse.button_index == MOUSE_BUTTON_WHEEL_UP and mouse.pressed:
+			_set_photo_zoom(_photo_zoom * 1.2, _photo_viewer_viewport.get_local_mouse_position())
+			_photo_viewer_viewport.accept_event()
+		elif mouse.button_index == MOUSE_BUTTON_WHEEL_DOWN and mouse.pressed:
+			_set_photo_zoom(_photo_zoom / 1.2, _photo_viewer_viewport.get_local_mouse_position())
+			_photo_viewer_viewport.accept_event()
+		elif mouse.button_index == MOUSE_BUTTON_LEFT:
+			if mouse.pressed and _photo_zoom > 1.0:
+				_photo_dragging = true
+				_photo_viewer_viewport.mouse_default_cursor_shape = Control.CURSOR_DRAG
+				_photo_viewer_viewport.accept_event()
+			elif not mouse.pressed:
+				_photo_dragging = false
+				_photo_viewer_viewport.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+				_photo_viewer_viewport.accept_event()
+	elif event is InputEventMouseMotion and _photo_dragging:
+		var motion := event as InputEventMouseMotion
+		_photo_pan += motion.relative
+		_clamp_photo_pan()
+		_update_photo_transform()
+		_photo_viewer_viewport.accept_event()
+
+func _set_photo_zoom(target_zoom: float, focus_point: Vector2) -> void:
+	var new_zoom := clampf(target_zoom, 1.0, 6.0)
+	if is_equal_approx(new_zoom, _photo_zoom):
+		return
+	var ratio := new_zoom / _photo_zoom
+	var center := _photo_viewer_viewport.size * 0.5
+	_photo_pan = (focus_point - center) * (1.0 - ratio) + _photo_pan * ratio
+	_photo_zoom = new_zoom
+	_clamp_photo_pan()
+	_update_photo_transform()
+
+func _clamp_photo_pan() -> void:
+	if _photo_viewer_viewport == null:
+		return
+	var limit := _photo_viewer_viewport.size * 0.5 * maxf(_photo_zoom - 1.0, 0.0)
+	_photo_pan.x = clampf(_photo_pan.x, -limit.x, limit.x)
+	_photo_pan.y = clampf(_photo_pan.y, -limit.y, limit.y)
+
 func _notify_photo_viewed(data: Dictionary) -> void:
-	if not has_node("/root/GameState"):
+	if not has_node("/root/GameState") or data.get("missing", false):
 		return
 	var gs := get_node("/root/GameState")
 	if data.get("id", "") == "photo_truck":
@@ -799,15 +902,45 @@ func _add_photo_card(grid: GridContainer, index: int) -> void:
 	box.add_theme_constant_override("separation", 3)
 	card.add_child(box)
 
-	var texture := TextureRect.new()
-	texture.texture = data["texture"]
-	texture.custom_minimum_size = Vector2(0, 122)
-	texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	box.add_child(texture)
+	if data.get("missing", false):
+		var placeholder := PanelContainer.new()
+		var placeholder_style := StyleBoxFlat.new()
+		placeholder_style.bg_color = Color(0.9, 0.9, 0.88, 1.0)
+		placeholder_style.border_width_left = 1
+		placeholder_style.border_width_top = 1
+		placeholder_style.border_width_right = 1
+		placeholder_style.border_width_bottom = 1
+		placeholder_style.border_color = C_GRAY
+		placeholder_style.content_margin_left = 6.0
+		placeholder_style.content_margin_top = 6.0
+		placeholder_style.content_margin_right = 6.0
+		placeholder_style.content_margin_bottom = 6.0
+		placeholder.add_theme_stylebox_override("panel", placeholder_style)
+		placeholder.custom_minimum_size = Vector2(0, 122)
+		placeholder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var missing_box := VBoxContainer.new()
+		missing_box.alignment = BoxContainer.ALIGNMENT_CENTER
+		placeholder.add_child(missing_box)
+		var missing_title := _make_heading("НЕТ ФАЙЛА", 11, C_RED)
+		missing_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		missing_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		missing_box.add_child(missing_title)
+		var missing_name := _make_label(str(data["file"]), 10, C_DARK_GRAY)
+		missing_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		missing_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		missing_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		missing_box.add_child(missing_name)
+		box.add_child(placeholder)
+	else:
+		var texture := TextureRect.new()
+		texture.texture = data["texture"]
+		texture.custom_minimum_size = Vector2(0, 122)
+		texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		box.add_child(texture)
 
 	var caption := _make_label(data["file"], 10, C_DARK_GRAY)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

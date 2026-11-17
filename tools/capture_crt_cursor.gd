@@ -9,6 +9,9 @@ func _ready() -> void:
 	get_tree().root.add_child(desktop)
 	await get_tree().process_frame
 	await get_tree().process_frame
+	if desktop.thought_box:
+		desktop.thought_box.clear_thoughts()
+		desktop.thought_box.visible = false
 
 	var ui_point := Vector2(980, 380)
 	var screen_point := desktop.crt_ui_to_screen(ui_point)

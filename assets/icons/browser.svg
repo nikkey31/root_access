@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+  <!-- Browser: blue globe in a silver bezel. -->
+  <circle cx="24" cy="23" r="18" fill="#c0c0c0" stroke="#000000" stroke-width="2"/>
+  <circle cx="24" cy="23" r="15" fill="#1e6fb8" stroke="#0a2a50" stroke-width="1"/>
+  <path d="M10 20 C16 16 22 18 27 15 C32 12 36 15 38 18 L38 23 C32 21 28 25 23 24 C17 23 14 26 10 25 Z" fill="#4c9a52"/>
+  <path d="M10 25 C15 27 18 24 23 26 C28 28 32 25 38 27 L38 31 C33 30 29 33 24 31 C18 29 14 31 10 30 Z" fill="#3d7f44"/>
+  <ellipse cx="24" cy="23" rx="15" ry="7" fill="none" stroke="#d8f0ff" stroke-width="1" opacity="0.8"/>
+  <ellipse cx="24" cy="23" rx="6" ry="15" fill="none" stroke="#d8f0ff" stroke-width="1" opacity="0.7"/>
+  <path d="M9 23 L39 23" stroke="#d8f0ff" stroke-width="1" opacity="0.7"/>
+  <path d="M13 13 C17 17 31 17 35 13" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.5"/>
+  <path d="M11 18 C15 14 18 13 22 13" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+  <rect x="37" y="34" width="7" height="4" fill="#c0c0c0" stroke="#000000" stroke-width="1"/>
+  <rect x="38" y="35" width="5" height="1" fill="#ffffff"/>
+</svg>

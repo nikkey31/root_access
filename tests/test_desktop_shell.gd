@@ -13,12 +13,18 @@ func _ready() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	_check(desktop.get_node("DesktopSurface/Icons").get_child_count() == 6, "На рабочем столе 6 иконок")
+	_check(desktop.get_node("DesktopSurface/Icons").get_child_count() == 7, "На рабочем столе 7 иконок, включая Браузер")
+	_check(desktop.get_node_or_null("DesktopSurface/Icons/BrowserIcon") != null, "Иконка «Браузер» есть на рабочем столе")
+	var browser_in_start := false
+	for item in desktop.start_items.get_children():
+		if item is StartMenuItem and item.app_id == "browser":
+			browser_in_start = true
+	_check(browser_in_start, "Приложение «Браузер» есть в меню «Пуск»")
 	_check(desktop.get_node("Taskbar/MainMargin/MainRow/StartButton").text == "Пуск", "Кнопка «Пуск» на месте")
 	_check(desktop.time_label.text == "02:15", "Часы показывают сюжетные 02:15")
 	_check(desktop.date_label.text == "02.10.2009", "Дата показывает 02.10.2009")
 
-	for app_id in ["computer", "terminal", "maps", "gallery", "notes", "recycle"]:
+	for app_id in ["computer", "browser", "terminal", "maps", "gallery", "notes", "recycle"]:
 		desktop.open_app(app_id)
 		await get_tree().process_frame
 		var window := desktop._find_window(app_id)
@@ -28,8 +34,24 @@ func _ready() -> void:
 			_check(desktop._task_buttons.has(window), "У окна %s есть кнопка на панели задач" % app_id)
 
 	var windows := desktop.get_node("DesktopSurface/WindowLayer").get_child_count()
-	_check(windows == 6, "Одновременно открыты 6 окон (сейчас %d)" % windows)
-	_check(desktop.get_node("Taskbar/MainMargin/MainRow/TaskButtons").get_child_count() == 6, "На панели задач 6 кнопок окон")
+	_check(windows == 7, "Одновременно открыты 7 окон (сейчас %d)" % windows)
+	_check(desktop.get_node("Taskbar/MainMargin/MainRow/TaskButtons").get_child_count() == 7, "На панели задач 7 кнопок окон")
+
+	# Браузер: история и переход в чат с Юджином.
+	var browser_window := desktop._find_window("browser")
+	var browser := browser_window.content_container.get_child(0) as BrowserApp
+	_check(browser != null, "Окно Браузера содержит BrowserApp")
+	if browser:
+		_check(browser.history.size() >= 4, "История браузера загружена из files.json")
+		browser.show_history()
+		await get_tree().process_frame
+		_check(browser.history_rows != null and browser.history_rows.get_child_count() == browser.history.size(), "Вкладка «История» построила список запросов")
+		browser.open_messenger()
+		await get_tree().process_frame
+		_check(browser.current_view == "messenger", "Клик по записи мессенджера открывает чат")
+		_check(browser.message_rows != null and browser.message_rows.get_child_count() == browser.messages.size(), "Сообщения Юджина загружены из files.json")
+		_check(browser.messenger_banner != null and browser.messenger_banner.text.contains("30 дней"), "В чате есть плашка об удалении старых сообщений")
+		_check(browser.address.text.contains("messenger"), "Адресная строка показывает локальный чат")
 
 	# CRT: преобразование мыши должно быть взаимно обратным.
 	_check(desktop.crt_is_visible(Vector2(640, 360)), "Центр CRT-экрана видим")
@@ -70,7 +92,9 @@ func _ready() -> void:
 	# Галерея: 15 реальных фото и активная кнопка «Свойства / Подробнее».
 	var gallery_window := desktop._find_window("gallery")
 	var gallery_preview := gallery_window.content_container.get_child(0) as AppPreview
-	_check(gallery_preview.get("_photos").size() == 15, "В Галерее загружено 15 реальных фотографий")
+	var loaded_photos: Array = gallery_preview.get("_photos")
+	_check(loaded_photos.size() == 15, "В Галерее загружено 15 реальных фотографий")
+	_check(loaded_photos[0].get("texture") != null, "Реальная фотография загружена как Texture2D")
 	_check(gallery_preview.select_photo_by_filename("IMG_0488.JPG"), "В Галерее найдено фото ДР Юджина IMG_0488.JPG")
 	var toolbar: Dictionary = gallery_preview.get("_toolbar_buttons")
 	var properties_button := toolbar.get("Свойства / Подробнее") as Button
@@ -82,6 +106,22 @@ func _ready() -> void:
 		_check(photo_card.visible, "«Свойства / Подробнее» открывает карточку")
 		_check(photo_card.body_label.text.contains("24.09.2009"), "В свойствах фото дата съёмки 24.09.2009")
 		photo_card.close()
+
+	# Галерея: зум колесом и перетаскивание увеличенного фото.
+	gallery_preview._open_photo_viewer()
+	await get_tree().process_frame
+	var wheel := InputEventMouseButton.new()
+	wheel.button_index = MOUSE_BUTTON_WHEEL_UP
+	wheel.pressed = true
+	gallery_preview._on_photo_viewer_gui_input(wheel)
+	_check(gallery_preview.get("_photo_zoom") > 1.0, "Колесо мыши увеличивает фото")
+	var pan_before: Vector2 = gallery_preview.get("_photo_pan")
+	gallery_preview.set("_photo_dragging", true)
+	var drag := InputEventMouseMotion.new()
+	drag.relative = Vector2(-24, -12)
+	gallery_preview._on_photo_viewer_gui_input(drag)
+	_check(gallery_preview.get("_photo_pan") != pan_before, "Увеличенное фото перетаскивается")
+	gallery_preview._close_photo_viewer()
 
 	var first: WindowFrame = desktop.get_node("DesktopSurface/WindowLayer").get_child(0)
 	var old_position := first.position
@@ -96,7 +136,7 @@ func _ready() -> void:
 	desktop.advance_story_time(85)
 	_check(desktop.time_label.text == "03:40", "Сюжетное время перематывается на 03:40")
 
-	var last: WindowFrame = desktop.get_node("DesktopSurface/WindowLayer").get_child(5)
+	var last: WindowFrame = desktop._find_window("recycle")
 	last.minimize()
 	await get_tree().process_frame
 	_check(not last.visible, "Окно сворачивается в панель задач")
@@ -107,7 +147,7 @@ func _ready() -> void:
 
 	last.close()
 	await get_tree().process_frame
-	_check(desktop.get_node("DesktopSurface/WindowLayer").get_child_count() == 5, "Окно закрывается крестиком")
+	_check(desktop.get_node("DesktopSurface/WindowLayer").get_child_count() == 6, "Окно закрывается крестиком")
 
 	desktop.get_node("Taskbar/MainMargin/MainRow/StartButton").emit_signal("pressed")
 	await get_tree().process_frame

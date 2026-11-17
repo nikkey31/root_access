@@ -19,9 +19,11 @@
 [ext_resource type="Texture2D" path="res://assets/ui/vignette.png" id="17_vignette"]
 [ext_resource type="Shader" path="res://shaders/crt_lens.gdshader" id="18_crt"]
 [ext_resource type="Script" path="res://scripts/desktop/crt_cursor.gd" id="19_cursor"]
+[ext_resource type="Texture2D" path="res://assets/icons/browser.svg" id="24_browser"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ThoughtBox.tscn" id="20_thought"]
 [ext_resource type="PackedScene" path="res://scenes/ui/FinalTimerBar.tscn" id="21_timerbar"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ToastBanner.tscn" id="22_toast"]
+[ext_resource type="Script" path="res://scripts/desktop/crt_input_catcher.gd" id="23_input"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
 shader = ExtResource("18_crt")
@@ -138,18 +140,24 @@ mouse_filter = 2
 layout_mode = 0
 offset_left = 16.0
 offset_top = 10.0
-offset_right = 104.0
+offset_right = 192.0
 offset_bottom = 650.0
 mouse_filter = 2
 theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 6
-columns = 1
+columns = 2
 
 [node name="ComputerIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
 layout_mode = 2
 app_id = "computer"
 icon_title = "Мой компьютер"
 icon_texture = ExtResource("4_computer")
+
+[node name="BrowserIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
+layout_mode = 2
+app_id = "browser"
+icon_title = "Браузер"
+icon_texture = ExtResource("24_browser")
 
 [node name="TerminalIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
 layout_mode = 2
@@ -312,7 +320,7 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 4.0
-offset_top = -388.0
+offset_top = -422.0
 offset_right = 290.0
 offset_bottom = -48.0
 grow_vertical = 0
@@ -447,6 +455,17 @@ mouse_filter = 2
 texture = ExtResource("17_vignette")
 expand_mode = 1
 stretch_mode = 0
+
+[node name="InputCatcher" type="Control" parent="."]
+z_index = 3000
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("23_input")
 
 [node name="Cursor" type="Control" parent="."]
 visible = false

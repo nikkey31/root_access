@@ -135,13 +135,14 @@ func _on_title_bar_gui_input(event: InputEvent) -> void:
 		if event.pressed:
 			focus_requested.emit()
 			_is_dragging = true
-			_drag_offset = get_global_mouse_position() - global_position
+			_drag_offset = event.global_position - global_position
 			accept_event()
 		elif _is_dragging:
 			_is_dragging = false
 			accept_event()
 	elif event is InputEventMouseMotion and _is_dragging:
-		global_position = get_global_mouse_position() - _drag_offset
+		var motion := event as InputEventMouseMotion
+		global_position = motion.global_position - _drag_offset
 		_clamp_to_parent()
 		accept_event()
 
@@ -151,7 +152,8 @@ func _input(event: InputEvent) -> void:
 	if not _is_dragging:
 		return
 	if event is InputEventMouseMotion:
-		global_position = get_global_mouse_position() - _drag_offset
+		var motion := event as InputEventMouseMotion
+		global_position = motion.global_position - _drag_offset
 		_clamp_to_parent()
 	elif event is InputEventMouseButton:
 		var mouse := event as InputEventMouseButton

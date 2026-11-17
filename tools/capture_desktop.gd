@@ -10,6 +10,9 @@ func _ready() -> void:
 	get_tree().root.add_child(desktop)
 	await get_tree().process_frame
 	await get_tree().process_frame
+	if desktop.thought_box:
+		desktop.thought_box.clear_thoughts()
+		desktop.thought_box.visible = false
 
 	desktop.open_app("computer")
 	await get_tree().process_frame
