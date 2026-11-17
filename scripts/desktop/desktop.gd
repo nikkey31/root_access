@@ -93,6 +93,9 @@ const APPS := [
 @onready var crt_layer: CanvasLayer = $CRTLayer
 @onready var crt_effect: ColorRect = $CRTLayer/CRTEffect
 @onready var crt_cursor: Control = $Cursor
+@onready var thought_box: ThoughtBox = $ThoughtBox
+@onready var final_timer_bar: FinalTimerBar = $FinalTimerBar
+@onready var toast_banner: ToastBanner = $ToastBanner
 
 var _windows: Array[WindowFrame] = []
 var _task_buttons: Dictionary = {}
@@ -100,11 +103,14 @@ var _active_window: WindowFrame = null
 var _selected_icon: DesktopIcon = null
 var _cascade_index: int = 0
 var _tray_kind: String = ""
+var _time_tween: Tween = null
+var _crt_glitch_tween: Tween = null
 
 func _ready() -> void:
 	_build_desktop_icons()
 	_build_start_menu()
 	_connect_tray()
+	_connect_game_state()
 	_update_clock()
 	start_menu.visible = false
 	tray_popup.visible = false
@@ -166,6 +172,123 @@ func advance_story_time(minutes: int) -> void:
 
 func get_story_time_string() -> String:
 	return "%02d:%02d" % [story_hour, story_minute]
+
+## Ускоренная перемотка часов (например, 02:15 -> 03:40 после дешифровки) с помехой ЭЛТ.
+func animate_story_time_to(target_hour: int, target_minute: int, duration: float = 1.1) -> void:
+	var start_total := story_hour * 60 + story_minute
+	var end_total := posmod(target_hour, 24) * 60 + posmod(target_minute, 60)
+	if end_total < start_total:
+		end_total += 24 * 60
+
+	if _time_tween and _time_tween.is_running():
+		_time_tween.kill()
+
+	play_crt_glitch(duration)
+	if duration <= 0.0:
+		set_story_time(target_hour, target_minute)
+		return
+
+	_time_tween = create_tween()
+	_time_tween.set_trans(Tween.TRANS_CUBIC)
+	_time_tween.set_ease(Tween.EASE_IN_OUT)
+	_time_tween.tween_method(_apply_interpolated_minutes, float(start_total), float(end_total), duration)
+	_time_tween.tween_callback(set_story_time.bind(target_hour, target_minute))
+
+func _apply_interpolated_minutes(total_minutes: float) -> void:
+	var m := posmod(int(round(total_minutes)), 24 * 60)
+	story_hour = m / 60
+	story_minute = m % 60
+	_update_clock()
+
+## Кратковременная помеха ЭЛТ-экрана (скачок хроматической аберрации и виньетки).
+func play_crt_glitch(duration: float = 0.8) -> void:
+	if not crt_enabled or crt_effect == null:
+		return
+	var material := crt_effect.material as ShaderMaterial
+	if material == null:
+		return
+	if _crt_glitch_tween and _crt_glitch_tween.is_running():
+		_crt_glitch_tween.kill()
+	_crt_glitch_tween = create_tween()
+	_crt_glitch_tween.tween_method(
+		func(v: float) -> void: material.set_shader_parameter("aberration", v),
+		crt_aberration, 0.0055, duration * 0.25
+	)
+	_crt_glitch_tween.tween_method(
+		func(v: float) -> void: material.set_shader_parameter("aberration", v),
+		0.0055, crt_aberration, duration * 0.75
+	)
+
+func _connect_game_state() -> void:
+	if not has_node("/root/GameState"):
+		return
+	var gs := get_node("/root/GameState")
+	if not gs.thought_triggered.is_connected(_on_game_thought_triggered):
+		gs.thought_triggered.connect(_on_game_thought_triggered)
+	if not gs.notification_triggered.is_connected(_on_game_notification_triggered):
+		gs.notification_triggered.connect(_on_game_notification_triggered)
+	if not gs.story_time_jump_requested.is_connected(_on_game_time_jump_requested):
+		gs.story_time_jump_requested.connect(_on_game_time_jump_requested)
+	if not gs.timer_started.is_connected(_on_game_timer_started):
+		gs.timer_started.connect(_on_game_timer_started)
+	if not gs.timer_updated.is_connected(_on_game_timer_updated):
+		gs.timer_updated.connect(_on_game_timer_updated)
+	if not gs.timer_expired.is_connected(_on_game_timer_expired):
+		gs.timer_expired.connect(_on_game_timer_expired)
+	if not gs.game_ended.is_connected(_on_game_ended):
+		gs.game_ended.connect(_on_game_ended)
+
+func _disconnect_game_state() -> void:
+	if not has_node("/root/GameState"):
+		return
+	var gs := get_node("/root/GameState")
+	if gs.thought_triggered.is_connected(_on_game_thought_triggered):
+		gs.thought_triggered.disconnect(_on_game_thought_triggered)
+	if gs.notification_triggered.is_connected(_on_game_notification_triggered):
+		gs.notification_triggered.disconnect(_on_game_notification_triggered)
+	if gs.story_time_jump_requested.is_connected(_on_game_time_jump_requested):
+		gs.story_time_jump_requested.disconnect(_on_game_time_jump_requested)
+	if gs.timer_started.is_connected(_on_game_timer_started):
+		gs.timer_started.disconnect(_on_game_timer_started)
+	if gs.timer_updated.is_connected(_on_game_timer_updated):
+		gs.timer_updated.disconnect(_on_game_timer_updated)
+	if gs.timer_expired.is_connected(_on_game_timer_expired):
+		gs.timer_expired.disconnect(_on_game_timer_expired)
+	if gs.game_ended.is_connected(_on_game_ended):
+		gs.game_ended.disconnect(_on_game_ended)
+
+func _on_game_thought_triggered(text: String) -> void:
+	if thought_box:
+		thought_box.enqueue_thought(text)
+
+func _on_game_notification_triggered(text: String) -> void:
+	if toast_banner:
+		toast_banner.show_message(text)
+
+func _on_game_time_jump_requested(target_hour: int, target_minute: int, animate: bool) -> void:
+	if animate:
+		animate_story_time_to(target_hour, target_minute, 1.1)
+	else:
+		set_story_time(target_hour, target_minute)
+
+func _on_game_timer_started(duration: float) -> void:
+	if thought_box:
+		thought_box.set_compact_top_mode(true)
+	if final_timer_bar:
+		final_timer_bar.start_display(duration)
+
+func _on_game_timer_updated(time_left: float) -> void:
+	if final_timer_bar:
+		final_timer_bar.update_time(time_left)
+
+func _on_game_timer_expired() -> void:
+	if final_timer_bar:
+		final_timer_bar.show_expired()
+
+func _on_game_ended(_ending_id: int, _details: Dictionary) -> void:
+	if thought_box:
+		thought_box.set_compact_top_mode(false)
+
 
 # ---------------------------------------------------------------------------
 # Иконки и выбор
@@ -576,6 +699,7 @@ func _notification(what: int) -> void:
 		_set_os_cursor_hidden(false)
 
 func _exit_tree() -> void:
+	_disconnect_game_state()
 	_set_os_cursor_hidden(false)
 
 func _on_shutdown_pressed() -> void:

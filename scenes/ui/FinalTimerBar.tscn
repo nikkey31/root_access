@@ -1,0 +1,73 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/final_timer_bar.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_timer"]
+bg_color = Color(0.08, 0.02, 0.02, 0.94)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.88, 0.22, 0.2, 0.95)
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 4
+
+[sub_resource type="SystemFont" id="SystemFont_bold"]
+font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
+font_weight = 700
+antialiasing = 0
+subpixel_positioning = 0
+hinting = 1
+
+[sub_resource type="SystemFont" id="SystemFont_mono"]
+font_names = PackedStringArray("Lucida Console", "Consolas", "Courier New", "DejaVu Sans Mono")
+font_weight = 700
+antialiasing = 0
+subpixel_positioning = 0
+hinting = 1
+
+[node name="FinalTimerBar" type="PanelContainer"]
+visible = false
+z_index = 2600
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -250.0
+offset_top = 8.0
+offset_right = 250.0
+offset_bottom = 48.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBox_timer")
+script = ExtResource("1_script")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 14
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 14
+theme_override_constants/margin_bottom = 5
+
+[node name="Row" type="HBoxContainer" parent="Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 14
+
+[node name="StatusLabel" type="Label" parent="Margin/Row"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.88, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_fonts/font = SubResource("SystemFont_bold")
+text = "ЗВОНОК ИЗ УЧАСТКА · НАЗОВИТЕ ТОЧКУ НА КАРТЕ"
+vertical_alignment = 1
+
+[node name="TimerLabel" type="Label" parent="Margin/Row"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.3, 0.28, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_fonts/font = SubResource("SystemFont_mono")
+text = "01:00"
+horizontal_alignment = 2
+vertical_alignment = 1
