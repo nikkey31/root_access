@@ -480,10 +480,10 @@ C:\\ROOT_ACCESS> [color=#ffffff]█[/color]
 func _build_maps() -> void:
 	_build_chrome(
 		["Файл", "Правка", "Вид", "Маршрут", "Справка"],
-		[{"text": "Найти"}, {"text": "Маршрут"}, {"sep": true}, {"text": "Слои"}],
-		"7 точек интереса",
+		[{"text": "Найти"}, {"text": "Маршрут"}, {"sep": true}, {"text": "Слои: Метки"}],
+		"%d точек интереса" % MapPreview.MARKERS.size(),
 		"Масштаб 100%",
-		"СЕВЕРНАЯ ПРОМЗОНА"
+		"ГОРОДСКАЯ КАРТА"
 	)
 
 	var root := HBoxContainer.new()
@@ -499,20 +499,72 @@ func _build_maps() -> void:
 	map.marker_clicked.connect(_on_map_marker_clicked)
 	root.add_child(map)
 
-	var sidebar := _make_sidebar(root, 214.0)
-	_sidebar_header(sidebar, "Точки интереса")
-	_sidebar_item(sidebar, null, "Дом Саймона")
-	_sidebar_item(sidebar, null, "Дом брата")
-	_sidebar_item(sidebar, null, "Гаражи")
-	_sidebar_item(sidebar, null, "Адрес Мишель")
-	_sidebar_item(sidebar, null, "Бокс № 6752")
-	_sidebar_item(sidebar, null, "Склад № 3")
-	_sidebar_item(sidebar, null, "Свалка")
+	var sidebar := _make_sidebar(root, 218.0)
+	_sidebar_header(sidebar, "Точки интереса (%d)" % MapPreview.MARKERS.size())
 
-	var spacer := Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	sidebar.add_child(spacer)
-	var hint := _make_label("Колёсико — масштаб,\nклик по метке — карточка места", 10, C_DARK_GRAY)
+	var search_edit := LineEdit.new()
+	search_edit.placeholder_text = "Найти метку..."
+	search_edit.clear_button_enabled = true
+	search_edit.custom_minimum_size = Vector2(0, 24)
+	search_edit.add_theme_font_size_override("font_size", 11)
+	sidebar.add_child(search_edit)
+
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	sidebar.add_child(scroll)
+
+	var list_box := VBoxContainer.new()
+	list_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	list_box.add_theme_constant_override("separation", 2)
+	scroll.add_child(list_box)
+
+	var poi_buttons: Array[Dictionary] = []
+	for marker in MapPreview.MARKERS:
+		var btn := Button.new()
+		btn.text = str(marker["name"])
+		btn.flat = true
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		btn.focus_mode = Control.FOCUS_NONE
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.custom_minimum_size = Vector2(0, 22)
+		btn.add_theme_font_size_override("font_size", 11)
+		btn.pressed.connect(_on_map_marker_clicked.bind(marker))
+		list_box.add_child(btn)
+		poi_buttons.append({"button": btn, "marker": marker})
+
+	search_edit.text_changed.connect(func(query: String) -> void:
+		var needle := query.strip_edges().to_lower()
+		map.set_search_filter(needle)
+		for entry in poi_buttons:
+			var m: Dictionary = entry["marker"]
+			var b: Button = entry["button"]
+			b.visible = needle.is_empty() or str(m["name"]).to_lower().contains(needle) or str(m["address"]).to_lower().contains(needle)
+	)
+
+	var find_btn := _toolbar_buttons.get("Найти") as Button
+	if find_btn:
+		find_btn.tooltip_text = "Поиск по названию метки"
+		find_btn.pressed.connect(func() -> void: search_edit.grab_focus())
+
+	var route_btn := _toolbar_buttons.get("Маршрут") as Button
+	if route_btn:
+		route_btn.tooltip_text = "Построить маршрут"
+		route_btn.pressed.connect(func() -> void:
+			if _map_info_card:
+				_map_info_card.open("Маршрут", "Маршрутизатор недоступен без сети.")
+		)
+
+	var layers_btn := _toolbar_buttons.get("Слои: Метки") as Button
+	if layers_btn:
+		layers_btn.tooltip_text = "Переключить слой: Метки / Транспорт"
+		layers_btn.pressed.connect(func() -> void:
+			var next_state := not map.is_transport_layer()
+			map.set_transport_layer(next_state)
+			layers_btn.text = "Слои: Транспорт" if next_state else "Слои: Метки"
+		)
+
+	var hint := _make_label("Клик по метке — карточка места", 10, C_DARK_GRAY)
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sidebar.add_child(hint)
 
@@ -525,7 +577,7 @@ func _on_map_marker_clicked(marker: Dictionary) -> void:
 		return
 	_active_map_marker = marker
 	var title: String = marker["name"]
-	var address: String = marker.get("card_address", "Адрес: " + marker["address"])
+	var address: String = marker.get("card_address", "Address: " + marker["address"])
 	var note: String = marker.get("note", "")
 	var body := "[b]%s[/b]\n\n%s" % [address, note]
 	var in_finale: bool = has_node("/root/GameState") and bool(get_node("/root/GameState").get("is_timer_active"))
@@ -535,6 +587,12 @@ func _on_map_marker_clicked(marker: Dictionary) -> void:
 		marker.get("action", "") if in_finale else "",
 		marker.get("action_result", "") if in_finale else ""
 	)
+	if str(marker.get("id", "")) == "my_home" and has_node("/root/GameState"):
+		var gs := get_node("/root/GameState")
+		if in_finale:
+			gs.trigger_thought("Дом Саймона. Времени нет.", false)
+		else:
+			gs.trigger_thought("«Мой дом»… Значит, это его дом. Дом Саймона.", false)
 
 func _on_map_dispatch_confirmed() -> void:
 	if not has_node("/root/GameState"):

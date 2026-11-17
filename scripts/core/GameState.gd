@@ -134,7 +134,7 @@ func _check_timer_events(delta: float) -> void:
 	if time_remaining <= 30.0 and not bribe_shown:
 		bribe_shown = true
 		emit_signal("bribe_triggered")
-		emit_signal("thought_triggered", "Входящее сообщение: Саймон предлагает $100,000 за команду wipe --force...")
+		emit_signal("thought_triggered", "Сто тысяч… Нет. Нет!")
 
 	# Через 5 секунд после отмены взятки вылетает фишинг-ловушка с геолокацией
 	if bribe_cancelled and not phishing_shown and phishing_delay_remaining >= 0.0:
@@ -162,7 +162,7 @@ func verify_decryption(file_name: String, key: String) -> bool:
 		is_location_decrypted = true
 		emit_signal("location_decrypted")
 		emit_signal("story_time_jump_requested", 3, 40, true)
-		trigger_thought("Файл расшифрован... В папке «Работа» появился record.wav. Сколько я просидел? Уже 03:40.", false)
+		trigger_thought("Аудиофайл. Девять секунд. Надо послушать.", false)
 		print("[GameState] location.enc успешно дешифрован!")
 		return true
 	return false

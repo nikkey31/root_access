@@ -122,13 +122,16 @@ func _build_sidebar() -> void:
 	for child in sidebar_container.get_children():
 		child.queue_free()
 
+	_add_sidebar_item("Мой компьютер", "Мой компьютер", ICON_COMPUTER)
 	_add_sidebar_item("Локальный диск (C:)", "C:\\ROOT_ACCESS", ICON_DRIVE)
-	_add_sidebar_item("Документы", "C:\\ROOT_ACCESS\\Документы", ICON_FOLDER)
+	_add_sidebar_item("Мои документы", "C:\\ROOT_ACCESS\\Мои документы", ICON_FOLDER)
+	_add_sidebar_item("Архив_2008", "C:\\ROOT_ACCESS\\Архив_2008", ICON_FOLDER)
+	_add_sidebar_item("Фото", "APP:gallery", ICON_PHOTO)
+	_add_sidebar_item("Загрузки", "C:\\ROOT_ACCESS\\Загрузки", ICON_FOLDER)
+	_add_sidebar_item("Windows", "C:\\ROOT_ACCESS\\Windows", ICON_FOLDER)
 	
 	var is_locked = not (GameState and GameState.is_work_folder_unlocked)
 	_add_sidebar_item("Работа", "C:\\ROOT_ACCESS\\Работа", ICON_FOLDER, is_locked)
-	
-	_add_sidebar_item("Изображения", "C:\\ROOT_ACCESS\\Изображения", ICON_PHOTO)
 	_add_sidebar_item("Корзина", "C:\\ROOT_ACCESS\\Корзина", ICON_RECYCLE)
 
 func _add_sidebar_item(title: String, target_path: String, icon: Texture2D, show_lock: bool = false) -> void:
@@ -165,14 +168,31 @@ func _add_sidebar_item(title: String, target_path: String, icon: Texture2D, show
 	sidebar_container.add_child(btn)
 
 func _on_sidebar_item_clicked(title: String, target_path: String) -> void:
+	if target_path == "APP:gallery":
+		_open_desktop_app("gallery")
+		return
+	if title == "Windows" or target_path.ends_with("\\Windows"):
+		_show_preview("C:\\Windows", "[color=#800000][b]Доступ запрещён.[/b][/color]\n\nСистемный каталог защищён от просмотра текущим пользователем.", false)
+		return
 	if title == "Работа" or target_path.ends_with("\\Работа"):
 		if GameState and not GameState.is_work_folder_unlocked:
 			_show_password_dialog()
 			return
 	navigate_to(target_path)
 
+func _open_desktop_app(app_id: String) -> void:
+	var parent_node := get_parent()
+	while parent_node:
+		if parent_node.has_method("open_app"):
+			parent_node.call("open_app", app_id)
+			return
+		parent_node = parent_node.get_parent()
+
 ## Главный метод навигации по путям
 func navigate_to(path: String, add_to_history: bool = true) -> void:
+	if path.ends_with("\\Windows") or path == "Windows":
+		_show_preview("C:\\Windows", "[color=#800000][b]Доступ запрещён.[/b][/color]\n\nСистемный каталог защищён от просмотра текущим пользователем.", false)
+		return
 	# Проверка на закрытую папку Работа
 	if (path.ends_with("\\Работа") or path == "Работа") and GameState and not GameState.is_work_folder_unlocked:
 		_show_password_dialog()
@@ -188,24 +208,23 @@ func navigate_to(path: String, add_to_history: bool = true) -> void:
 	_render_directory_contents()
 	directory_changed.emit(current_path)
 	
-	# Сюжетные триггеры
 	if current_path.ends_with("\\Корзина") and GameState:
 		GameState.is_trash_inspected = true
-		if GameState.current_difficulty == GameState.Difficulty.EASY:
-			GameState.trigger_thought("Ник: «Корзина... Саймон писал в заметке, что удалил накладную. Надо проверить!»", true)
 
 func _update_nav_buttons() -> void:
 	btn_back.disabled = _history_back.is_empty()
 	btn_forward.disabled = _history_forward.is_empty()
-	btn_up.disabled = (current_path == "C:\\ROOT_ACCESS" or current_path == "C:\\")
+	btn_up.disabled = (current_path == "Мой компьютер")
 
 func _update_address_bar() -> void:
 	if current_path.ends_with("\\Корзина"):
 		address_label.text = "Корзина"
+	elif current_path == "Мой компьютер":
+		address_label.text = "Мой компьютер"
 	elif current_path == "C:\\ROOT_ACCESS":
-		address_label.text = "C:\\ROOT_ACCESS"
+		address_label.text = "C:\\"
 	else:
-		address_label.text = current_path
+		address_label.text = current_path.replace("C:\\ROOT_ACCESS\\", "C:\\")
 
 func _go_back() -> void:
 	if _history_back.is_empty():
@@ -222,7 +241,10 @@ func _go_forward() -> void:
 	navigate_to(next_path, false)
 
 func _go_up() -> void:
+	if current_path == "Мой компьютер":
+		return
 	if current_path == "C:\\ROOT_ACCESS" or current_path == "C:\\":
+		navigate_to("Мой компьютер")
 		return
 	navigate_to("C:\\ROOT_ACCESS")
 
@@ -360,13 +382,20 @@ func _create_file_row(item_data: Dictionary, alt_bg: bool) -> PanelContainer:
 
 func _get_icon_for_item(item_data: Dictionary) -> Texture2D:
 	var name: String = item_data["name"]
+	var ntype: String = str(item_data.get("node_type", ""))
+	if ntype == "device" or ntype == "dir_link":
+		return ICON_DRIVE
+	if ntype == "app_link":
+		return ICON_PHOTO
 	if item_data.get("is_dir", false):
 		if name == "Корзина" or name == "RECYCLE_BIN":
 			return ICON_RECYCLE
+		if name == "Работа" and GameState and not GameState.is_work_folder_unlocked:
+			return ICON_LOCK
 		return ICON_FOLDER
 	if name.ends_with(".enc"):
 		return ICON_LOCK
-	if name.ends_with(".jpg") or name.ends_with(".png"):
+	if name.to_lower().ends_with(".jpg") or name.to_lower().ends_with(".png"):
 		return ICON_PHOTO
 	return ICON_FILE
 
@@ -428,7 +457,28 @@ func _unstyle_row(row: PanelContainer) -> void:
 
 func _activate_item(item_data: Dictionary) -> void:
 	var name: String = item_data["name"]
-	
+	var ntype: String = str(item_data.get("node_type", ""))
+
+	if ntype == "device":
+		_show_preview(name, "[color=#800000][b]%s[/b][/color]" % item_data.get("error_msg", "Устройство не готово."), false)
+		return
+	if ntype == "dir_link":
+		var target_path: String = str(item_data.get("target", "C:\\ROOT_ACCESS"))
+		navigate_to(target_path)
+		return
+	if ntype == "app_link":
+		_open_desktop_app(str(item_data.get("app_id", "gallery")))
+		return
+	if bool(item_data.get("access_denied", false)):
+		_show_preview("C:\\" + name, "[color=#800000][b]Доступ запрещён.[/b][/color]\n\nСистемный каталог защищён от просмотра.", false)
+		return
+	if ntype == "unsupported":
+		_show_preview(name, "[color=#800000][b]Нет программы для открытия[/b][/color]\n\n%s" % item_data.get("error_msg", "Формат не поддерживается."), false)
+		return
+	if ntype == "image" or name.to_lower().ends_with(".jpg") or name.to_lower().ends_with(".png"):
+		_open_desktop_app("gallery")
+		return
+
 	if item_data.get("is_dir", false):
 		if name == "Работа" or name == "WORK":
 			if GameState and not GameState.is_work_folder_unlocked:

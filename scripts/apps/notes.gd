@@ -18,9 +18,16 @@ const ICON_FILE := preload("res://assets/icons/file_text.png")
 
 const DEFAULT_NOTES: Array[String] = [
 	"пароли.txt",
-	"мишель_слежка.txt",
-	"инструкция_шифрование.txt",
-	"чек_заправка.txt"
+	"список_дел.txt",
+	"дела_на_неделю.txt",
+	"покупки.txt",
+	"контакты.txt",
+	"гараж_инвентарь.txt",
+	"долги.txt",
+	"рецепт_плова.txt",
+	"черновик_объявления.txt",
+	"сон_29_09.txt",
+	"заметка_шум.txt"
 ]
 
 var current_file: String = ""
@@ -40,7 +47,7 @@ func _populate_notes_list() -> void:
 	notes_list.clear()
 	for file_name in DEFAULT_NOTES:
 		var idx = notes_list.add_item(file_name, ICON_FILE)
-		notes_list.set_item_tooltip(idx, "Нажмите для просмотра " + file_name)
+		notes_list.set_item_tooltip(idx, file_name)
 
 func _on_note_selected(index: int) -> void:
 	if index < 0 or index >= notes_list.item_count:

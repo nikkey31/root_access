@@ -2,8 +2,8 @@ class_name MapPreview
 extends Control
 
 ## Интерактивная карта города приложения «Карты».
-## Отображает растровую ретро-карту (assets/maps/city_map.jpg) и семь
-## кликабельных точек интереса поверх неё.
+## Отображает растровую ретро-карту (assets/maps/city_map.jpg) и 18
+## кликабельных точек интереса поверх неё, с поддержкой поиска и слоя транспорта.
 
 signal marker_clicked(marker: Dictionary)
 
@@ -11,79 +11,218 @@ const CITY_MAP_PATH := "res://assets/maps/city_map.jpg"
 
 const MARKERS := [
 	{
-		"name": "Дом Саймона",
-		"address": "ул. Береговая, 14",
-		"card_address": "Адрес: ул. Береговая, 14  [BEREGOVAYA 14]",
-		"note": "Частный одноэтажный дом. Указан как адрес проживания С. Раклина.",
+		"id": "my_home",
+		"name": "Мой дом",
+		"address": "SADOVAYA 12",
+		"card_address": "Address: SADOVAYA 12",
+		"note": "Одноэтажный частный дом",
 		"action": "[ Отправить группу захвата ]",
-		"action_result": "Группа захвата направлена по адресу: ул. Береговая, 14.\nОжидайте доклад с места.",
-		"pos": Vector2(0.71, 0.22),
+		"action_result": "Группа захвата направлена по адресу: SADOVAYA 12.\nОжидайте доклад с места.",
+		"pos": Vector2(0.72, 0.20),
 		"color": Color(0.16, 0.32, 0.56),
 		"key": false,
 	},
 	{
+		"id": "brother_house",
 		"name": "Дом брата",
-		"address": "ул. Мира, 8",
-		"card_address": "Адрес: ул. Мира, 8  [MIRA 8]",
-		"note": "Жилой дом. Зарегистрирован на Е. Рейвенса.",
+		"address": "ZAVODSKAYA 7, APT 31",
+		"card_address": "Address: ZAVODSKAYA 7, APT 31",
+		"note": "Женя. Запасной ключ у соседки",
 		"action": "[ Отправить группу захвата ]",
-		"action_result": "Группа захвата направлена по адресу: ул. Мира, 8.\nОжидайте доклад с места.",
-		"pos": Vector2(0.42, 0.24),
+		"action_result": "Группа захвата направлена по адресу: ZAVODSKAYA 7, APT 31.\nОжидайте доклад с места.",
+		"pos": Vector2(0.42, 0.22),
 		"color": Color(0.16, 0.32, 0.56),
 		"key": false,
 	},
 	{
+		"id": "garages",
 		"name": "Гаражи",
-		"address": "ГК «Восток», сектор Д",
-		"card_address": "Адрес: ГК «Восток», сектор Д  [VOSTOK D]",
-		"note": "Ряд металлических гаражных боксов на восточной окраине.",
+		"address": "GARAGE COOP VOSKHOD, ROW 4",
+		"card_address": "Address: GARAGE COOP VOSKHOD, ROW 4",
+		"note": "Мастерская, верстак",
 		"action": "[ Отправить группу захвата ]",
-		"action_result": "Группа захвата направлена в ГК «Восток».\nОжидайте доклад с места.",
+		"action_result": "Группа захвата направлена в ГК «Восход» (ряд 4).\nОжидайте доклад с места.",
 		"pos": Vector2(0.64, 0.44),
 		"color": Color(0.32, 0.32, 0.32),
 		"key": false,
 	},
 	{
+		"id": "michelle_address",
 		"name": "Адрес Мишель",
-		"address": "ул. Ленина, 54",
-		"card_address": "Адрес: ул. Ленина, 54  [LENINA 54]",
-		"note": "Многоквартирный жилой дом. Место проживания М. Юхновой.",
+		"address": "LENINA 54",
+		"card_address": "Address: LENINA 54",
+		"note": "М.",
 		"action": "[ Отправить группу захвата ]",
-		"action_result": "Группа захвата направлена по адресу: ул. Ленина, 54.\nОжидайте доклад с места.",
-		"pos": Vector2(0.28, 0.46),
+		"action_result": "Группа захвата направлена по адресу: LENINA 54.\nОжидайте доклад с места.",
+		"pos": Vector2(0.27, 0.48),
 		"color": Color(0.16, 0.32, 0.56),
 		"key": false,
 	},
 	{
+		"id": "box_6752",
 		"name": "Бокс № 6752",
-		"address": "Северная промзона, бокс 6752",
-		"card_address": "Адрес: Северная промзона, бокс 6752  [BOX 6752]",
-		"note": "Одиночный металлический бокс в промышленном секторе.",
+		"address": "GARAGE COOP VOSKHOD, BOX 6752",
+		"card_address": "Address: GARAGE COOP VOSKHOD, BOX 6752",
+		"note": "Старый бокс, давно не открывал",
 		"action": "[ Отправить группу захвата ]",
 		"action_result": "Группа захвата направлена в Бокс № 6752.\nОжидайте доклад с места.",
-		"pos": Vector2(0.64, 0.72),
+		"pos": Vector2(0.62, 0.72),
 		"color": Color(0.32, 0.32, 0.32),
 		"key": false,
 	},
 	{
+		"id": "warehouse_3",
 		"name": "Склад № 3",
-		"address": "Северная промзона, пр. Заводской, 12",
-		"card_address": "Адрес: Северная промзона, пр. Заводской, 12  [ZAVODSKOY 12]",
-		"note": "Заброшенный складской комплекс за бетонным забором.",
+		"address": "SEVERNAYA PROMZONA, WAREHOUSE 3",
+		"card_address": "Address: SEVERNAYA PROMZONA, WAREHOUSE 3",
+		"note": "Хранение оборудования",
 		"action": "[ Отправить группу захвата ]",
 		"action_result": "Группа захвата направлена на Склад № 3.\nОжидайте доклад с места.",
-		"pos": Vector2(0.83, 0.67),
+		"pos": Vector2(0.84, 0.67),
 		"color": Color(0.32, 0.32, 0.32),
 		"key": false,
 	},
 	{
+		"id": "junkyard",
 		"name": "Свалка",
-		"address": "Окружное шоссе, 9-й км",
-		"card_address": "Адрес: Окружное шоссе, 9-й км  [OKRUZHNOE 9]",
-		"note": "Заброшенный пункт приёма металлолома за городом.",
+		"address": "ZAVODSKOE SHOSSE 9",
+		"card_address": "Address: ZAVODSKOE SHOSSE 9",
+		"note": "Металлолом",
 		"action": "[ Отправить группу захвата ]",
-		"action_result": "Группа захвата направлена на Свалку (9-й км).\nОжидайте доклад с места.",
-		"pos": Vector2(0.16, 0.80),
+		"action_result": "Группа захвата направлена на Свалку (ZAVODSKOE SHOSSE 9).\nОжидайте доклад с места.",
+		"pos": Vector2(0.16, 0.84),
+		"color": Color(0.32, 0.32, 0.32),
+		"key": false,
+	},
+	{
+		"id": "service_motor",
+		"name": "Автосервис «Мотор»",
+		"address": "MOTORNAYA 3",
+		"card_address": "Address: MOTORNAYA 3",
+		"note": "Педаль, пружина",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена в Автосервис «Мотор».\nОжидайте доклад с места.",
+		"pos": Vector2(0.49, 0.80),
+		"color": Color(0.32, 0.32, 0.32),
+		"key": false,
+	},
+	{
+		"id": "gas_trassa",
+		"name": "АЗС «Трасса»",
+		"address": "TRASSA M7, KM 14",
+		"card_address": "Address: TRASSA M7, KM 14",
+		"note": "Заправка",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена на АЗС «Трасса».\nОжидайте доклад с места.",
+		"pos": Vector2(0.76, 0.41),
+		"color": Color(0.32, 0.32, 0.32),
+		"key": false,
+	},
+	{
+		"id": "bus_stop_uni",
+		"name": "Остановка «Университет»",
+		"address": "UNIVERSITETSKAYA 1",
+		"card_address": "Address: UNIVERSITETSKAYA 1",
+		"note": "Маршрут 14",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена к остановке «Университет».\nОжидайте доклад с места.",
+		"pos": Vector2(0.21, 0.35),
+		"color": Color(0.20, 0.42, 0.30),
+		"key": false,
+	},
+	{
+		"id": "library",
+		"name": "Библиотека",
+		"address": "BIBLIOTECHNAYA 6",
+		"card_address": "Address: BIBLIOTECHNAYA 6",
+		"note": "—",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена к Библиотеке.\nОжидайте доклад с места.",
+		"pos": Vector2(0.36, 0.36),
+		"color": Color(0.28, 0.34, 0.44),
+		"key": false,
+	},
+	{
+		"id": "cafe_ugolok",
+		"name": "Кафе «Уголок»",
+		"address": "UNIVERSITETSKAYA 3",
+		"card_address": "Address: UNIVERSITETSKAYA 3",
+		"note": "Утром открыто",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена в Кафе «Уголок».\nОжидайте доклад с места.",
+		"pos": Vector2(0.14, 0.46),
+		"color": Color(0.28, 0.34, 0.44),
+		"key": false,
+	},
+	{
+		"id": "shop_produkty",
+		"name": "Магазин «Продукты»",
+		"address": "SADOVAYA 20",
+		"card_address": "Address: SADOVAYA 20",
+		"note": "—",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена к магазину «Продукты».\nОжидайте доклад с места.",
+		"pos": Vector2(0.58, 0.13),
+		"color": Color(0.28, 0.34, 0.44),
+		"key": false,
+	},
+	{
+		"id": "vet_aibolit",
+		"name": "Ветклиника «Айболит»",
+		"address": "KOMSOMOLSKAYA 15",
+		"card_address": "Address: KOMSOMOLSKAYA 15",
+		"note": "Кот, прививка",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена в ветклинику «Айболит».\nОжидайте доклад с места.",
+		"pos": Vector2(0.13, 0.21),
+		"color": Color(0.20, 0.42, 0.30),
+		"key": false,
+	},
+	{
+		"id": "bank_severny",
+		"name": "Банк «Северный»",
+		"address": "SEVERNAYA 2",
+		"card_address": "Address: SEVERNAYA 2",
+		"note": "Отделение",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена в Банк «Северный».\nОжидайте доклад с места.",
+		"pos": Vector2(0.49, 0.42),
+		"color": Color(0.28, 0.34, 0.44),
+		"key": false,
+	},
+	{
+		"id": "market",
+		"name": "Рынок",
+		"address": "RYNOCHNAYA 1",
+		"card_address": "Address: RYNOCHNAYA 1",
+		"note": "—",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена на Рынок.\nОжидайте доклад с места.",
+		"pos": Vector2(0.45, 0.57),
+		"color": Color(0.28, 0.34, 0.44),
+		"key": false,
+	},
+	{
+		"id": "park_rechnoy",
+		"name": "Парк «Речной»",
+		"address": "RECHNAYA NAB. 5",
+		"card_address": "Address: RECHNAYA NAB. 5",
+		"note": "Прогулки",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена в Парк «Речной».\nОжидайте доклад с места.",
+		"pos": Vector2(0.86, 0.27),
+		"color": Color(0.20, 0.42, 0.30),
+		"key": false,
+	},
+	{
+		"id": "dacha_old",
+		"name": "Дача (старая)",
+		"address": "DACHA KOOP RASSVET 14",
+		"card_address": "Address: DACHA KOOP RASSVET 14",
+		"note": "Не езжу",
+		"action": "[ Отправить группу захвата ]",
+		"action_result": "Группа захвата направлена на Дачу (RASSVET 14).\nОжидайте доклад с места.",
+		"pos": Vector2(0.08, 0.66),
 		"color": Color(0.32, 0.32, 0.32),
 		"key": false,
 	},
@@ -93,6 +232,8 @@ var _font: Font
 var _map_texture: Texture2D = null
 var _marker_buttons: Array[Button] = []
 var _hovered_marker: int = -1
+var _search_query: String = ""
+var _show_transport_layer: bool = false
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS
@@ -104,6 +245,22 @@ func _ready() -> void:
 	_build_marker_buttons()
 	resized.connect(_layout_marker_buttons)
 	resized.connect(queue_redraw)
+
+func set_search_filter(query: String) -> void:
+	_search_query = query.strip_edges().to_lower()
+	queue_redraw()
+
+func set_transport_layer(enabled: bool) -> void:
+	_show_transport_layer = enabled
+	queue_redraw()
+
+func is_transport_layer() -> bool:
+	return _show_transport_layer
+
+func _matches_search(marker: Dictionary) -> bool:
+	if _search_query.is_empty():
+		return true
+	return str(marker["name"]).to_lower().contains(_search_query) or str(marker["address"]).to_lower().contains(_search_query)
 
 func _load_map_texture() -> void:
 	if ResourceLoader.exists(CITY_MAP_PATH):
@@ -139,15 +296,9 @@ func _layout_marker_buttons() -> void:
 	for index in range(_marker_buttons.size()):
 		var marker: Dictionary = MARKERS[index]
 		var point := Vector2(roundf(size.x * marker["pos"].x), roundf(size.y * marker["pos"].y))
-		var label: String = marker["name"]
-		var text_w := _font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, 10).x + 12.0
-		var flip_left := point.x + 14.0 + text_w > size.x - 6.0
-		var left_x := (point.x - text_w - 14.0) if flip_left else (point.x - 10.0)
-		var total_w := text_w + 26.0
-		left_x = clampf(left_x, 2.0, maxf(2.0, size.x - total_w - 2.0))
 		var button := _marker_buttons[index]
-		button.position = Vector2(left_x, point.y - 18.0)
-		button.size = Vector2(total_w, 32.0)
+		button.position = point - Vector2(12, 12)
+		button.size = Vector2(24, 24)
 
 func _on_marker_pressed(index: int) -> void:
 	marker_clicked.emit(MARKERS[index])
@@ -171,43 +322,67 @@ func _draw() -> void:
 	else:
 		draw_rect(Rect2(Vector2.ZERO, size), Color(0.91, 0.89, 0.79))
 
-	# Лёгкая координатная сетка поверх карты (стиль ГИС 2000-х).
+	# Лёгкая координатная сетка (стиль ГИС 2000-х).
 	for x in range(0, int(w), 48):
-		draw_line(Vector2(x, 0), Vector2(x, h), Color(0, 0, 0, 0.06), 1.0)
+		draw_line(Vector2(x, 0), Vector2(x, h), Color(0, 0, 0, 0.055), 1.0)
 	for y in range(0, int(h), 48):
-		draw_line(Vector2(0, y), Vector2(w, y), Color(0, 0, 0, 0.06), 1.0)
+		draw_line(Vector2(0, y), Vector2(w, y), Color(0, 0, 0, 0.055), 1.0)
 
-	# Лаконичные географические подписи районов.
-	_draw_caption_tag(Vector2(w * 0.56, h * 0.88), "СЕВЕРНАЯ ПРОМЗОНА")
-	_draw_caption_tag(Vector2(w * 0.85, h * 0.36), "р. Тёмная")
-	_draw_caption_tag(Vector2(w * 0.24, h * 0.34), "ул. Ленина")
+	# Слой «Транспорт»: маршрут автобуса № 14.
+	if _show_transport_layer:
+		var route := PackedVector2Array([
+			Vector2(w * 0.14, h * 0.46),
+			Vector2(w * 0.21, h * 0.35),
+			Vector2(w * 0.27, h * 0.48),
+			Vector2(w * 0.45, h * 0.57),
+			Vector2(w * 0.49, h * 0.42),
+			Vector2(w * 0.72, h * 0.20),
+		])
+		draw_polyline(route, Color(0.05, 0.25, 0.72, 0.85), 3.0)
+		_draw_caption_tag(Vector2(w * 0.29, h * 0.53), "АВТ. № 14")
 
-	# Точки интереса.
+	# Подписи районов.
+	_draw_caption_tag(Vector2(w * 0.58, h * 0.90), "СЕВЕРНАЯ ПРОМЗОНА")
+	_draw_caption_tag(Vector2(w * 0.86, h * 0.42), "р. Тёмная")
+
+	# Сначала рисуем все обычные точки.
 	for index in range(MARKERS.size()):
-		_draw_marker(MARKERS[index], index)
+		if index != _hovered_marker:
+			_draw_marker(MARKERS[index], index, false)
+	# Наведённую точку и её бирку рисуем поверх всех.
+	if _hovered_marker >= 0 and _hovered_marker < MARKERS.size():
+		_draw_marker(MARKERS[_hovered_marker], _hovered_marker, true)
 
-func _draw_marker(marker: Dictionary, index: int) -> void:
+func _draw_marker(marker: Dictionary, _index: int, hovered: bool) -> void:
 	var pos: Vector2 = Vector2(roundf(size.x * marker["pos"].x), roundf(size.y * marker["pos"].y))
+	var matched := _matches_search(marker)
+	var alpha := 1.0 if matched else 0.28
 	var color: Color = marker["color"]
-	var hovered := index == _hovered_marker
-	if hovered:
-		draw_rect(Rect2(pos - Vector2(9, 9), Vector2(18, 18)), Color(1.0, 0.95, 0.55, 0.65))
-		draw_rect(Rect2(pos - Vector2(9, 9), Vector2(18, 18)), Color(0.0, 0.0, 0.5, 1.0), false, 1.0)
-	# Строгая квадратная ретро-метка с чёрной рамкой (стиль карт 90-х).
-	draw_line(pos + Vector2(0, 6), pos + Vector2(0, 14), Color(0, 0, 0, 1), 2.0)
-	draw_rect(Rect2(pos - Vector2(6, 6), Vector2(12, 12)), color)
-	draw_rect(Rect2(pos - Vector2(6, 6), Vector2(12, 12)), Color(0, 0, 0, 1), false, 1.0)
-	draw_rect(Rect2(pos - Vector2(2, 2), Vector2(4, 4)), Color(1, 1, 1, 1))
+	color.a = alpha
 
+	if hovered or (not _search_query.is_empty() and matched):
+		draw_rect(Rect2(pos - Vector2(8, 8), Vector2(16, 16)), Color(1.0, 0.95, 0.55, 0.72))
+		draw_rect(Rect2(pos - Vector2(8, 8), Vector2(16, 16)), Color(0.0, 0.0, 0.5, 1.0), false, 1.0)
+
+	# Строгая квадратная ретро-метка 90-х.
+	draw_line(pos + Vector2(0, 5), pos + Vector2(0, 11), Color(0, 0, 0, alpha), 2.0)
+	draw_rect(Rect2(pos - Vector2(5, 5), Vector2(10, 10)), color)
+	draw_rect(Rect2(pos - Vector2(5, 5), Vector2(10, 10)), Color(0, 0, 0, alpha), false, 1.0)
+	draw_rect(Rect2(pos - Vector2(2, 2), Vector2(4, 4)), Color(1, 1, 1, alpha))
+
+	# Чтобы 18 подписей не слипались, всегда рисуем полные бирки при наведении/поиске,
+	# а в обычном режиме — компактную бирку для всех видимых точек.
+	if not matched:
+		return
 	var label: String = marker["name"]
-	var font_size := 10
+	var font_size := 10 if hovered else 9
 	var text_size := _font.get_string_size(label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
-	var flip_left := pos.x + 11.0 + text_size.x + 6.0 > size.x - 4.0
-	var label_x := (pos.x - text_size.x - 14.0) if flip_left else (pos.x + 11.0)
-	var label_pos := Vector2(roundf(label_x), roundf(pos.y - 6.0))
-	var rect := Rect2(label_pos - Vector2(3, 12), Vector2(text_size.x + 6, 16))
-	draw_rect(rect, Color(1, 1, 0.86, 1.0) if hovered else Color(0.96, 0.96, 0.92, 0.96))
-	draw_rect(rect, Color(0.0, 0.0, 0.5, 1.0) if hovered else Color(0.15, 0.15, 0.15, 0.95), false, 1.0)
+	var flip_left := pos.x + 9.0 + text_size.x + 6.0 > size.x - 4.0
+	var label_x := (pos.x - text_size.x - 11.0) if flip_left else (pos.x + 9.0)
+	var label_pos := Vector2(roundf(label_x), roundf(pos.y - 5.0))
+	var rect := Rect2(label_pos - Vector2(2, 10), Vector2(text_size.x + 5, 13))
+	draw_rect(rect, Color(1, 1, 0.86, 1.0) if hovered else Color(0.96, 0.96, 0.92, 0.86))
+	draw_rect(rect, Color(0.0, 0.0, 0.5, 1.0) if hovered else Color(0.2, 0.2, 0.2, 0.7), false, 1.0)
 	draw_string(_font, label_pos, label, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, Color(0.05, 0.05, 0.05, 1.0))
 
 func _draw_caption_tag(pos: Vector2, text: String) -> void:

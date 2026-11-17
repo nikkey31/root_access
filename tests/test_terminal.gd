@@ -44,12 +44,12 @@ func _ready() -> void:
 	terminal._on_command_submitted("clear")
 	terminal._on_command_submitted("ls")
 	var ls_text = output.get_parsed_text()
-	assert(ls_text.contains("пароли.txt") and ls_text.contains("location.enc"), "ls должен отображать файлы из VFS.gd")
+	assert(ls_text.contains("график_работ.txt") and ls_text.contains("location.enc"), "ls должен отображать файлы папки Работа из VFS.gd")
 	print("[ls / VFS ПРОЙДЕН] Команда ls успешно запросила файлы из VFS.gd.")
 	
 	terminal._on_command_submitted("cat пароли.txt")
 	var cat_text = output.get_parsed_text()
-	assert(cat_text.contains("Пароль от папки Работа"), "cat должен выводить содержимое текстового файла")
+	assert(cat_text.contains("Папка Работа: др Юджина"), "cat должен выводить содержимое текстового файла")
 	print("[cat / VFS ПРОЙДЕН] Команда cat успешно вывела содержимое текстового файла.")
 	
 	# Проверка DoD 4: Терминал корректно встраивается внутрь WindowFrame.tscn

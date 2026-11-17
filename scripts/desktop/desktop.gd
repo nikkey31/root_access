@@ -375,7 +375,7 @@ func open_app(app_id: String) -> void:
 		var explorer_scene: PackedScene = load("res://scenes/apps/Explorer.tscn")
 		var explorer: ExplorerApp = explorer_scene.instantiate()
 		explorer.mode = "computer"
-		explorer.initial_path = "C:\\ROOT_ACCESS"
+		explorer.initial_path = "Мой компьютер"
 		app_content = explorer
 	elif app_id == "recycle":
 		var explorer_scene: PackedScene = load("res://scenes/apps/Explorer.tscn")
@@ -704,7 +704,11 @@ func _exit_tree() -> void:
 	_set_os_cursor_hidden(false)
 
 func _on_shutdown_pressed() -> void:
-	shutdown_dialog.popup_centered(Vector2i(440, 170))
+	_close_start_menu()
+	if has_node("/root/GameState"):
+		get_node("/root/GameState").trigger_thought("Не сейчас.", false)
+	else:
+		shutdown_dialog.popup_centered(Vector2i(440, 170))
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey:

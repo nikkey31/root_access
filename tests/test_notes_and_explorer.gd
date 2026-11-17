@@ -45,13 +45,15 @@ func _test_notes_app() -> void:
 	
 	_check(GameState.is_notes_opened == true, "Флаг GameState.is_notes_opened установлен в true")
 	_check(notes.notes_list != null, "Список заметок (ItemList) присутствует")
-	_check(notes.notes_list.item_count == 4, "В списке ровно 4 заметки")
+	_check(notes.notes_list.item_count == 11, "В списке ровно 11 заметок из «Мои документы»")
 	
 	var required_notes = [
 		"пароли.txt",
-		"мишель_слежка.txt",
-		"инструкция_шифрование.txt",
-		"чек_заправка.txt"
+		"список_дел.txt",
+		"дела_на_неделю.txt",
+		"гараж_инвентарь.txt",
+		"сон_29_09.txt",
+		"заметка_шум.txt"
 	]
 	for req in required_notes:
 		var found = false
@@ -64,22 +66,22 @@ func _test_notes_app() -> void:
 	# Проверка чтения пароли.txt
 	notes.open_note("пароли.txt")
 	var text_passwords = notes.text_display.get_parsed_text()
-	_check(text_passwords.contains("др Юджина") and text_passwords.contains("ДДММ"), "Содержимое пароли.txt прочитано из VFS")
+	_check(text_passwords.contains("др Юджина") and text_passwords.contains("murzik77"), "Содержимое пароли.txt прочитано из VFS")
 	
-	# Проверка чтения мишель_слежка.txt
-	notes.open_note("мишель_слежка.txt")
-	var text_michelle = notes.text_display.get_parsed_text()
-	_check(text_michelle.contains("ул. Ленина, 54") and text_michelle.contains("Мишель Юхнова"), "Содержимое мишель_слежка.txt прочитано из VFS")
+	# Проверка чтения график_работ.txt (в папке Работа)
+	notes.open_note("график_работ.txt")
+	var text_schedule = notes.text_display.get_parsed_text()
+	_check(text_schedule.contains("ГРАФИК (М.)") and text_schedule.contains("авт. №14"), "Содержимое график_работ.txt прочитано из VFS")
 	
 	# Проверка чтения инструкция_шифрование.txt
 	notes.open_note("инструкция_шифрование.txt")
 	var text_encrypt = notes.text_display.get_parsed_text()
 	_check(text_encrypt.contains("decrypt") and text_encrypt.contains("Ключ шифра"), "Содержимое инструкция_шифрование.txt прочитано из VFS")
 	
-	# Проверка чтения чек_заправка.txt
-	notes.open_note("чек_заправка.txt")
-	var text_gas = notes.text_display.get_parsed_text()
-	_check(text_gas.contains("АЗС «Северная»") and text_gas.contains("Северная промзона"), "Содержимое чек_заправка.txt прочитано из VFS")
+	# Проверка чтения тревожных заметок
+	notes.open_note("заметка_шум.txt")
+	var text_noise = notes.text_display.get_parsed_text()
+	_check(text_noise.contains("Войлок") and text_noise.contains("у ворот"), "Содержимое заметка_шум.txt прочитано из VFS")
 	
 	notes.queue_free()
 	await get_tree().process_frame
