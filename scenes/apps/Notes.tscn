@@ -1,0 +1,296 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://scripts/apps/notes.gd" id="1_notes"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_raised.png" id="2_raised"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_sunken.png" id="3_sunken"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_sunken_white.png" id="4_sunken_white"]
+[ext_resource type="Texture2D" path="res://assets/icons/file_text.svg" id="5_icon_file"]
+
+[sub_resource type="SystemFont" id="SystemFont_sans"]
+font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
+font_weight = 400
+antialiasing = 0
+subpixel_positioning = 0
+hinting = 1
+
+[sub_resource type="SystemFont" id="SystemFont_bold"]
+font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
+font_weight = 700
+antialiasing = 0
+subpixel_positioning = 0
+hinting = 1
+
+[sub_resource type="SystemFont" id="SystemFont_mono"]
+font_names = PackedStringArray("Lucida Console", "Consolas", "Courier New", "DejaVu Sans Mono")
+antialiasing = 0
+subpixel_positioning = 0
+hinting = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_sunken"]
+content_margin_left = 4.0
+content_margin_top = 2.0
+content_margin_right = 4.0
+content_margin_bottom = 2.0
+texture = ExtResource("3_sunken")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_sunken_white"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+texture = ExtResource("4_sunken_white")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_navy_header"]
+bg_color = Color(0, 0, 0.501961, 1)
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+
+[node name="Notes" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_notes")
+
+[node name="VBox" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="MenuBar" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 1
+
+[node name="MenuRow" type="HBoxContainer" parent="VBox/MenuBar"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MenuFile" type="Label" parent="VBox/MenuBar/MenuRow"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Файл"
+
+[node name="MenuEdit" type="Label" parent="VBox/MenuBar/MenuRow"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Правка"
+
+[node name="MenuFormat" type="Label" parent="VBox/MenuBar/MenuRow"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Формат"
+
+[node name="MenuView" type="Label" parent="VBox/MenuBar/MenuRow"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Вид"
+
+[node name="MenuHelp" type="Label" parent="VBox/MenuBar/MenuRow"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Справка"
+
+[node name="Toolbar" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 2
+
+[node name="ToolbarRow" type="HBoxContainer" parent="VBox/Toolbar"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="BtnOpen" type="Button" parent="VBox/Toolbar/ToolbarRow"]
+custom_minimum_size = Vector2(64, 22)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+text = "Открыть"
+
+[node name="BtnSave" type="Button" parent="VBox/Toolbar/ToolbarRow"]
+custom_minimum_size = Vector2(72, 22)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+text = "Сохранить"
+
+[node name="Sep" type="VSeparator" parent="VBox/Toolbar/ToolbarRow"]
+layout_mode = 2
+
+[node name="BtnFind" type="Button" parent="VBox/Toolbar/ToolbarRow"]
+custom_minimum_size = Vector2(56, 22)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+text = "Найти"
+
+[node name="Spacer" type="Control" parent="VBox/Toolbar/ToolbarRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="AppTag" type="Label" parent="VBox/Toolbar/ToolbarRow"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.3, 0.3, 0.3, 1)
+text = "Блокнот Windows"
+
+[node name="ContentMargin" type="MarginContainer" parent="VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 2
+
+[node name="Split" type="HSplitContainer" parent="VBox/ContentMargin"]
+layout_mode = 2
+split_offset = 220
+
+[node name="LeftPanel" type="VBoxContainer" parent="VBox/ContentMargin/Split"]
+custom_minimum_size = Vector2(180, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+theme_override_constants/separation = 3
+
+[node name="SidebarTitle" type="PanelContainer" parent="VBox/ContentMargin/Split/LeftPanel"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_navy_header")
+
+[node name="TitleLabel" type="Label" parent="VBox/ContentMargin/Split/LeftPanel/SidebarTitle"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bold")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "СПИСОК ЗАМЕТОК"
+
+[node name="NotesList" type="ItemList" parent="VBox/ContentMargin/Split/LeftPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+theme_override_styles/panel = SubResource("StyleBox_sunken_white")
+same_column_width = true
+fixed_icon_size = Vector2i(16, 16)
+
+[node name="RightPanel" type="VBoxContainer" parent="VBox/ContentMargin/Split"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 3
+
+[node name="HeaderPanel" type="PanelContainer" parent="VBox/ContentMargin/Split/RightPanel"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_sunken")
+
+[node name="HeaderRow" type="HBoxContainer" parent="VBox/ContentMargin/Split/RightPanel/HeaderPanel"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="FileIcon" type="TextureRect" parent="VBox/ContentMargin/Split/RightPanel/HeaderPanel/HeaderRow"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+texture = ExtResource("5_icon_file")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="FilePathLabel" type="Label" parent="VBox/ContentMargin/Split/RightPanel/HeaderPanel/HeaderRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = SubResource("SystemFont_bold")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0.501961, 1)
+text = "C:\\ROOT_ACCESS\\пароли.txt"
+
+[node name="DateLabel" type="Label" parent="VBox/ContentMargin/Split/RightPanel/HeaderPanel/HeaderRow"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 10
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
+text = "02.10.2009 01:47"
+
+[node name="TextPanel" type="PanelContainer" parent="VBox/ContentMargin/Split/RightPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBox_sunken_white")
+
+[node name="Margin" type="MarginContainer" parent="VBox/ContentMargin/Split/RightPanel/TextPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="TextDisplay" type="RichTextLabel" parent="VBox/ContentMargin/Split/RightPanel/TextPanel/Margin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_fonts/normal_font = SubResource("SystemFont_mono")
+theme_override_fonts/mono_font = SubResource("SystemFont_mono")
+theme_override_font_sizes/normal_font_size = 13
+theme_override_font_sizes/mono_font_size = 13
+theme_override_colors/default_color = Color(0.08, 0.08, 0.08, 1)
+bbcode_enabled = true
+scroll_active = true
+selection_enabled = true
+
+[node name="StatusBar" type="PanelContainer" parent="VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_sunken")
+
+[node name="StatusMargin" type="MarginContainer" parent="VBox/StatusBar"]
+layout_mode = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 1
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 1
+
+[node name="StatusRow" type="HBoxContainer" parent="VBox/StatusBar/StatusMargin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="StatusLeft" type="Label" parent="VBox/StatusBar/StatusMargin/StatusRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Готово"
+
+[node name="StatusEncoding" type="Label" parent="VBox/StatusBar/StatusMargin/StatusRow"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.3, 0.3, 0.3, 1)
+text = "UTF-8 | Windows (CRLF)"
