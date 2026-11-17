@@ -3,14 +3,12 @@
 [ext_resource type="Script" path="res://scripts/ui/toast_banner.gd" id="1_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_toast"]
-bg_color = Color(1, 1, 0.88, 0.98)
+bg_color = Color(1, 1, 0.88, 1)
 border_width_left = 1
 border_width_top = 1
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.15, 0.15, 0.15, 1)
-shadow_color = Color(0, 0, 0, 0.35)
-shadow_size = 3
+border_color = Color(0, 0, 0, 1)
 
 [node name="ToastBanner" type="PanelContainer"]
 visible = false

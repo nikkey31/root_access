@@ -441,15 +441,12 @@ func _activate_item(item_data: Dictionary) -> void:
 	# Если это файл
 	var file_path = current_path + "\\" + name
 	if name.ends_with(".enc"):
-		_show_preview("Зашифрованный файл: " + name, 
-			"[color=#cc0000][b]ОШИБКА ДОСТУПА: ФАЙЛ ЗАШИФРОВАН КРИПТОКОНТЕЙНЕРОМ[/b][/color]\n\n" +
-			"Для дешифрования содержимого используйте системный [b]Терминал[/b]:\n" +
-			"[color=#000080]decrypt " + name + " -k <ключ>[/color]\n\n" +
-			"Инструкция по ключу шифрования находится в файле [b]инструкция_шифрование.txt[/b].",
+		_show_preview("Ошибка чтения: " + name, 
+			"[color=#800000][b]НЕВОЗМОЖНО ОТКРЫТЬ ФАЙЛ[/b][/color]\n\n" +
+			"Формат файла не распознан или данные зашифрованы (заголовок 0x7F454C46).\n" +
+			"Отображение содержимого в текстовом режиме недоступно.",
 			false
 		)
-		if GameState and GameState.current_difficulty == GameState.Difficulty.EASY:
-			GameState.trigger_thought("Ник: «Зашифровано... Нужно воспользоваться Терминалом и ключом из инструкции».", true)
 		return
 		
 	if name.ends_with(".txt"):
@@ -462,11 +459,8 @@ func _activate_item(item_data: Dictionary) -> void:
 		_show_preview(name, text_content, true)
 		file_opened.emit(name)
 		
-		# Сюжетный триггер для накладной доставки
 		if name.contains("накладная_доставка") and GameState:
 			GameState.is_trash_inspected = true
-			if GameState.current_difficulty == GameState.Difficulty.EASY:
-				GameState.trigger_thought("Ник: «Накладная на аренду грузовика 6752... Арендатор Е. Рейвенс! Место доставки — Склад № 3!»", true)
 
 func _on_btn_open_pressed() -> void:
 	if not _selected_item.is_empty():

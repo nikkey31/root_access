@@ -70,11 +70,11 @@ const APPS := [
 @export var story_minute: int = 15
 @export var story_date: String = "02.10.2009"
 @export var crt_enabled: bool = true
-@export var crt_curvature: float = 0.05
-@export var crt_zoom: float = 0.97
-@export var crt_corner_radius: float = 0.03
-@export var crt_vignette: float = 0.12
-@export var crt_aberration: float = 0.0004
+@export var crt_curvature: float = 0.06
+@export var crt_zoom: float = 0.98
+@export var crt_corner_radius: float = 0.01
+@export var crt_vignette: float = 0.18
+@export var crt_aberration: float = 0.0007
 
 @onready var icons_root: GridContainer = $DesktopSurface/Icons
 @onready var window_layer: Control = $DesktopSurface/WindowLayer

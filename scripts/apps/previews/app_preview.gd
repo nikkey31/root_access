@@ -505,20 +505,7 @@ func _build_maps() -> void:
 	_sidebar_item(sidebar, null, "Гаражи")
 	_sidebar_item(sidebar, null, "Адрес Мишель")
 	_sidebar_item(sidebar, null, "Бокс № 6752")
-	var key_item := PanelContainer.new()
-	var key_style := StyleBoxFlat.new()
-	key_style.bg_color = Color(1.0, 0.88, 0.88, 1.0)
-	key_style.border_width_left = 2
-	key_style.border_color = C_RED
-	key_style.content_margin_left = 4.0
-	key_style.content_margin_top = 2.0
-	key_style.content_margin_right = 4.0
-	key_style.content_margin_bottom = 2.0
-	key_item.add_theme_stylebox_override("panel", key_style)
-	var key_label := _make_label("Склад № 3", 11, C_RED)
-	key_label.add_theme_font_override("font", _bold_font)
-	key_item.add_child(key_label)
-	sidebar.add_child(key_item)
+	_sidebar_item(sidebar, null, "Склад № 3")
 	_sidebar_item(sidebar, null, "Свалка")
 
 	var spacer := Control.new()
@@ -754,9 +741,8 @@ func _notify_photo_viewed(data: Dictionary) -> void:
 	if not has_node("/root/GameState"):
 		return
 	var gs := get_node("/root/GameState")
-	if data.get("id", "") == "photo_truck" and not gs.is_truck_photo_viewed:
+	if data.get("id", "") == "photo_truck":
 		gs.is_truck_photo_viewed = true
-		gs.trigger_thought("Странный фургон на фоне какого-то склада… большая надпись 6752 на прицепе и вывеска «Склад № 3», стоит запомнить.", true)
 
 func select_photo_by_filename(target_filename: String) -> bool:
 	for i in range(_photos.size()):
@@ -788,7 +774,7 @@ func _add_photo_card(grid: GridContainer, index: int) -> void:
 	card.custom_minimum_size = Vector2(0, 152)
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	card.tooltip_text = "%s · %s" % [data["file"], data["date"]]
+	card.tooltip_text = data["file"]
 	card.gui_input.connect(_on_photo_card_gui_input.bind(index))
 	grid.add_child(card)
 
@@ -806,7 +792,7 @@ func _add_photo_card(grid: GridContainer, index: int) -> void:
 	texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(texture)
 
-	var caption := _make_label("%s  ·  %s" % [data["file"], data["date"]], 10, C_DARK_GRAY)
+	var caption := _make_label(data["file"], 10, C_DARK_GRAY)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(caption)
@@ -837,7 +823,7 @@ func _open_photo_properties() -> void:
 	var data: Dictionary = _photos[_selected_photo_index]
 	if data.get("id", "") == "photo_pickup_birthday" and has_node("/root/GameState"):
 		get_node("/root/GameState").is_exif_viewed = true
-	var body := "[b]Файл:[/b] %s\n[b]Тип:[/b] JPEG\n[b]Размер:[/b] %s\n\n[b]Дата съёмки:[/b] [bgcolor=#fff59d]%s[/bgcolor] в %s\n[b]Камера:[/b] %s\n[b]Разрешение:[/b] %s" % [
+	var body := "[b]Файл:[/b] %s\n[b]Тип:[/b] JPEG\n[b]Размер:[/b] %s\n\n[b]Дата съёмки:[/b] %s %s\n[b]Камера:[/b] %s\n[b]Разрешение:[/b] %s" % [
 		data["file"],
 		data["size"],
 		data["date"],

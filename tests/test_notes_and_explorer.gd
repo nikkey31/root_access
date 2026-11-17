@@ -79,7 +79,7 @@ func _test_notes_app() -> void:
 	# Проверка чтения чек_заправка.txt
 	notes.open_note("чек_заправка.txt")
 	var text_gas = notes.text_display.get_parsed_text()
-	_check(text_gas.contains("АЗС «Северная»") and text_gas.contains("Склад № 3"), "Содержимое чек_заправка.txt прочитано из VFS (упоминает Склад № 3)")
+	_check(text_gas.contains("АЗС «Северная»") and text_gas.contains("Северная промзона"), "Содержимое чек_заправка.txt прочитано из VFS")
 	
 	notes.queue_free()
 	await get_tree().process_frame

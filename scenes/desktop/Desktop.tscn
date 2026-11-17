@@ -25,12 +25,17 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
 shader = ExtResource("18_crt")
-shader_parameter/curvature = 0.05
-shader_parameter/zoom = 0.97
-shader_parameter/corner_radius = 0.03
-shader_parameter/vignette_strength = 0.12
-shader_parameter/aberration = 0.0004
+shader_parameter/curvature = 0.06
+shader_parameter/zoom = 0.98
+shader_parameter/corner_radius = 0.01
+shader_parameter/vignette_strength = 0.18
+shader_parameter/aberration = 0.0007
 shader_parameter/aspect = 1.7777778
+shader_parameter/pixel_resolution = Vector2(800, 450)
+shader_parameter/scanline_strength = 0.15
+shader_parameter/grille_strength = 0.06
+shader_parameter/color_levels = 32.0
+shader_parameter/noise_strength = 0.022
 
 [sub_resource type="SystemFont" id="SystemFont_bold"]
 font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
