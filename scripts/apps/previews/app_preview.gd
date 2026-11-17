@@ -35,6 +35,65 @@ const PHOTO_CAT := preload("res://assets/previews/photo_cat.png")
 const PHOTO_PICNIC := preload("res://assets/previews/photo_picnic.png")
 const PHOTO_RAIN := preload("res://assets/previews/photo_rain.png")
 
+const INFO_CARD := preload("res://scenes/ui/InfoCard.tscn")
+
+const PHOTOS := [
+	{
+		"texture": PHOTO_TRUCK,
+		"file": "IMG_2042.jpg",
+		"date": "24.09.2009",
+		"time": "18:42",
+		"camera": "Canon PowerShot A590 IS",
+		"resolution": "3264 × 2448",
+		"size": "2,8 МБ",
+	},
+	{
+		"texture": PHOTO_PICKUP,
+		"file": "IMG_2041.jpg",
+		"date": "24.09.2009",
+		"time": "18:17",
+		"camera": "Canon PowerShot A590 IS",
+		"resolution": "3264 × 2448",
+		"size": "2,6 МБ",
+	},
+	{
+		"texture": PHOTO_GAS,
+		"file": "IMG_2038.jpg",
+		"date": "17.09.2009",
+		"time": "22:05",
+		"camera": "Canon PowerShot A590 IS",
+		"resolution": "3264 × 2448",
+		"size": "3,1 МБ",
+	},
+	{
+		"texture": PHOTO_CAT,
+		"file": "IMG_2026.jpg",
+		"date": "02.09.2009",
+		"time": "23:12",
+		"camera": "Canon PowerShot A590 IS",
+		"resolution": "3264 × 2448",
+		"size": "2,2 МБ",
+	},
+	{
+		"texture": PHOTO_PICNIC,
+		"file": "IMG_2019.jpg",
+		"date": "16.08.2009",
+		"time": "14:30",
+		"camera": "Canon PowerShot A590 IS",
+		"resolution": "3264 × 2448",
+		"size": "2,9 МБ",
+	},
+	{
+		"texture": PHOTO_RAIN,
+		"file": "IMG_2007.jpg",
+		"date": "05.08.2009",
+		"time": "02:14",
+		"camera": "Canon PowerShot A590 IS",
+		"resolution": "3264 × 2448",
+		"size": "2,4 МБ",
+	},
+]
+
 @onready var menu_row: HBoxContainer = $VBox/MenuBar/MenuRow
 @onready var toolbar_row: HBoxContainer = $VBox/Toolbar/ToolbarRow
 @onready var content: Control = $VBox/ContentMargin/Content
@@ -42,6 +101,12 @@ const PHOTO_RAIN := preload("res://assets/previews/photo_rain.png")
 
 var _bold_font: SystemFont
 var _mono_font: SystemFont
+var _toolbar_buttons: Dictionary = {}
+var _gallery_cards: Array[PanelContainer] = []
+var _gallery_captions: Array[Label] = []
+var _selected_photo_index: int = 0
+var _map_info_card: InfoCard
+var _photo_info_card: InfoCard
 
 func _ready() -> void:
 	_bold_font = SystemFont.new()
@@ -76,6 +141,7 @@ func _ready() -> void:
 # ---------------------------------------------------------------------------
 
 func _build_chrome(menus: Array, tools: Array, status_left: String, status_right: String, toolbar_right: String = "") -> void:
+	_toolbar_buttons.clear()
 	for menu_text in menus:
 		var label := _make_label(menu_text, 11, Color.BLACK)
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -89,6 +155,7 @@ func _build_chrome(menus: Array, tools: Array, status_left: String, status_right
 		else:
 			var button := _make_toolbar_button(item.get("text", ""))
 			toolbar_row.add_child(button)
+			_toolbar_buttons[button.text] = button
 
 	if toolbar_right != "":
 		var spacer := Control.new()
@@ -424,6 +491,7 @@ func _build_maps() -> void:
 	map.custom_minimum_size = Vector2(360, 260)
 	map.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	map.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	map.marker_clicked.connect(_on_map_marker_clicked)
 	root.add_child(map)
 
 	var sidebar := _make_sidebar(root, 214.0)
@@ -452,9 +520,26 @@ func _build_maps() -> void:
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sidebar.add_child(spacer)
-	var hint := _make_label("Колёсико — масштаб,\nклик — карточка места", 10, C_DARK_GRAY)
+	var hint := _make_label("Колёсико — масштаб,\nклик по метке — карточка места", 10, C_DARK_GRAY)
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sidebar.add_child(hint)
+
+	_map_info_card = INFO_CARD.instantiate()
+	add_child(_map_info_card)
+
+func _on_map_marker_clicked(marker: Dictionary) -> void:
+	if _map_info_card == null:
+		return
+	var title: String = marker["name"]
+	var address: String = marker.get("card_address", "Адрес: " + marker["address"])
+	var note: String = marker.get("note", "")
+	var body := "[b]%s[/b]\n\n%s" % [address, note]
+	_map_info_card.open(
+		title,
+		body,
+		marker.get("action", ""),
+		marker.get("action_result", "")
+	)
 
 # ---------------------------------------------------------------------------
 # Галерея
@@ -463,7 +548,14 @@ func _build_maps() -> void:
 func _build_gallery() -> void:
 	_build_chrome(
 		["Файл", "Правка", "Вид", "Слайд-шоу", "Справка"],
-		[{"text": "Все фото"}, {"text": "Недавние"}, {"sep": true}, {"text": "Слайд-шоу"}],
+		[
+			{"text": "Все фото"},
+			{"text": "Недавние"},
+			{"sep": true},
+			{"text": "Слайд-шоу"},
+			{"sep": true},
+			{"text": "Свойства / Подробнее"},
+		],
 		"6 из 48 фото",
 		"Сортировка: дата съёмки",
 		"Зум 100%"
@@ -487,7 +579,7 @@ func _build_gallery() -> void:
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sidebar.add_child(spacer)
-	var hint := _make_label("Двойной клик —\nоткрыть фото", 10, C_DARK_GRAY)
+	var hint := _make_label("Клик — выбрать фото,\n«Подробнее» — свойства", 10, C_DARK_GRAY)
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sidebar.add_child(hint)
 
@@ -507,15 +599,19 @@ func _build_gallery() -> void:
 	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(grid)
 
-	_add_photo_card(grid, PHOTO_TRUCK, "IMG_2042.jpg", "24.09.2009", true)
-	_add_photo_card(grid, PHOTO_PICKUP, "IMG_2041.jpg", "24.09.2009", false)
-	_add_photo_card(grid, PHOTO_GAS, "IMG_2038.jpg", "17.09.2009", false)
-	_add_photo_card(grid, PHOTO_CAT, "IMG_2026.jpg", "02.09.2009", false)
-	_add_photo_card(grid, PHOTO_PICNIC, "IMG_2019.jpg", "16.08.2009", false)
-	_add_photo_card(grid, PHOTO_RAIN, "IMG_2007.jpg", "05.08.2009", false)
+	for index in range(PHOTOS.size()):
+		_add_photo_card(grid, index)
+	_apply_photo_selection()
 
-func _add_photo_card(grid: GridContainer, photo: Texture2D, file_name: String, date: String, selected: bool) -> void:
-	var card := PanelContainer.new()
+	var properties_button := _toolbar_buttons.get("Свойства / Подробнее") as Button
+	if properties_button:
+		properties_button.tooltip_text = "Свойства выбранного фото"
+		properties_button.pressed.connect(_open_photo_properties)
+
+	_photo_info_card = INFO_CARD.instantiate()
+	add_child(_photo_info_card)
+
+func _photo_card_style(selected: bool) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = C_WHITE
 	style.border_width_left = 2 if selected else 1
@@ -527,9 +623,18 @@ func _add_photo_card(grid: GridContainer, photo: Texture2D, file_name: String, d
 	style.content_margin_top = 3.0
 	style.content_margin_right = 3.0
 	style.content_margin_bottom = 3.0
-	card.add_theme_stylebox_override("panel", style)
+	return style
+
+func _add_photo_card(grid: GridContainer, index: int) -> void:
+	var data: Dictionary = PHOTOS[index]
+	var card := PanelContainer.new()
+	card.add_theme_stylebox_override("panel", _photo_card_style(false))
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	card.tooltip_text = "%s · %s" % [data["file"], data["date"]]
+	card.gui_input.connect(_on_photo_card_gui_input.bind(index))
 	grid.add_child(card)
 
 	var box := VBoxContainer.new()
@@ -537,7 +642,7 @@ func _add_photo_card(grid: GridContainer, photo: Texture2D, file_name: String, d
 	card.add_child(box)
 
 	var texture := TextureRect.new()
-	texture.texture = photo
+	texture.texture = data["texture"]
 	texture.custom_minimum_size = Vector2(0, 116)
 	texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -546,10 +651,41 @@ func _add_photo_card(grid: GridContainer, photo: Texture2D, file_name: String, d
 	texture.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(texture)
 
-	var caption := _make_label("%s  ·  %s" % [file_name, date], 10, C_NAVY if selected else C_DARK_GRAY)
+	var caption := _make_label("%s  ·  %s" % [data["file"], data["date"]], 10, C_DARK_GRAY)
 	caption.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	caption.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(caption)
+
+	_gallery_cards.append(card)
+	_gallery_captions.append(caption)
+
+func _on_photo_card_gui_input(event: InputEvent, index: int) -> void:
+	if not (event is InputEventMouseButton):
+		return
+	var mouse := event as InputEventMouseButton
+	if mouse.button_index == MOUSE_BUTTON_LEFT and mouse.pressed:
+		_selected_photo_index = index
+		_apply_photo_selection()
+
+func _apply_photo_selection() -> void:
+	for index in range(_gallery_cards.size()):
+		var selected := index == _selected_photo_index
+		_gallery_cards[index].add_theme_stylebox_override("panel", _photo_card_style(selected))
+		_gallery_captions[index].add_theme_color_override("font_color", C_NAVY if selected else C_DARK_GRAY)
+
+func _open_photo_properties() -> void:
+	if _photo_info_card == null or PHOTOS.is_empty():
+		return
+	var data: Dictionary = PHOTOS[_selected_photo_index]
+	var body := "[b]Файл:[/b] %s\n[b]Тип:[/b] JPEG\n[b]Размер:[/b] %s\n\n[b]Дата съёмки:[/b] [bgcolor=#fff59d]%s[/bgcolor] в %s\n[b]Камера:[/b] %s\n[b]Разрешение:[/b] %s" % [
+		data["file"],
+		data["size"],
+		data["date"],
+		data["time"],
+		data["camera"],
+		data["resolution"],
+	]
+	_photo_info_card.open("Свойства изображения", body)
 
 # ---------------------------------------------------------------------------
 # Заметки

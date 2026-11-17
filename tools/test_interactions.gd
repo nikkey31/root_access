@@ -5,17 +5,31 @@ extends Node
 ##   godot --path . --scene res://tools/test_interactions.tscn
 
 var _failures: Array[String] = []
+var _desktop: Desktop
 
 func _ready() -> void:
 	await get_tree().process_frame
 	var desktop: Desktop = load("res://scenes/desktop/Desktop.tscn").instantiate()
 	get_tree().root.add_child(desktop)
+	_desktop = desktop
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	# 1. Одиночный клик по иконке открывает окно.
+	# 0. Курсор рисуется внутри линзы и совпадает с точкой интерфейса.
 	var icon: DesktopIcon = desktop.get_node("DesktopSurface/Icons/ComputerIcon")
 	var icon_point := icon.global_position + icon.size * 0.5
+	var icon_screen := _desktop.crt_ui_to_screen(icon_point)
+	Input.warp_mouse(icon_screen)
+	var hover := InputEventMouseMotion.new()
+	hover.position = icon_screen
+	hover.global_position = icon_screen
+	Input.parse_input_event(hover)
+	await get_tree().process_frame
+	_check(desktop.crt_cursor.visible, "CRT-курсор видим внутри линзы")
+	_check(desktop.crt_cursor.position.distance_to(icon_point) < 2.0, "CRT-курсор совпадает с точкой интерфейса")
+	_check(_desktop.crt_ui_to_screen(desktop.crt_cursor.position).distance_to(icon_screen) < 2.0, "CRT-курсор визуально совпадает с реальной мышью")
+
+	# 1. Одиночный клик по иконке открывает окно.
 	await _click(icon_point)
 	await get_tree().process_frame
 	_check(desktop._windows.size() == 1, "Одиночный клик по иконке открывает окно")
@@ -29,15 +43,17 @@ func _ready() -> void:
 	var grab := window.global_position + Vector2(180, 13)
 	await _press(grab)
 	await get_tree().process_frame
-	Input.warp_mouse(grab + Vector2(90, 55))
+	var drag_target := grab + Vector2(90, 55)
+	var drag_screen := _screen(drag_target)
+	Input.warp_mouse(drag_screen)
 	await get_tree().process_frame
 	var motion := InputEventMouseMotion.new()
-	motion.position = grab + Vector2(90, 55)
-	motion.global_position = grab + Vector2(90, 55)
+	motion.position = drag_screen
+	motion.global_position = drag_screen
 	motion.button_mask = MOUSE_BUTTON_MASK_LEFT
 	Input.parse_input_event(motion)
 	await get_tree().process_frame
-	await _release(grab + Vector2(90, 55))
+	await _release(drag_target)
 	await get_tree().process_frame
 	var moved := window.global_position - start_pos
 	_check(moved.x > 60.0 and moved.y > 30.0, "Окно перетаскивается за заголовок (сдвиг %s)" % moved)
@@ -72,30 +88,67 @@ func _ready() -> void:
 	await get_tree().process_frame
 	_check(not desktop.start_menu.visible, "Escape закрывает меню «Пуск»")
 
+	# 6. Кликабельная метка на карте под CRT-линзой.
+	desktop.open_app("maps")
+	await get_tree().process_frame
+	var maps_window := desktop._find_window("maps")
+	var maps_preview := maps_window.content_container.get_child(0) as AppPreview
+	var maps := maps_preview.find_children("*", "MapPreview", true, false)
+	var map := maps[0] as MapPreview
+	var marker_button := map.get_child(3) as Button
+	await _click(marker_button.global_position + marker_button.size * 0.5)
+	await get_tree().process_frame
+	var map_card := maps_preview.get("_map_info_card") as InfoCard
+	_check(map_card.visible, "Клик по метке карты открывает карточку")
+	_check(map_card.body_label.text.contains("LENINA 54"), "Карточка Мишель содержит LENINA 54")
+	map_card.close()
+	maps_window.close()
+	await get_tree().process_frame
+
+	# 7. Кнопка «Свойства / Подробнее» в Галерее.
+	desktop.open_app("gallery")
+	await get_tree().process_frame
+	var gallery_window := desktop._find_window("gallery")
+	var gallery_preview := gallery_window.content_container.get_child(0) as AppPreview
+	var toolbar: Dictionary = gallery_preview.get("_toolbar_buttons")
+	var properties_button := toolbar.get("Свойства / Подробнее") as Button
+	await _click(properties_button.global_position + properties_button.size * 0.5)
+	await get_tree().process_frame
+	var photo_card := gallery_preview.get("_photo_info_card") as InfoCard
+	_check(photo_card.visible, "Кнопка «Свойства / Подробнее» открывает карточку")
+	_check(photo_card.body_label.text.contains("24.09.2009"), "Свойства фото показывают дату 24.09.2009")
+	photo_card.close()
+	gallery_window.close()
+
 	_finish()
+
+func _screen(point: Vector2) -> Vector2:
+	return _desktop.crt_ui_to_screen(point)
 
 func _click(point: Vector2) -> void:
 	await _press(point)
 	await _release(point)
 
 func _press(point: Vector2) -> void:
-	Input.warp_mouse(point)
+	var screen_point := _screen(point)
+	Input.warp_mouse(screen_point)
 	await get_tree().process_frame
 	var event := InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = true
-	event.position = point
-	event.global_position = point
+	event.position = screen_point
+	event.global_position = screen_point
 	event.button_mask = MOUSE_BUTTON_MASK_LEFT
 	Input.parse_input_event(event)
 	await get_tree().process_frame
 
 func _release(point: Vector2) -> void:
+	var screen_point := _screen(point)
 	var event := InputEventMouseButton.new()
 	event.button_index = MOUSE_BUTTON_LEFT
 	event.pressed = false
-	event.position = point
-	event.global_position = point
+	event.position = screen_point
+	event.global_position = screen_point
 	Input.parse_input_event(event)
 	await get_tree().process_frame
 

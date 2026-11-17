@@ -31,6 +31,49 @@ func _ready() -> void:
 	_check(windows == 6, "Одновременно открыты 6 окон (сейчас %d)" % windows)
 	_check(desktop.get_node("Taskbar/MainMargin/MainRow/TaskButtons").get_child_count() == 6, "На панели задач 6 кнопок окон")
 
+	# CRT: преобразование мыши должно быть взаимно обратным.
+	_check(desktop.crt_is_visible(Vector2(640, 360)), "Центр CRT-экрана видим")
+	_check(not desktop.crt_is_visible(Vector2(1, 1)), "Угол CRT-экрана скрыт линзой")
+	for point in [Vector2(320, 240), Vector2(640, 360), Vector2(960, 500)]:
+		var screen_point := desktop.crt_ui_to_screen(point)
+		var back := desktop.crt_screen_to_ui(screen_point)
+		_check(back.distance_to(point) < 1.0, "CRT-преобразование мыши обратимо для %s" % point)
+
+	# Карты: кликабельные метки и карточки.
+	var maps_window := desktop._find_window("maps")
+	var maps_preview := maps_window.content_container.get_child(0) as AppPreview
+	var maps := maps_preview.find_children("*", "MapPreview", true, false)
+	_check(not maps.is_empty(), "В «Картах» есть MapPreview")
+	if not maps.is_empty():
+		var map := maps[0] as MapPreview
+		var map_card := maps_preview.get("_map_info_card") as InfoCard
+		map.marker_clicked.emit(MapPreview.MARKERS[3])
+		await get_tree().process_frame
+		_check(map_card.visible, "Клик по метке открывает карточку")
+		_check(map_card.body_label.text.contains("LENINA 54"), "Карточка Мишель содержит LENINA 54")
+		map_card.close()
+		map.marker_clicked.emit(MapPreview.MARKERS[5])
+		await get_tree().process_frame
+		_check(map_card.action_button.visible, "У карточки Склада № 3 есть кнопка штурма")
+		map_card.action_button.emit_signal("pressed")
+		await get_tree().process_frame
+		_check(map_card.body_label.text.contains("Группа захвата направлена"), "Кнопка штурма подтверждает отправку группы")
+		map_card.close()
+
+	# Галерея: активная кнопка «Свойства / Подробнее».
+	var gallery_window := desktop._find_window("gallery")
+	var gallery_preview := gallery_window.content_container.get_child(0) as AppPreview
+	var toolbar: Dictionary = gallery_preview.get("_toolbar_buttons")
+	var properties_button := toolbar.get("Свойства / Подробнее") as Button
+	_check(properties_button != null and not properties_button.disabled, "Кнопка «Свойства / Подробнее» активна")
+	if properties_button:
+		properties_button.emit_signal("pressed")
+		await get_tree().process_frame
+		var photo_card := gallery_preview.get("_photo_info_card") as InfoCard
+		_check(photo_card.visible, "«Свойства / Подробнее» открывает карточку")
+		_check(photo_card.body_label.text.contains("24.09.2009"), "В свойствах фото дата съёмки 24.09.2009")
+		photo_card.close()
+
 	var first: WindowFrame = desktop.get_node("DesktopSurface/WindowLayer").get_child(0)
 	var old_position := first.position
 	first.position = Vector2(-2000, -2000)

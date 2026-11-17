@@ -28,6 +28,37 @@ func _ready() -> void:
 		await get_tree().process_frame
 		await RenderingServer.frame_post_draw
 		_save("app_%s.png" % app_id)
+		if app_id == "gallery" and window:
+			var preview := window.content_container.get_child(0) as AppPreview
+			var toolbar: Dictionary = preview.get("_toolbar_buttons")
+			var properties: Button = toolbar.get("Свойства / Подробнее")
+			if properties:
+				properties.emit_signal("pressed")
+				await get_tree().process_frame
+				await RenderingServer.frame_post_draw
+				_save("gallery_properties.png")
+				var card := preview.get("_photo_info_card") as InfoCard
+				card.close()
+		if app_id == "maps" and window:
+			var preview := window.content_container.get_child(0) as AppPreview
+			var maps := preview.find_children("*", "MapPreview", true, false)
+			if not maps.is_empty():
+				var map := maps[0] as MapPreview
+				map.marker_clicked.emit(MapPreview.MARKERS[3])
+				await get_tree().process_frame
+				await RenderingServer.frame_post_draw
+				_save("map_card_michelle.png")
+				var card := preview.get("_map_info_card") as InfoCard
+				card.close()
+				map.marker_clicked.emit(MapPreview.MARKERS[5])
+				await get_tree().process_frame
+				await RenderingServer.frame_post_draw
+				_save("map_card_warehouse.png")
+				card.action_button.emit_signal("pressed")
+				await get_tree().process_frame
+				await RenderingServer.frame_post_draw
+				_save("map_card_capture.png")
+				card.close()
 		if window:
 			window.close()
 		await get_tree().process_frame
