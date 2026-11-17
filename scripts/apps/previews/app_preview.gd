@@ -528,7 +528,7 @@ func _on_map_marker_clicked(marker: Dictionary) -> void:
 	var address: String = marker.get("card_address", "Адрес: " + marker["address"])
 	var note: String = marker.get("note", "")
 	var body := "[b]%s[/b]\n\n%s" % [address, note]
-	var in_finale := has_node("/root/GameState") and get_node("/root/GameState").is_timer_active
+	var in_finale: bool = has_node("/root/GameState") and bool(get_node("/root/GameState").get("is_timer_active"))
 	_map_info_card.open(
 		title,
 		body,
