@@ -69,6 +69,12 @@ const APPS := [
 @export var story_hour: int = 2
 @export var story_minute: int = 15
 @export var story_date: String = "02.10.2009"
+@export var crt_enabled: bool = true
+@export var crt_curvature: float = 0.05
+@export var crt_zoom: float = 0.97
+@export var crt_corner_radius: float = 0.03
+@export var crt_vignette: float = 0.12
+@export var crt_aberration: float = 0.0004
 
 @onready var icons_root: GridContainer = $DesktopSurface/Icons
 @onready var window_layer: Control = $DesktopSurface/WindowLayer
@@ -84,6 +90,9 @@ const APPS := [
 @onready var tray_popup: PanelContainer = $TrayPopup
 @onready var tray_popup_label: Label = $TrayPopup/PopupMargin/PopupLabel
 @onready var shutdown_dialog: AcceptDialog = $ShutdownDialog
+@onready var crt_layer: CanvasLayer = $CRTLayer
+@onready var crt_effect: ColorRect = $CRTLayer/CRTEffect
+@onready var crt_cursor: Control = $Cursor
 
 var _windows: Array[WindowFrame] = []
 var _task_buttons: Dictionary = {}
@@ -101,6 +110,7 @@ func _ready() -> void:
 	tray_popup.visible = false
 	start_button.pressed.connect(_on_start_button_pressed)
 	get_viewport().size_changed.connect(_on_viewport_resized)
+	_apply_crt_settings()
 
 func _build_desktop_icons() -> void:
 	for child in icons_root.get_children():
@@ -463,6 +473,110 @@ func _on_viewport_resized() -> void:
 	for window in _windows:
 		if is_instance_valid(window):
 			window.call("_clamp_to_parent")
+	_apply_crt_settings()
+
+# ---------------------------------------------------------------------------
+# CRT-линза и синхронизация программного курсора
+# ---------------------------------------------------------------------------
+
+func set_crt_enabled(value: bool) -> void:
+	crt_enabled = value
+	_apply_crt_settings()
+
+func _crt_aspect() -> float:
+	var viewport_size := get_viewport_rect().size
+	return viewport_size.x / maxf(viewport_size.y, 1.0)
+
+func _apply_crt_settings() -> void:
+	if not is_node_ready():
+		return
+	crt_layer.visible = crt_enabled
+	crt_cursor.visible = false
+	if not crt_enabled:
+		_set_os_cursor_hidden(false)
+		return
+
+	_set_os_cursor_hidden(true)
+	var material := crt_effect.material as ShaderMaterial
+	if material:
+		material.set_shader_parameter("aspect", _crt_aspect())
+		material.set_shader_parameter("curvature", crt_curvature)
+		material.set_shader_parameter("zoom", crt_zoom)
+		material.set_shader_parameter("corner_radius", crt_corner_radius)
+		material.set_shader_parameter("vignette_strength", crt_vignette)
+		material.set_shader_parameter("aberration", crt_aberration)
+
+## Экранная точка (координаты вьюпорта) -> координаты интерфейса внутри линзы.
+func crt_screen_to_ui(screen: Vector2) -> Vector2:
+	var viewport_size := get_viewport_rect().size
+	var uv := Vector2(screen.x / viewport_size.x, screen.y / viewport_size.y)
+	var aspect := _crt_aspect()
+	var p := (uv - Vector2(0.5, 0.5)) * 2.0
+	p.x *= aspect
+	var r2 := p.length_squared() / (aspect * aspect + 1.0)
+	p *= 1.0 - crt_curvature * r2
+	var src_uv := Vector2(0.5, 0.5) + (p / Vector2(aspect, 1.0)) * 0.5
+	src_uv = (src_uv - Vector2(0.5, 0.5)) / crt_zoom + Vector2(0.5, 0.5)
+	return Vector2(src_uv.x * viewport_size.x, src_uv.y * viewport_size.y)
+
+## Обратное преобразование (для тестов и позиционирования элементов).
+func crt_ui_to_screen(ui_pos: Vector2) -> Vector2:
+	var viewport_size := get_viewport_rect().size
+	var uv := Vector2(ui_pos.x / viewport_size.x, ui_pos.y / viewport_size.y)
+	var aspect := _crt_aspect()
+	var p := (uv - Vector2(0.5, 0.5)) * 2.0
+	p.x *= aspect
+	var source_radius := p.length()
+	if source_radius < 0.00001:
+		return ui_pos
+	var direction := p / source_radius
+	var target := source_radius * crt_zoom
+	var max_q := sqrt(aspect * aspect + 1.0) * 1.25
+	var low := 0.0
+	var high := max_q
+	for _i in range(24):
+		var middle := (low + high) * 0.5
+		var mapped := middle * (1.0 - crt_curvature * middle * middle / (aspect * aspect + 1.0))
+		if mapped < target:
+			low = middle
+		else:
+			high = middle
+	var q := (low + high) * 0.5
+	var screen_uv := Vector2(0.5, 0.5) + (direction * q / Vector2(aspect, 1.0)) * 0.5
+	return Vector2(screen_uv.x * viewport_size.x, screen_uv.y * viewport_size.y)
+
+## Видна ли экранная точка внутри скруглённого стекла кинескопа.
+func crt_is_visible(screen: Vector2) -> bool:
+	var viewport_size := get_viewport_rect().size
+	if not Rect2(Vector2.ZERO, viewport_size).has_point(screen):
+		return false
+	var aspect := _crt_aspect()
+	var p := (Vector2(screen.x / viewport_size.x, screen.y / viewport_size.y) - Vector2(0.5, 0.5)) * 2.0
+	p.x *= aspect
+	var q := p.abs() - Vector2(aspect - crt_corner_radius, 1.0 - crt_corner_radius)
+	var sd := q.max(Vector2.ZERO).length() + minf(maxf(q.x, q.y), 0.0) - crt_corner_radius
+	return sd <= 0.0
+
+func _update_crt_cursor(ui_pos: Vector2, screen_pos: Vector2) -> void:
+	if not crt_enabled:
+		crt_cursor.visible = false
+		return
+	crt_cursor.position = ui_pos
+	crt_cursor.visible = crt_is_visible(screen_pos)
+
+func _set_os_cursor_hidden(hidden: bool) -> void:
+	if DisplayServer.get_name() == "headless":
+		return
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN if hidden else Input.MOUSE_MODE_VISIBLE)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_MOUSE_ENTER and crt_enabled:
+		_set_os_cursor_hidden(true)
+	elif what == NOTIFICATION_WM_MOUSE_EXIT:
+		_set_os_cursor_hidden(false)
+
+func _exit_tree() -> void:
+	_set_os_cursor_hidden(false)
 
 func _on_shutdown_pressed() -> void:
 	shutdown_dialog.popup_centered(Vector2i(440, 170))
@@ -478,6 +592,21 @@ func _input(event: InputEvent) -> void:
 				_hide_tray_popup()
 				get_viewport().set_input_as_handled()
 		return
+
+	if event is InputEventMouse:
+		var mouse_event := event as InputEventMouse
+		var screen_point := mouse_event.position
+		if crt_enabled:
+			var mapped := crt_screen_to_ui(screen_point)
+			if event is InputEventMouseMotion:
+				var motion := event as InputEventMouseMotion
+				var previous := crt_screen_to_ui(screen_point - motion.relative)
+				motion.relative = mapped - previous
+			mouse_event.position = mapped
+			mouse_event.global_position = mapped
+			_update_crt_cursor(mapped, screen_point)
+		else:
+			crt_cursor.visible = false
 
 	if not (event is InputEventMouseButton):
 		return
