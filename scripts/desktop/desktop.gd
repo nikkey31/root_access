@@ -18,7 +18,7 @@ const APPS := [
 	{
 		"id": "computer",
 		"title": "Мой компьютер",
-		"icon": preload("res://assets/icons/computer.svg"),
+		"icon": preload("res://assets/icons/computer.png"),
 		"kind": "computer",
 		"size": Vector2(780, 520),
 		"min_size": Vector2(560, 360),
@@ -26,7 +26,7 @@ const APPS := [
 	{
 		"id": "terminal",
 		"title": "Терминал",
-		"icon": preload("res://assets/icons/terminal.svg"),
+		"icon": preload("res://assets/icons/terminal.png"),
 		"kind": "terminal",
 		"size": Vector2(720, 470),
 		"min_size": Vector2(480, 300),
@@ -34,7 +34,7 @@ const APPS := [
 	{
 		"id": "maps",
 		"title": "Карты",
-		"icon": preload("res://assets/icons/maps.svg"),
+		"icon": preload("res://assets/icons/maps.png"),
 		"kind": "maps",
 		"size": Vector2(840, 560),
 		"min_size": Vector2(560, 360),
@@ -42,7 +42,7 @@ const APPS := [
 	{
 		"id": "gallery",
 		"title": "Галерея",
-		"icon": preload("res://assets/icons/gallery.svg"),
+		"icon": preload("res://assets/icons/gallery.png"),
 		"kind": "gallery",
 		"size": Vector2(860, 580),
 		"min_size": Vector2(600, 380),
@@ -50,7 +50,7 @@ const APPS := [
 	{
 		"id": "notes",
 		"title": "Заметки",
-		"icon": preload("res://assets/icons/notes.svg"),
+		"icon": preload("res://assets/icons/notes.png"),
 		"kind": "notes",
 		"size": Vector2(660, 500),
 		"min_size": Vector2(420, 300),
@@ -58,7 +58,7 @@ const APPS := [
 	{
 		"id": "recycle",
 		"title": "Корзина",
-		"icon": preload("res://assets/icons/recycle_bin.svg"),
+		"icon": preload("res://assets/icons/recycle_bin.png"),
 		"kind": "recycle",
 		"size": Vector2(760, 480),
 		"min_size": Vector2(520, 320),

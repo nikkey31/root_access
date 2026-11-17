@@ -43,13 +43,13 @@ signal file_opened(file_name: String)
 @onready var btn_preview_close: Button = $PreviewOverlay/Center/PreviewDialog/DialogVBox/ButtonRow/BtnClose
 
 # Иконки
-const ICON_DRIVE := preload("res://assets/icons/drive.svg")
-const ICON_FOLDER := preload("res://assets/icons/folder.svg")
-const ICON_FILE := preload("res://assets/icons/file_text.svg")
-const ICON_PHOTO := preload("res://assets/icons/photo.svg")
-const ICON_LOCK := preload("res://assets/icons/lock.svg")
-const ICON_RECYCLE := preload("res://assets/icons/recycle_bin.svg")
-const ICON_COMPUTER := preload("res://assets/icons/computer.svg")
+const ICON_DRIVE := preload("res://assets/icons/drive.png")
+const ICON_FOLDER := preload("res://assets/icons/folder.png")
+const ICON_FILE := preload("res://assets/icons/file_text.png")
+const ICON_PHOTO := preload("res://assets/icons/gallery.png")
+const ICON_LOCK := preload("res://assets/icons/folder_locked.png")
+const ICON_RECYCLE := preload("res://assets/icons/recycle_bin.png")
+const ICON_COMPUTER := preload("res://assets/icons/computer.png")
 
 # Цвета ретро-интерфейса
 const C_NAVY := Color(0, 0, 0.501961, 1.0)

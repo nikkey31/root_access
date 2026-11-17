@@ -14,7 +14,7 @@ signal note_opened(note_name: String)
 @onready var status_left: Label = $VBox/StatusBar/StatusMargin/StatusRow/StatusLeft
 @onready var status_encoding: Label = $VBox/StatusBar/StatusMargin/StatusRow/StatusEncoding
 
-const ICON_FILE := preload("res://assets/icons/file_text.svg")
+const ICON_FILE := preload("res://assets/icons/file_text.png")
 
 const DEFAULT_NOTES: Array[String] = [
 	"пароли.txt",
