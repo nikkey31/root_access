@@ -25,12 +25,19 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
 shader = ExtResource("18_crt")
-shader_parameter/curvature = 0.05
-shader_parameter/zoom = 0.97
-shader_parameter/corner_radius = 0.03
-shader_parameter/vignette_strength = 0.12
-shader_parameter/aberration = 0.0004
+shader_parameter/curvature = 0.025
+shader_parameter/zoom = 0.975
+shader_parameter/corner_radius = 0.01
+shader_parameter/vignette_strength = 0.14
+shader_parameter/aberration = 0.0007
 shader_parameter/aspect = 1.7777778
+shader_parameter/scanline_strength = 0.14
+shader_parameter/grille_strength = 0.075
+shader_parameter/color_levels = 24.0
+shader_parameter/noise_strength = 0.022
+shader_parameter/pixel_blend = 0.24
+shader_parameter/pixel_resolution = Vector2(960, 540)
+shader_parameter/glitch_intensity = 0.0
 
 [sub_resource type="SystemFont" id="SystemFont_bold"]
 font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
@@ -122,7 +129,7 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_bottom = -52.0
+offset_bottom = -48.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
@@ -189,8 +196,8 @@ anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -52.0
-offset_bottom = -4.0
+offset_top = -48.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBox_taskbar")
@@ -305,9 +312,9 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 4.0
-offset_top = -392.0
+offset_top = -388.0
 offset_right = 290.0
-offset_bottom = -54.0
+offset_bottom = -48.0
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBox_startmenu")
 

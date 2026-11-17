@@ -54,11 +54,18 @@ func _ready() -> void:
 		map_card.close()
 		map.marker_clicked.emit(MapPreview.MARKERS[5])
 		await get_tree().process_frame
-		_check(map_card.action_button.visible, "У карточки Склада № 3 есть кнопка штурма")
+		_check(not map_card.action_button.visible, "До финала кнопка вызова опергруппы скрыта")
+		map_card.close()
+		GameState.start_final_timer(60.0)
+		map.marker_clicked.emit(MapPreview.MARKERS[5])
+		await get_tree().process_frame
+		_check(map_card.action_button.visible, "В финале у карточки появляется кнопка штурма")
 		map_card.action_button.emit_signal("pressed")
 		await get_tree().process_frame
 		_check(map_card.body_label.text.contains("Группа захвата направлена"), "Кнопка штурма подтверждает отправку группы")
+		_check(GameState.final_ending == GameState.Ending.SALVATION, "Выбор Склада № 3 активирует концовку спасения")
 		map_card.close()
+		GameState.reset_state()
 
 	# Галерея: 15 реальных фото и активная кнопка «Свойства / Подробнее».
 	var gallery_window := desktop._find_window("gallery")

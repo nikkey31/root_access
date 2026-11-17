@@ -35,8 +35,6 @@ func _ready() -> void:
 		
 	if GameState:
 		GameState.is_notes_opened = true
-		if GameState.current_difficulty == GameState.Difficulty.EASY:
-			GameState.trigger_thought("Ник: «Нужно прочесть заметку с паролями... Саймон должен был где-то записать подсказку».", true)
 
 func _populate_notes_list() -> void:
 	notes_list.clear()
@@ -73,11 +71,7 @@ func open_note(file_name: String) -> void:
 	file_path_label.text = full_path
 	date_label.text = date_str
 	
-	var bb_text = content
-	if file_name.ends_with("пароли.txt"):
-		bb_text = content.replace("др Юджина", "[bgcolor=#fff59d][color=#000080][b]др Юджина[/b][/color][/bgcolor]")
-	
-	text_display.text = bb_text
+	text_display.text = content
 	status_left.text = "Файл: %s  |  Длина: %d симв." % [file_name.get_file(), content.length()]
 	note_opened.emit(file_name)
 	

@@ -3,14 +3,12 @@
 [ext_resource type="Script" path="res://scripts/ui/final_timer_bar.gd" id="1_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_timer"]
-bg_color = Color(0.08, 0.02, 0.02, 0.94)
+bg_color = Color(0.08, 0.02, 0.02, 0.98)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.88, 0.22, 0.2, 0.95)
-shadow_color = Color(0, 0, 0, 0.6)
-shadow_size = 4
+border_color = Color(0.88, 0.22, 0.2, 1)
 
 [sub_resource type="SystemFont" id="SystemFont_bold"]
 font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
