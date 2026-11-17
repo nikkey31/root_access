@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3]
+[gd_scene load_steps=30 format=3]
 
 [ext_resource type="Script" path="res://scripts/desktop/desktop.gd" id="1_desktop"]
 [ext_resource type="Script" path="res://scripts/desktop/scanlines.gd" id="2_scanlines"]
@@ -19,6 +19,9 @@
 [ext_resource type="Texture2D" path="res://assets/ui/vignette.png" id="17_vignette"]
 [ext_resource type="Shader" path="res://shaders/crt_lens.gdshader" id="18_crt"]
 [ext_resource type="Script" path="res://scripts/desktop/crt_cursor.gd" id="19_cursor"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ThoughtBox.tscn" id="20_thought"]
+[ext_resource type="PackedScene" path="res://scenes/ui/FinalTimerBar.tscn" id="21_timerbar"]
+[ext_resource type="PackedScene" path="res://scenes/ui/ToastBanner.tscn" id="22_toast"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
 shader = ExtResource("18_crt")
@@ -409,6 +412,12 @@ dialog_text = "Завершение сеанса будет доступно п�
 ok_button_text = "Отмена"
 exclusive = true
 unresizable = true
+
+[node name="ToastBanner" parent="." instance=ExtResource("22_toast")]
+
+[node name="ThoughtBox" parent="." instance=ExtResource("20_thought")]
+
+[node name="FinalTimerBar" parent="." instance=ExtResource("21_timerbar")]
 
 [node name="CRTOverlay" type="Control" parent="."]
 layout_mode = 1
