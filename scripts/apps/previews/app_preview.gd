@@ -107,6 +107,7 @@ var _gallery_cards: Array[PanelContainer] = []
 var _gallery_captions: Array[Label] = []
 var _selected_photo_index: int = 0
 var _map_info_card: InfoCard
+var _active_map_marker: Dictionary = {}
 var _photo_info_card: InfoCard
 var _photo_viewer_overlay: PanelContainer = null
 var _photo_viewer_texture: TextureRect = null
@@ -516,21 +517,37 @@ func _build_maps() -> void:
 	sidebar.add_child(hint)
 
 	_map_info_card = INFO_CARD.instantiate()
+	_map_info_card.action_pressed.connect(_on_map_dispatch_confirmed)
 	add_child(_map_info_card)
 
 func _on_map_marker_clicked(marker: Dictionary) -> void:
 	if _map_info_card == null:
 		return
+	_active_map_marker = marker
 	var title: String = marker["name"]
 	var address: String = marker.get("card_address", "Адрес: " + marker["address"])
 	var note: String = marker.get("note", "")
 	var body := "[b]%s[/b]\n\n%s" % [address, note]
+	var in_finale := has_node("/root/GameState") and get_node("/root/GameState").is_timer_active
 	_map_info_card.open(
 		title,
 		body,
-		marker.get("action", ""),
-		marker.get("action_result", "")
+		marker.get("action", "") if in_finale else "",
+		marker.get("action_result", "") if in_finale else ""
 	)
+
+func _on_map_dispatch_confirmed() -> void:
+	if not has_node("/root/GameState"):
+		return
+	var gs := get_node("/root/GameState")
+	if not gs.is_timer_active:
+		return
+	var point_name: String = str(_active_map_marker.get("name", ""))
+	gs.selected_map_point = point_name
+	if point_name == "Склад № 3":
+		gs.trigger_ending(gs.Ending.SALVATION, {"point": point_name})
+	else:
+		gs.trigger_ending(gs.Ending.FALSE_TRAIL, {"point": point_name})
 
 # ---------------------------------------------------------------------------
 # Галерея

@@ -70,11 +70,11 @@ const APPS := [
 @export var story_minute: int = 15
 @export var story_date: String = "02.10.2009"
 @export var crt_enabled: bool = true
-@export var crt_curvature: float = 0.06
-@export var crt_zoom: float = 0.98
+@export var crt_curvature: float = 0.025
+@export var crt_zoom: float = 0.975
 @export var crt_corner_radius: float = 0.01
-@export var crt_vignette: float = 0.18
-@export var crt_aberration: float = 0.0007
+@export var crt_vignette: float = 0.14
+@export var crt_aberration: float = 0.00045
 
 @onready var icons_root: GridContainer = $DesktopSurface/Icons
 @onready var window_layer: Control = $DesktopSurface/WindowLayer
@@ -200,7 +200,7 @@ func _apply_interpolated_minutes(total_minutes: float) -> void:
 	story_minute = m % 60
 	_update_clock()
 
-## Кратковременная помеха ЭЛТ-экрана (скачок хроматической аберрации и виньетки).
+## Кратковременная помеха ЭЛТ-экрана (полоса сдвига и хроматическая аберрация).
 func play_crt_glitch(duration: float = 0.8) -> void:
 	if not crt_enabled or crt_effect == null:
 		return
@@ -210,14 +210,15 @@ func play_crt_glitch(duration: float = 0.8) -> void:
 	if _crt_glitch_tween and _crt_glitch_tween.is_running():
 		_crt_glitch_tween.kill()
 	_crt_glitch_tween = create_tween()
+	_crt_glitch_tween.set_parallel(true)
 	_crt_glitch_tween.tween_method(
-		func(v: float) -> void: material.set_shader_parameter("aberration", v),
-		crt_aberration, 0.0055, duration * 0.25
+		func(v: float) -> void: material.set_shader_parameter("glitch_intensity", v),
+		0.0, 0.85, duration * 0.2
 	)
 	_crt_glitch_tween.tween_method(
-		func(v: float) -> void: material.set_shader_parameter("aberration", v),
-		0.0055, crt_aberration, duration * 0.75
-	)
+		func(v: float) -> void: material.set_shader_parameter("glitch_intensity", v),
+		0.85, 0.0, duration * 0.8
+	).set_delay(duration * 0.2)
 
 func _connect_game_state() -> void:
 	if not has_node("/root/GameState"):
