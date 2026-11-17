@@ -69,7 +69,7 @@ func _test_notes_app() -> void:
 	# Проверка чтения мишель_слежка.txt
 	notes.open_note("мишель_слежка.txt")
 	var text_michelle = notes.text_display.get_parsed_text()
-	_check(text_michelle.contains("LENINA 54") and text_michelle.contains("Мишель Юхнова"), "Содержимое мишель_слежка.txt прочитано из VFS")
+	_check(text_michelle.contains("ул. Ленина, 54") and text_michelle.contains("Мишель Юхнова"), "Содержимое мишель_слежка.txt прочитано из VFS")
 	
 	# Проверка чтения инструкция_шифрование.txt
 	notes.open_note("инструкция_шифрование.txt")
