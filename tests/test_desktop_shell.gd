@@ -60,9 +60,11 @@ func _ready() -> void:
 		_check(map_card.body_label.text.contains("Группа захвата направлена"), "Кнопка штурма подтверждает отправку группы")
 		map_card.close()
 
-	# Галерея: активная кнопка «Свойства / Подробнее».
+	# Галерея: 15 реальных фото и активная кнопка «Свойства / Подробнее».
 	var gallery_window := desktop._find_window("gallery")
 	var gallery_preview := gallery_window.content_container.get_child(0) as AppPreview
+	_check(gallery_preview.get("_photos").size() == 15, "В Галерее загружено 15 реальных фотографий")
+	_check(gallery_preview.select_photo_by_filename("IMG_0488.JPG"), "В Галерее найдено фото ДР Юджина IMG_0488.JPG")
 	var toolbar: Dictionary = gallery_preview.get("_toolbar_buttons")
 	var properties_button := toolbar.get("Свойства / Подробнее") as Button
 	_check(properties_button != null and not properties_button.disabled, "Кнопка «Свойства / Подробнее» активна")

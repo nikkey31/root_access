@@ -144,30 +144,218 @@
       "is_correct": false
     }
   ],
+  "portraits": {
+    "michelle": {
+      "name": "Мишель Юхнова",
+      "role": "Похищенная студентка (20 лет)",
+      "path": "res://assets/portraits/michelle_yukhnova.jpg"
+    },
+    "simon": {
+      "name": "Саймон Раклин",
+      "role": "Главный подозреваемый, владелец ноутбука",
+      "path": "res://assets/portraits/simon_rakhlin.jpg"
+    },
+    "eugene": {
+      "name": "Юджин Рейвенс",
+      "role": "Младший брат Саймона (27 лет)",
+      "path": "res://assets/portraits/eugene_ravens.jpg"
+    }
+  },
   "photos": [
+    {
+      "id": "photo_picnic",
+      "filename": "IMG_0385.JPG",
+      "path": "res://assets/photos/IMG_0385.JPG",
+      "title": "Пикник у реки",
+      "date": "16.08.2009",
+      "time": "14:30",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "408 КБ",
+      "is_clue": false,
+      "description": "Выезд к реке: складной столик с закусками, мангал и пара стульев на берегу."
+    },
+    {
+      "id": "photo_field_sunset",
+      "filename": "IMG_0391.JPG",
+      "path": "res://assets/photos/IMG_0391.JPG",
+      "title": "Закат в поле",
+      "date": "23.08.2009",
+      "time": "19:52",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "184 КБ",
+      "is_clue": false,
+      "description": "Пустая грунтовая дорога за чертой города на закате."
+    },
+    {
+      "id": "photo_cat_crt",
+      "filename": "IMG_0398.JPG",
+      "path": "res://assets/photos/IMG_0398.JPG",
+      "title": "Кот на мониторе",
+      "date": "02.09.2009",
+      "time": "23:12",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "256 КБ",
+      "is_clue": false,
+      "description": "Полосатый кот спит на старом ЭЛТ-мониторе среди проводов и болванок."
+    },
+    {
+      "id": "photo_toughbook_desk",
+      "filename": "IMG_0401.JPG",
+      "path": "res://assets/photos/IMG_0401.JPG",
+      "title": "Рабочий стол",
+      "date": "08.09.2009",
+      "time": "01:08",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "211 КБ",
+      "is_clue": false,
+      "description": "Армейский ноутбук Panasonic Toughbook CF-29 на захламлённом столе."
+    },
+    {
+      "id": "photo_simon_house",
+      "filename": "IMG_0406.JPG",
+      "path": "res://assets/photos/IMG_0406.JPG",
+      "title": "Дом на Береговой",
+      "date": "12.09.2009",
+      "time": "16:15",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "374 КБ",
+      "is_clue": false,
+      "description": "Одноэтажный деревянный дом за старым забором, ул. Береговая, 14."
+    },
     {
       "id": "photo_truck",
       "filename": "IMG_0412.JPG",
+      "path": "res://assets/photos/IMG_0412.JPG",
       "title": "У въездных ворот склада",
-      "date": "18.09.2009 16:45",
+      "date": "18.09.2009",
+      "time": "16:45",
       "camera": "Sony DSC-W120",
-      "description": "Белая грузовая фура с надписью '6752' на борту у вывески 'Склад № 3'."
+      "resolution": "1280 × 956",
+      "size": "195 КБ",
+      "is_clue": true,
+      "description": "Белая грузовая фура с номером '6752' на борту у ржавых ворот с вывеской 'Склад № 3'."
+    },
+    {
+      "id": "photo_railway_crossing",
+      "filename": "IMG_0421.JPG",
+      "path": "res://assets/photos/IMG_0421.JPG",
+      "title": "Переезд в промзоне",
+      "date": "19.09.2009",
+      "time": "11:20",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "236 КБ",
+      "is_clue": false,
+      "description": "Железнодорожный переезд и бетонный забор на въезде в Северную промзону."
+    },
+    {
+      "id": "photo_junkyard",
+      "filename": "IMG_0435.JPG",
+      "path": "res://assets/photos/IMG_0435.JPG",
+      "title": "Свалка металлолома",
+      "date": "21.09.2009",
+      "time": "15:40",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "406 КБ",
+      "is_clue": false,
+      "description": "Ржавые кузова машин за сетчатым забором на Окружном шоссе, 9-й км."
+    },
+    {
+      "id": "photo_workbench",
+      "filename": "IMG_0472.JPG",
+      "path": "res://assets/photos/IMG_0472.JPG",
+      "title": "Верстак в гараже",
+      "date": "23.09.2009",
+      "time": "22:18",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "276 КБ",
+      "is_clue": false,
+      "description": "На столе лежат серый армированный скотч, пластиковые стяжки, плотные перчатки и фонарик."
     },
     {
       "id": "photo_pickup_birthday",
       "filename": "IMG_0488.JPG",
-      "title": "У ржавого пикапа (ДР Юджина)",
-      "date": "24.09.2009 19:30",
+      "path": "res://assets/photos/IMG_0488.JPG",
+      "title": "У ржавого пикапа",
+      "date": "24.09.2009",
+      "time": "19:30",
       "camera": "Sony DSC-W120",
-      "description": "Юджин стоит у ржавого пикапа на фоне гаражей. В руках ключ зажигания."
+      "resolution": "1280 × 956",
+      "size": "210 КБ",
+      "is_clue": true,
+      "description": "Юджин стоит в кожаной куртке у ржавого пикапа на фоне гаражей. В руках ключ зажигания."
+    },
+    {
+      "id": "photo_brothers_garage",
+      "filename": "IMG_0489.JPG",
+      "path": "res://assets/photos/IMG_0489.JPG",
+      "title": "У гаражей вечером",
+      "date": "24.09.2009",
+      "time": "21:05",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "157 КБ",
+      "is_clue": false,
+      "description": "Юджин и Саймон у капота старой машины с банками пива на фоне ночных гаражей."
+    },
+    {
+      "id": "photo_lenina_windows",
+      "filename": "IMG_0495.JPG",
+      "path": "res://assets/photos/IMG_0495.JPG",
+      "title": "Дом на ул. Ленина",
+      "date": "26.09.2009",
+      "time": "21:44",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "256 КБ",
+      "is_clue": false,
+      "description": "Ночной снимок жилой пятиэтажки снизу из темноты двора."
     },
     {
       "id": "photo_michelle_bus",
       "filename": "IMG_0501.JPG",
+      "path": "res://assets/photos/IMG_0501.JPG",
       "title": "Остановка автобуса",
-      "date": "28.09.2009 17:42",
+      "date": "28.09.2009",
+      "time": "17:42",
       "camera": "Sony DSC-W120",
-      "description": "Смазанный снимок Мишель Юхновой, входящей в автобус № 14."
+      "resolution": "1280 × 956",
+      "size": "241 КБ",
+      "is_clue": true,
+      "description": "Скрытый снимок из машины под дождём: Мишель Юхнова с рюкзаком заходит в автобус № 14."
+    },
+    {
+      "id": "photo_gas_station",
+      "filename": "IMG_0508.JPG",
+      "path": "res://assets/photos/IMG_0508.JPG",
+      "title": "Ночная АЗС",
+      "date": "29.09.2009",
+      "time": "23:14",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "141 КБ",
+      "is_clue": false,
+      "description": "Пустая заправка 'Северная' под фонарями, мокрый асфальт."
+    },
+    {
+      "id": "photo_rain_highway",
+      "filename": "IMG_0512.JPG",
+      "path": "res://assets/photos/IMG_0512.JPG",
+      "title": "Ночная трасса",
+      "date": "30.09.2009",
+      "time": "00:37",
+      "camera": "Sony DSC-W120",
+      "resolution": "1280 × 956",
+      "size": "156 КБ",
+      "is_clue": false,
+      "description": "Вид через залитое дождём лобовое стекло на красные габаритные огни впереди."
     }
   ]
 }

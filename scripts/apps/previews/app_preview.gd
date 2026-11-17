@@ -102,11 +102,15 @@ const PHOTOS := [
 var _bold_font: SystemFont
 var _mono_font: SystemFont
 var _toolbar_buttons: Dictionary = {}
+var _photos: Array[Dictionary] = []
 var _gallery_cards: Array[PanelContainer] = []
 var _gallery_captions: Array[Label] = []
 var _selected_photo_index: int = 0
 var _map_info_card: InfoCard
 var _photo_info_card: InfoCard
+var _photo_viewer_overlay: PanelContainer = null
+var _photo_viewer_texture: TextureRect = null
+var _photo_viewer_title: Label = null
 
 func _ready() -> void:
 	_bold_font = SystemFont.new()
@@ -545,20 +549,64 @@ func _on_map_marker_clicked(marker: Dictionary) -> void:
 # Галерея
 # ---------------------------------------------------------------------------
 
+func _load_gallery_photos() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var json_path := "res://data/files.json"
+	if FileAccess.file_exists(json_path):
+		var file := FileAccess.open(json_path, FileAccess.READ)
+		if file:
+			var parsed: Variant = JSON.parse_string(file.get_as_text())
+			if parsed is Dictionary and parsed.has("photos") and parsed["photos"] is Array:
+				for entry in parsed["photos"]:
+					if not (entry is Dictionary):
+						continue
+					var img_path: String = str(entry.get("path", "res://assets/photos/" + str(entry.get("filename", ""))))
+					var tex: Texture2D = null
+					if ResourceLoader.exists(img_path):
+						tex = load(img_path) as Texture2D
+					if tex == null:
+						var abs_path := ProjectSettings.globalize_path(img_path)
+						if FileAccess.file_exists(abs_path):
+							var img := Image.load_from_file(abs_path)
+							if img != null and not img.is_empty():
+								tex = ImageTexture.create_from_image(img)
+					if tex == null:
+						tex = PHOTO_TRUCK
+					result.append({
+						"id": str(entry.get("id", "")),
+						"texture": tex,
+						"file": str(entry.get("filename", "IMG.JPG")),
+						"title": str(entry.get("title", "")),
+						"date": str(entry.get("date", "01.09.2009")),
+						"time": str(entry.get("time", "12:00")),
+						"camera": str(entry.get("camera", "Sony DSC-W120")),
+						"resolution": str(entry.get("resolution", "1280 × 956")),
+						"size": str(entry.get("size", "250 КБ")),
+						"description": str(entry.get("description", "")),
+					})
+	if result.is_empty():
+		for item in PHOTOS:
+			result.append(item)
+	return result
+
 func _build_gallery() -> void:
+	_photos = _load_gallery_photos()
+	_gallery_cards.clear()
+	_gallery_captions.clear()
+	_selected_photo_index = 0
+
+	var total := _photos.size()
 	_build_chrome(
 		["Файл", "Правка", "Вид", "Слайд-шоу", "Справка"],
 		[
 			{"text": "Все фото"},
-			{"text": "Недавние"},
-			{"sep": true},
-			{"text": "Слайд-шоу"},
+			{"text": "Открыть"},
 			{"sep": true},
 			{"text": "Свойства / Подробнее"},
 		],
-		"6 из 48 фото",
+		"%d фото в архиве" % total,
 		"Сортировка: дата съёмки",
-		"Зум 100%"
+		"Sony DSC-W120"
 	)
 
 	var root := HBoxContainer.new()
@@ -569,47 +617,154 @@ func _build_gallery() -> void:
 
 	var sidebar := _make_sidebar(root, 154.0)
 	_sidebar_header(sidebar, "Библиотека")
-	_sidebar_item(sidebar, ICON_PHOTO, "Все фото  48", true)
-	_sidebar_item(sidebar, ICON_PHOTO, "Недавние  6")
+	_sidebar_item(sidebar, ICON_PHOTO, "Все фото  %d" % total, true)
+	_sidebar_item(sidebar, ICON_PHOTO, "Сентябрь 2009")
 	_sidebar_header(sidebar, "Альбомы")
 	_sidebar_item(sidebar, ICON_FOLDER, "Дом")
 	_sidebar_item(sidebar, ICON_FOLDER, "Гаражи")
-	_sidebar_item(sidebar, ICON_FOLDER, "Склад")
+	_sidebar_item(sidebar, ICON_FOLDER, "Промзона")
 	_sidebar_item(sidebar, ICON_FOLDER, "Поездки")
 	var spacer := Control.new()
 	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	sidebar.add_child(spacer)
-	var hint := _make_label("Клик — выбрать фото,\n«Подробнее» — свойства", 10, C_DARK_GRAY)
+	var hint := _make_label("Клик — выбрать,\n2× клик — открыть,\n«Подробнее» — EXIF", 10, C_DARK_GRAY)
 	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	sidebar.add_child(hint)
 
 	var panel := _make_white_panel(root)
+	var scroll := ScrollContainer.new()
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(scroll)
+
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 4)
-	margin.add_theme_constant_override("margin_top", 4)
-	margin.add_theme_constant_override("margin_right", 4)
-	margin.add_theme_constant_override("margin_bottom", 4)
-	panel.add_child(margin)
+	margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	margin.add_theme_constant_override("margin_left", 6)
+	margin.add_theme_constant_override("margin_top", 6)
+	margin.add_theme_constant_override("margin_right", 6)
+	margin.add_theme_constant_override("margin_bottom", 6)
+	scroll.add_child(margin)
 
 	var grid := GridContainer.new()
 	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 5)
-	grid.add_theme_constant_override("v_separation", 5)
+	grid.add_theme_constant_override("h_separation", 6)
+	grid.add_theme_constant_override("v_separation", 6)
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	margin.add_child(grid)
 
-	for index in range(PHOTOS.size()):
+	for index in range(_photos.size()):
 		_add_photo_card(grid, index)
 	_apply_photo_selection()
 
+	var all_button := _toolbar_buttons.get("Все фото") as Button
+	if all_button:
+		all_button.tooltip_text = "Вернуться к сетке фотографий"
+		all_button.pressed.connect(_close_photo_viewer)
+
+	var open_button := _toolbar_buttons.get("Открыть") as Button
+	if open_button:
+		open_button.tooltip_text = "Открыть выбранное фото крупно"
+		open_button.pressed.connect(_open_photo_viewer)
+
 	var properties_button := _toolbar_buttons.get("Свойства / Подробнее") as Button
 	if properties_button:
-		properties_button.tooltip_text = "Свойства выбранного фото"
+		properties_button.tooltip_text = "Свойства выбранного фото (EXIF)"
 		properties_button.pressed.connect(_open_photo_properties)
+
+	_build_photo_viewer_overlay()
 
 	_photo_info_card = INFO_CARD.instantiate()
 	add_child(_photo_info_card)
+
+func _build_photo_viewer_overlay() -> void:
+	_photo_viewer_overlay = PanelContainer.new()
+	_photo_viewer_overlay.visible = false
+	_photo_viewer_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var bg_style := StyleBoxFlat.new()
+	bg_style.bg_color = Color(0.08, 0.08, 0.09, 0.98)
+	bg_style.content_margin_left = 10.0
+	bg_style.content_margin_top = 8.0
+	bg_style.content_margin_right = 10.0
+	bg_style.content_margin_bottom = 8.0
+	_photo_viewer_overlay.add_theme_stylebox_override("panel", bg_style)
+	add_child(_photo_viewer_overlay)
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	_photo_viewer_overlay.add_child(vbox)
+
+	var top_bar := HBoxContainer.new()
+	top_bar.add_theme_constant_override("separation", 6)
+	vbox.add_child(top_bar)
+
+	var back_btn := _make_toolbar_button("← К альбому")
+	back_btn.tooltip_text = "Закрыть просмотр"
+	back_btn.pressed.connect(_close_photo_viewer)
+	top_bar.add_child(back_btn)
+
+	var prev_btn := _make_toolbar_button("‹ Пред.")
+	prev_btn.tooltip_text = "Предыдущее фото"
+	prev_btn.pressed.connect(_step_photo_viewer.bind(-1))
+	top_bar.add_child(prev_btn)
+
+	var next_btn := _make_toolbar_button("След. ›")
+	next_btn.tooltip_text = "Следующее фото"
+	next_btn.pressed.connect(_step_photo_viewer.bind(1))
+	top_bar.add_child(next_btn)
+
+	_photo_viewer_title = _make_label("", 12, Color(0.92, 0.92, 0.92, 1.0))
+	_photo_viewer_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_photo_viewer_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	top_bar.add_child(_photo_viewer_title)
+
+	var props_btn := _make_toolbar_button("Свойства / Подробнее")
+	props_btn.tooltip_text = "Открыть EXIF-данные снимка"
+	props_btn.pressed.connect(_open_photo_properties)
+	top_bar.add_child(props_btn)
+
+	_photo_viewer_texture = TextureRect.new()
+	_photo_viewer_texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_photo_viewer_texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_photo_viewer_texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_photo_viewer_texture.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	vbox.add_child(_photo_viewer_texture)
+
+func _open_photo_viewer() -> void:
+	if _photo_viewer_overlay == null or _photos.is_empty():
+		return
+	var data: Dictionary = _photos[_selected_photo_index]
+	_photo_viewer_texture.texture = data["texture"]
+	_photo_viewer_title.text = "%s  (%d / %d)" % [data["file"], _selected_photo_index + 1, _photos.size()]
+	_photo_viewer_overlay.visible = true
+	_notify_photo_viewed(data)
+
+func _close_photo_viewer() -> void:
+	if _photo_viewer_overlay:
+		_photo_viewer_overlay.visible = false
+
+func _step_photo_viewer(delta: int) -> void:
+	if _photos.is_empty():
+		return
+	_selected_photo_index = posmod(_selected_photo_index + delta, _photos.size())
+	_apply_photo_selection()
+	_open_photo_viewer()
+
+func _notify_photo_viewed(data: Dictionary) -> void:
+	if not has_node("/root/GameState"):
+		return
+	var gs := get_node("/root/GameState")
+	if data.get("id", "") == "photo_truck" and not gs.is_truck_photo_viewed:
+		gs.is_truck_photo_viewed = true
+		gs.trigger_thought("Странный фургон на фоне какого-то склада… большая надпись 6752 на прицепе и вывеска «Склад № 3», стоит запомнить.", true)
+
+func select_photo_by_filename(target_filename: String) -> bool:
+	for i in range(_photos.size()):
+		if str(_photos[i].get("file", "")).to_lower() == target_filename.to_lower():
+			_selected_photo_index = i
+			_apply_photo_selection()
+			return true
+	return false
 
 func _photo_card_style(selected: bool) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
@@ -626,11 +781,11 @@ func _photo_card_style(selected: bool) -> StyleBoxFlat:
 	return style
 
 func _add_photo_card(grid: GridContainer, index: int) -> void:
-	var data: Dictionary = PHOTOS[index]
+	var data: Dictionary = _photos[index]
 	var card := PanelContainer.new()
 	card.add_theme_stylebox_override("panel", _photo_card_style(false))
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(0, 152)
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 	card.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	card.tooltip_text = "%s · %s" % [data["file"], data["date"]]
@@ -638,12 +793,12 @@ func _add_photo_card(grid: GridContainer, index: int) -> void:
 	grid.add_child(card)
 
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 2)
+	box.add_theme_constant_override("separation", 3)
 	card.add_child(box)
 
 	var texture := TextureRect.new()
 	texture.texture = data["texture"]
-	texture.custom_minimum_size = Vector2(0, 116)
+	texture.custom_minimum_size = Vector2(0, 122)
 	texture.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	texture.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	texture.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -666,6 +821,9 @@ func _on_photo_card_gui_input(event: InputEvent, index: int) -> void:
 	if mouse.button_index == MOUSE_BUTTON_LEFT and mouse.pressed:
 		_selected_photo_index = index
 		_apply_photo_selection()
+		_notify_photo_viewed(_photos[index])
+		if mouse.double_click:
+			_open_photo_viewer()
 
 func _apply_photo_selection() -> void:
 	for index in range(_gallery_cards.size()):
@@ -674,9 +832,11 @@ func _apply_photo_selection() -> void:
 		_gallery_captions[index].add_theme_color_override("font_color", C_NAVY if selected else C_DARK_GRAY)
 
 func _open_photo_properties() -> void:
-	if _photo_info_card == null or PHOTOS.is_empty():
+	if _photo_info_card == null or _photos.is_empty():
 		return
-	var data: Dictionary = PHOTOS[_selected_photo_index]
+	var data: Dictionary = _photos[_selected_photo_index]
+	if data.get("id", "") == "photo_pickup_birthday" and has_node("/root/GameState"):
+		get_node("/root/GameState").is_exif_viewed = true
 	var body := "[b]Файл:[/b] %s\n[b]Тип:[/b] JPEG\n[b]Размер:[/b] %s\n\n[b]Дата съёмки:[/b] [bgcolor=#fff59d]%s[/bgcolor] в %s\n[b]Камера:[/b] %s\n[b]Разрешение:[/b] %s" % [
 		data["file"],
 		data["size"],
