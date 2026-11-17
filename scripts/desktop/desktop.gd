@@ -74,7 +74,7 @@ const APPS := [
 @export var crt_zoom: float = 0.975
 @export var crt_corner_radius: float = 0.01
 @export var crt_vignette: float = 0.14
-@export var crt_aberration: float = 0.00045
+@export var crt_aberration: float = 0.0007
 
 @onready var icons_root: GridContainer = $DesktopSurface/Icons
 @onready var window_layer: Control = $DesktopSurface/WindowLayer

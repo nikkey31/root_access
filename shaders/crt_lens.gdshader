@@ -15,10 +15,12 @@ uniform float vignette_strength : hint_range(0.0, 0.6) = 0.14;
 uniform float aberration : hint_range(0.0, 0.008) = 0.00045;
 uniform float aspect = 1.7777778;
 
-uniform float scanline_strength : hint_range(0.0, 0.35) = 0.09;
-uniform float grille_strength : hint_range(0.0, 0.25) = 0.035;
-uniform float color_levels : hint_range(16.0, 128.0) = 48.0;
-uniform float noise_strength : hint_range(0.0, 0.08) = 0.014;
+uniform float scanline_strength : hint_range(0.0, 0.35) = 0.14;
+uniform float grille_strength : hint_range(0.0, 0.25) = 0.075;
+uniform float color_levels : hint_range(8.0, 128.0) = 24.0;
+uniform float noise_strength : hint_range(0.0, 0.08) = 0.022;
+uniform float pixel_blend : hint_range(0.0, 1.0) = 0.24;
+uniform vec2 pixel_resolution = vec2(960.0, 540.0);
 uniform float glitch_intensity : hint_range(0.0, 1.0) = 0.0;
 
 float bayer4(vec2 p) {
@@ -90,15 +92,21 @@ void fragment() {
 		band_noise = in_band * active_glitch * 0.14;
 	}
 
+	// Лёгкая примесь ретро-пиксельной сетки (текст остаётся читаемым, но появляется пиксельная фактура).
+	vec2 pix_uv = (floor(sample_uv * pixel_resolution) + 0.5) / pixel_resolution;
+
 	// Лёгкая хроматическая аберрация ЭЛТ.
 	vec2 dir = normalize(p + vec2(0.00001));
-	float ca = (aberration + active_glitch * 0.0022) * (0.3 + r2);
-	vec3 color;
-	color.r = texture(screen_texture, sample_uv + dir * ca).r;
-	color.g = texture(screen_texture, sample_uv).g;
-	color.b = texture(screen_texture, sample_uv - dir * ca).b;
+	float ca = (aberration + active_glitch * 0.0022) * (0.35 + r2);
+	vec3 crisp;
+	crisp.r = texture(screen_texture, sample_uv + dir * ca).r;
+	crisp.g = texture(screen_texture, sample_uv).g;
+	crisp.b = texture(screen_texture, sample_uv - dir * ca).b;
 
-	// Деликатное 16-битное квантование цвета с Bayer-дизерингом (сохраняет чёткость текста).
+	vec3 pix_col = texture(screen_texture, pix_uv).rgb;
+	vec3 color = mix(crisp, pix_col, pixel_blend);
+
+	// Ретро-квантование палитры с 4x4 Bayer-дизерингом (стиль Win98 High Color).
 	float dither = (bayer4(floor(FRAGCOORD.xy)) - 0.5) / color_levels;
 	color = clamp(floor((color + dither) * color_levels + 0.5) / color_levels, 0.0, 1.0);
 
