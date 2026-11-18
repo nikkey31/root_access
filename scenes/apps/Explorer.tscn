@@ -532,3 +532,163 @@ layout_mode = 2
 theme_override_fonts/font = SubResource("SystemFont_sans")
 theme_override_font_sizes/font_size = 11
 text = "Закрыть"
+
+[node name="AudioOverlay" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dimmer" type="ColorRect" parent="AudioOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.45)
+
+[node name="Center" type="CenterContainer" parent="AudioOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="AudioDialog" type="PanelContainer" parent="AudioOverlay/Center"]
+custom_minimum_size = Vector2(490, 310)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_raised")
+
+[node name="DialogVBox" type="VBoxContainer" parent="AudioOverlay/Center/AudioDialog"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TitleBar" type="PanelContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_modal_title")
+
+[node name="TitleLabel" type="Label" parent="AudioOverlay/Center/AudioDialog/DialogVBox/TitleBar"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_bold")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+text = "Звукозапись — record.wav (Voice Recorder v1.2)"
+
+[node name="ContentMargin" type="MarginContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="VBox" type="VBoxContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="WaveformPanel" type="PanelContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_sunken")
+
+[node name="WaveformMargin" type="MarginContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="WaveformVBox" type="VBoxContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel/WaveformMargin"]
+layout_mode = 2
+theme_override_constants/separation = 3
+
+[node name="WaveHeader" type="HBoxContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel/WaveformMargin/WaveformVBox"]
+layout_mode = 2
+
+[node name="ChannelLabel" type="Label" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel/WaveformMargin/WaveformVBox/WaveHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.2, 1, 0.2, 1)
+text = "MIC-IN · 11025 Hz · 8-bit Mono"
+
+[node name="TimeLabel" type="Label" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel/WaveformMargin/WaveformVBox/WaveHeader"]
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_mono")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0.2, 1, 0.2, 1)
+text = "00:00 / 00:08"
+
+[node name="WaveVisual" type="RichTextLabel" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel/WaveformMargin/WaveformVBox"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+theme_override_fonts/normal_font = SubResource("SystemFont_mono")
+theme_override_font_sizes/normal_font_size = 11
+theme_override_colors/default_color = Color(0.2, 1, 0.2, 1)
+bbcode_enabled = true
+scroll_active = false
+text = " ▂▃▅▆▇██▇▆▅▃▂  ▂▃▄▅▆▇████▇▆▅▄▃▂   ▂▃▄▅▆▇██▇▆▅▃▂"
+
+[node name="AudioProgress" type="ProgressBar" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel/WaveformMargin/WaveformVBox"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+max_value = 8.0
+show_percentage = false
+
+[node name="SubtitlesPanel" type="PanelContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBox_sunken_white")
+
+[node name="SubtitlesMargin" type="MarginContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/SubtitlesPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="SubtitlesText" type="RichTextLabel" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/SubtitlesPanel/SubtitlesMargin"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_fonts/normal_font = SubResource("SystemFont_sans")
+theme_override_fonts/bold_font = SubResource("SystemFont_bold")
+theme_override_font_sizes/normal_font_size = 12
+theme_override_font_sizes/bold_font_size = 12
+theme_override_colors/default_color = Color(0.1, 0.1, 0.1, 1)
+bbcode_enabled = true
+text = "[color=#888888]Нажмите кнопку «Слушать запись» для воспроизведения расшифрованного аудио.[/color]"
+
+[node name="ButtonRow" type="HBoxContainer" parent="AudioOverlay/Center/AudioDialog/DialogVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BtnPlayAudio" type="Button" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ButtonRow"]
+custom_minimum_size = Vector2(130, 24)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+text = "▶ Слушать запись"
+
+[node name="BtnStopAudio" type="Button" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ButtonRow"]
+custom_minimum_size = Vector2(74, 24)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+text = "⏹ Стоп"
+
+[node name="AudioSpacer" type="Control" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ButtonRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="BtnCloseAudio" type="Button" parent="AudioOverlay/Center/AudioDialog/DialogVBox/ButtonRow"]
+custom_minimum_size = Vector2(72, 24)
+layout_mode = 2
+theme_override_fonts/font = SubResource("SystemFont_sans")
+theme_override_font_sizes/font_size = 11
+text = "Закрыть"

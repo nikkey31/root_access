@@ -266,6 +266,54 @@ func read_file(file_path: String) -> Dictionary:
 		"full_path": resolved
 	}
 
+func change_directory(path: String) -> Dictionary:
+	var clean = path.strip_edges().replace("/", "\\")
+	if clean == "" or clean == ".":
+		return {"success": true, "path": current_directory}
+	
+	if clean == "..":
+		if current_directory == "C:\\ROOT_ACCESS" or current_directory == "C:\\":
+			return {"success": true, "path": current_directory}
+		var base = current_directory.get_base_dir()
+		if base == "" or not base.begins_with("C:"):
+			base = "C:\\ROOT_ACCESS"
+		current_directory = base
+		return {"success": true, "path": current_directory}
+	
+	if clean == "\\" or clean == "C:" or clean == "C:\\":
+		current_directory = "C:\\ROOT_ACCESS"
+		return {"success": true, "path": current_directory}
+	
+	var resolved = _resolve_path(clean)
+	# Проверка на защищённую папку Работа
+	if (resolved.ends_with("\\Работа") or resolved.ends_with("\\WORK")) and GameState:
+		if not GameState.is_work_folder_unlocked:
+			return {
+				"success": false,
+				"error": "Доступ запрещён: каталог «Работа» защищён паролем. Требуется авторизация в Проводнике."
+			}
+	
+	if files_database.has(resolved) and files_database[resolved].get("type") == "dir":
+		current_directory = resolved
+		return {"success": true, "path": current_directory}
+	
+	# Пробуем относительно текущего каталога
+	var rel = current_directory + "\\" + clean
+	if (rel.ends_with("\\Работа") or rel.ends_with("\\WORK")) and GameState:
+		if not GameState.is_work_folder_unlocked:
+			return {
+				"success": false,
+				"error": "Доступ запрещён: каталог «Работа» защищён паролем. Требуется авторизация в Проводнике."
+			}
+	if files_database.has(rel) and files_database[rel].get("type") == "dir":
+		current_directory = rel
+		return {"success": true, "path": current_directory}
+		
+	return {
+		"success": false,
+		"error": "Системе не удается найти указанный путь: " + path
+	}
+
 func decrypt_file(file_path: String, key: String) -> Dictionary:
 	var resolved = _resolve_path(file_path)
 	if not files_database.has(resolved):
@@ -289,10 +337,10 @@ func decrypt_file(file_path: String, key: String) -> Dictionary:
 			"error": "Файл не зашифрован."
 		}
 	
-	var expected_key: String = node.get("key", "").strip_edges()
-	var entered_key: String = key.strip_edges()
+	var expected_key: String = node.get("key", "").strip_edges().to_upper().replace(" ", "")
+	var entered_key: String = key.strip_edges().to_upper().replace(" ", "")
 	
-	if expected_key == "" or entered_key.to_upper() != expected_key.to_upper():
+	if expected_key == "" or entered_key != expected_key:
 		return {
 			"success": false,
 			"error": "Ошибка контрольной суммы: неверный ключ дешифрования!"
@@ -303,7 +351,7 @@ func decrypt_file(file_path: String, key: String) -> Dictionary:
 	var parent_dir = resolved.get_base_dir()
 	var unlocked_full_path = parent_dir + "\\" + unlocked_name
 	
-	files_database[unlocked_full_path] = {
+	var record_node = {
 		"type": "file",
 		"is_encrypted": false,
 		"content": node.get("unlocked_content", ""),
@@ -312,10 +360,18 @@ func decrypt_file(file_path: String, key: String) -> Dictionary:
 		"type_str": "Звуковой файл WAV"
 	}
 	
-	if files_database.has(parent_dir):
-		var dir_items: Array = files_database[parent_dir]["items"]
-		if not unlocked_name in dir_items:
-			dir_items.append(unlocked_name)
+	files_database[unlocked_full_path] = record_node
+	files_database["C:\\ROOT_ACCESS\\Работа\\" + unlocked_name] = record_node
+	files_database["C:\\ROOT_ACCESS\\WORK\\" + unlocked_name] = record_node
+	files_database["C:\\ROOT_ACCESS\\Документы\\Работа\\" + unlocked_name] = record_node
+	
+	# Добавляем в списки элементов родительских папок
+	var target_dirs = [parent_dir, "C:\\ROOT_ACCESS\\Работа", "C:\\ROOT_ACCESS\\WORK", "C:\\ROOT_ACCESS"]
+	for d in target_dirs:
+		if files_database.has(d):
+			var dir_items: Array = files_database[d]["items"]
+			if not unlocked_name in dir_items:
+				dir_items.append(unlocked_name)
 	
 	# Уведомляем GameState
 	if GameState:

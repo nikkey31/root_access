@@ -42,6 +42,16 @@ signal file_opened(file_name: String)
 @onready var btn_preview_notes: Button = $PreviewOverlay/Center/PreviewDialog/DialogVBox/ButtonRow/BtnOpenNotes
 @onready var btn_preview_close: Button = $PreviewOverlay/Center/PreviewDialog/DialogVBox/ButtonRow/BtnClose
 
+# Модальное окно аудиоплеера (record.wav)
+@onready var audio_overlay: Control = $AudioOverlay
+@onready var audio_time_label: Label = $AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel/WaveformMargin/WaveformVBox/WaveHeader/TimeLabel
+@onready var audio_wave_visual: RichTextLabel = $AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel/WaveformMargin/WaveformVBox/WaveVisual
+@onready var audio_progress: ProgressBar = $AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/WaveformPanel/WaveformMargin/WaveformVBox/AudioProgress
+@onready var audio_subtitles: RichTextLabel = $AudioOverlay/Center/AudioDialog/DialogVBox/ContentMargin/VBox/SubtitlesPanel/SubtitlesMargin/SubtitlesText
+@onready var btn_play_audio: Button = $AudioOverlay/Center/AudioDialog/DialogVBox/ButtonRow/BtnPlayAudio
+@onready var btn_stop_audio: Button = $AudioOverlay/Center/AudioDialog/DialogVBox/ButtonRow/BtnStopAudio
+@onready var btn_close_audio: Button = $AudioOverlay/Center/AudioDialog/DialogVBox/ButtonRow/BtnCloseAudio
+
 # Иконки
 const ICON_DRIVE := preload("res://assets/icons/drive.svg")
 const ICON_FOLDER := preload("res://assets/icons/folder.svg")
@@ -50,6 +60,7 @@ const ICON_PHOTO := preload("res://assets/icons/photo.svg")
 const ICON_LOCK := preload("res://assets/icons/lock.svg")
 const ICON_RECYCLE := preload("res://assets/icons/recycle_bin.svg")
 const ICON_COMPUTER := preload("res://assets/icons/computer.svg")
+const ICON_SPEAKER := preload("res://assets/icons/speaker.svg")
 
 # Цвета ретро-интерфейса
 const C_NAVY := Color(0, 0, 0.501961, 1.0)
@@ -70,20 +81,52 @@ var _bold_font: SystemFont
 var _mono_font: SystemFont
 var _sans_font: SystemFont
 
+var _is_audio_playing: bool = false
+var _audio_playback_time: float = 0.0
+const AUDIO_DURATION: float = 8.0
+
 func _ready() -> void:
 	_init_fonts()
 	_connect_signals()
 	
 	password_overlay.visible = false
 	preview_overlay.visible = false
+	if audio_overlay:
+		audio_overlay.visible = false
 	
 	if mode == "recycle":
 		current_path = "C:\\ROOT_ACCESS\\Корзина"
 	elif initial_path != "":
 		current_path = initial_path
 	
+	if GameState:
+		if not GameState.location_decrypted.is_connected(_on_location_decrypted):
+			GameState.location_decrypted.connect(_on_location_decrypted)
+		if not GameState.folder_unlocked.is_connected(_on_folder_unlocked):
+			GameState.folder_unlocked.connect(_on_folder_unlocked)
+	
 	_build_sidebar()
 	navigate_to(current_path, false)
+
+func _process(delta: float) -> void:
+	if _is_audio_playing:
+		_audio_playback_time += delta
+		if audio_progress:
+			audio_progress.value = minf(_audio_playback_time, AUDIO_DURATION)
+		if audio_time_label:
+			var sec := int(_audio_playback_time)
+			audio_time_label.text = "%02d:%02d / 00:08" % [sec / 60, sec % 60]
+		
+		if audio_wave_visual:
+			var t := int(_audio_playback_time * 10) % 4
+			match t:
+				0: audio_wave_visual.text = " ▂▃▅▆▇██▇▆▅▃▂  ▂▃▄▅▆▇████▇▆▅▄▃▂   ▂▃▄▅▆▇██▇▆▅▃▂"
+				1: audio_wave_visual.text = "▃▅▆▇████▇▆▅▃▂   ▂▃▄▅▆▇██▇▆▅▄▃▂  ▂▃▄▅▆▇████▇▆▅▃"
+				2: audio_wave_visual.text = "▇████▇▆▅▄▃▂  ▂▃▄▅▆▇████▇▆▅▄▃▂   ▂▃▄▅▆▇██▇▆▅▄▃▂"
+				3: audio_wave_visual.text = "▅▆▇██▇▆▅▃▂   ▂▃▄▅▆▇████▇▆▅▄▃▂  ▂▃▄▅▆▇████▇▆▅▃▂"
+		
+		if _audio_playback_time >= AUDIO_DURATION:
+			_on_audio_finished()
 
 func _init_fonts() -> void:
 	_sans_font = SystemFont.new()
@@ -117,6 +160,17 @@ func _connect_signals() -> void:
 	
 	btn_preview_close.pressed.connect(func(): preview_overlay.visible = false)
 	btn_preview_notes.pressed.connect(_on_preview_open_in_notes)
+	
+	if btn_play_audio:
+		btn_play_audio.pressed.connect(_play_audio_record)
+	if btn_stop_audio:
+		btn_stop_audio.pressed.connect(_stop_audio_record)
+	if btn_close_audio:
+		btn_close_audio.pressed.connect(func():
+			_stop_audio_record()
+			if audio_overlay:
+				audio_overlay.visible = false
+		)
 
 func _build_sidebar() -> void:
 	for child in sidebar_container.get_children():
@@ -366,6 +420,8 @@ func _get_icon_for_item(item_data: Dictionary) -> Texture2D:
 		return ICON_FOLDER
 	if name.ends_with(".enc"):
 		return ICON_LOCK
+	if name.ends_with(".wav"):
+		return ICON_SPEAKER
 	if name.ends_with(".jpg") or name.ends_with(".png"):
 		return ICON_PHOTO
 	return ICON_FILE
@@ -444,9 +500,15 @@ func _activate_item(item_data: Dictionary) -> void:
 		_show_preview("Ошибка чтения: " + name, 
 			"[color=#800000][b]НЕВОЗМОЖНО ОТКРЫТЬ ФАЙЛ[/b][/color]\n\n" +
 			"Формат файла не распознан или данные зашифрованы (заголовок 0x7F454C46).\n" +
-			"Отображение содержимого в текстовом режиме недоступно.",
+			"Отображение содержимого в текстовом режиме недоступно.\n\n" +
+			"[b]Подсказка:[/b] Для дешифрования контейнера используйте Терминал: [code]decrypt location.enc -k <ключ>[/code]. См. файл «инструкция_шифрование.txt» в текущей папке.",
 			false
 		)
+		return
+
+	if name.ends_with(".wav"):
+		_show_audio_player()
+		file_opened.emit(name)
 		return
 		
 	if name.ends_with(".txt"):
@@ -533,3 +595,56 @@ func _find_desktop() -> Desktop:
 			return node
 		node = node.get_parent()
 	return null
+
+# ---------------------------------------------------------------------------
+# Модальное окно аудиоплеера (record.wav)
+# ---------------------------------------------------------------------------
+
+func _show_audio_player() -> void:
+	if not audio_overlay:
+		return
+	audio_overlay.visible = true
+	_play_audio_record()
+
+func _play_audio_record() -> void:
+	_is_audio_playing = true
+	_audio_playback_time = 0.0
+	if btn_play_audio:
+		btn_play_audio.disabled = true
+	if btn_stop_audio:
+		btn_stop_audio.disabled = false
+	if audio_progress:
+		audio_progress.value = 0.0
+	if audio_time_label:
+		audio_time_label.text = "00:00 / 00:08"
+	if audio_subtitles:
+		audio_subtitles.text = "[color=#000000][b]Саймон:[/b] «...время почти вышло. Грузовик 6-7-5-2... Она останется здесь навсегда...»[/color]"
+
+func _stop_audio_record() -> void:
+	_is_audio_playing = false
+	if btn_play_audio:
+		btn_play_audio.disabled = false
+	if btn_stop_audio:
+		btn_stop_audio.disabled = true
+
+func _on_audio_finished() -> void:
+	_stop_audio_record()
+	if audio_progress:
+		audio_progress.value = AUDIO_DURATION
+	if audio_time_label:
+		audio_time_label.text = "00:08 / 00:08"
+	if GameState:
+		GameState.mark_audio_listened()
+
+## Быстрый вызов завершения аудио для автотестов
+func simulate_audio_finish() -> void:
+	_show_audio_player()
+	_on_audio_finished()
+
+func _on_location_decrypted() -> void:
+	_render_directory_contents()
+
+func _on_folder_unlocked(_folder: String) -> void:
+	_build_sidebar()
+	_render_directory_contents()
+
