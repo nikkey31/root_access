@@ -96,6 +96,7 @@ const APPS := [
 @onready var thought_box: ThoughtBox = $ThoughtBox
 @onready var final_timer_bar: FinalTimerBar = $FinalTimerBar
 @onready var toast_banner: ToastBanner = $ToastBanner
+@onready var ending_screen: Control = $EndingScreen
 
 var _windows: Array[WindowFrame] = []
 var _task_buttons: Dictionary = {}
@@ -238,6 +239,10 @@ func _connect_game_state() -> void:
 		gs.timer_expired.connect(_on_game_timer_expired)
 	if not gs.game_ended.is_connected(_on_game_ended):
 		gs.game_ended.connect(_on_game_ended)
+	if gs.has_signal("bribe_triggered") and not gs.bribe_triggered.is_connected(_on_game_bribe_triggered):
+		gs.bribe_triggered.connect(_on_game_bribe_triggered)
+	if gs.has_signal("phishing_triggered") and not gs.phishing_triggered.is_connected(_on_game_phishing_triggered):
+		gs.phishing_triggered.connect(_on_game_phishing_triggered)
 
 func _disconnect_game_state() -> void:
 	if not has_node("/root/GameState"):
@@ -257,6 +262,10 @@ func _disconnect_game_state() -> void:
 		gs.timer_expired.disconnect(_on_game_timer_expired)
 	if gs.game_ended.is_connected(_on_game_ended):
 		gs.game_ended.disconnect(_on_game_ended)
+	if gs.has_signal("bribe_triggered") and gs.bribe_triggered.is_connected(_on_game_bribe_triggered):
+		gs.bribe_triggered.disconnect(_on_game_bribe_triggered)
+	if gs.has_signal("phishing_triggered") and gs.phishing_triggered.is_connected(_on_game_phishing_triggered):
+		gs.phishing_triggered.disconnect(_on_game_phishing_triggered)
 
 func _on_game_thought_triggered(text: String) -> void:
 	if thought_box:
@@ -286,9 +295,21 @@ func _on_game_timer_expired() -> void:
 	if final_timer_bar:
 		final_timer_bar.show_expired()
 
-func _on_game_ended(_ending_id: int, _details: Dictionary) -> void:
+func _on_game_bribe_triggered() -> void:
+	if toast_banner:
+		toast_banner.show_message("Анонимный пейджер: $100 000 зачистят всё. Введи wipe --force и забудь.")
+
+func _on_game_phishing_triggered() -> void:
+	if toast_banner:
+		toast_banner.show_message("ТРЕВОГА: Обнаружена внешняя трассировка IP! Утечка координат.")
+
+func _on_game_ended(ending_id: int, details: Dictionary) -> void:
 	if thought_box:
 		thought_box.set_compact_top_mode(false)
+	if final_timer_bar:
+		final_timer_bar.stop_display()
+	if ending_screen:
+		ending_screen.display_ending(ending_id, details)
 
 
 # ---------------------------------------------------------------------------

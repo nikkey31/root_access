@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3]
+[gd_scene load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://scripts/desktop/desktop.gd" id="1_desktop"]
 [ext_resource type="Script" path="res://scripts/desktop/scanlines.gd" id="2_scanlines"]
@@ -22,6 +22,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/ThoughtBox.tscn" id="20_thought"]
 [ext_resource type="PackedScene" path="res://scenes/ui/FinalTimerBar.tscn" id="21_timerbar"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ToastBanner.tscn" id="22_toast"]
+[ext_resource type="PackedScene" path="res://scenes/ui/EndingScreen.tscn" id="23_ending"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
 shader = ExtResource("18_crt")
@@ -425,6 +426,10 @@ unresizable = true
 [node name="ThoughtBox" parent="." instance=ExtResource("20_thought")]
 
 [node name="FinalTimerBar" parent="." instance=ExtResource("21_timerbar")]
+
+[node name="EndingScreen" parent="." instance=ExtResource("23_ending")]
+visible = false
+z_index = 2000
 
 [node name="CRTOverlay" type="Control" parent="."]
 layout_mode = 1

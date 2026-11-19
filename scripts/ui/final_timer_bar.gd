@@ -40,6 +40,9 @@ func hide_display() -> void:
 	visible = false
 	_is_critical = false
 
+func stop_display() -> void:
+	hide_display()
+
 func _process(delta: float) -> void:
 	if not visible or not _is_critical:
 		return

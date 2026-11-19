@@ -8,6 +8,40 @@ static var instance: Node
 
 # По спецификации рабочая папка Терминала совпадает с «Работа».
 var current_directory: String = "C:\\ROOT_ACCESS\\Работа"
+var _initial_files_database: Dictionary = {}
+
+func _ready() -> void:
+	instance = self
+	_initial_files_database = files_database.duplicate(true)
+
+func reset_vfs() -> void:
+	if not _initial_files_database.is_empty():
+		files_database = _initial_files_database.duplicate(true)
+	current_directory = "C:\\ROOT_ACCESS\\Работа"
+	print("[VFS] Состояние виртуальной файловой системы сброшено.")
+
+func wipe_storage() -> void:
+	files_database.clear()
+	files_database["C:\\ROOT_ACCESS"] = {
+		"type": "dir",
+		"items": ["CORRUPTED_SECTOR_0.RAW", "CORRUPTED_SECTOR_1.RAW"],
+		"type_str": "Повреждённый том"
+	}
+	files_database["C:\\ROOT_ACCESS\\CORRUPTED_SECTOR_0.RAW"] = {
+		"type": "file",
+		"content": "[DATA DESTROYED BY WIPE UTILITY 0x00000000]",
+		"size_str": "0 КБ",
+		"date_str": "02.10.2009 03:41",
+		"type_str": "Повреждённый сектор"
+	}
+	files_database["C:\\ROOT_ACCESS\\CORRUPTED_SECTOR_1.RAW"] = {
+		"type": "file",
+		"content": "[BAD CHECKSUM // ZERO FILL]",
+		"size_str": "0 КБ",
+		"date_str": "02.10.2009 03:41",
+		"type_str": "Повреждённый сектор"
+	}
+	print("[VFS] Виртуальное хранилище полностью стёрто командой wipe!")
 
 const MY_DOCS_FILES: Array[String] = [
 	"пароли.txt",

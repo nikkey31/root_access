@@ -185,6 +185,10 @@ func _cmd_wipe(args: Array) -> void:
 	if args.has("--force"):
 		output_label.append_text("[color=%s][КРИТИЧЕСКИЙ РЕЖИМ] Инициализация команды wipe --force...\n" % COLOR_RED)
 		output_label.append_text("Стирание секторов виртуального хранилища... 100%\nДанные безвозвратно уничтожены.[/color]\n")
+		if vfs and vfs.has_method("wipe_storage"):
+			vfs.wipe_storage()
+		if GameState:
+			GameState.trigger_ending(GameState.Ending.CORRUPTION, {"reason": "wipe_force"})
 	else:
 		_print_warning("[ПРЕДУПРЕЖДЕНИЕ] Команда уничтожения данных требует подтверждения: wipe --force")
 
