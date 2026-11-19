@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://tests/test_cli_decrypt_and_audio.gd" id="1_test"]
+
+[node name="TestCliDecryptAndAudio" type="Node"]
+script = ExtResource("1_test")

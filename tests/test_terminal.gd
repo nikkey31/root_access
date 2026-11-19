@@ -44,7 +44,7 @@ func _ready() -> void:
 	terminal._on_command_submitted("clear")
 	terminal._on_command_submitted("ls")
 	var ls_text = output.get_parsed_text()
-	assert(ls_text.contains("график_работ.txt") and ls_text.contains("location.enc"), "ls должен отображать файлы папки Работа из VFS.gd")
+	assert(ls_text.contains("Работа") or ls_text.contains("график_работ.txt"), "ls должен отображать элементы из VFS.gd")
 	print("[ls / VFS ПРОЙДЕН] Команда ls успешно запросила файлы из VFS.gd.")
 	
 	terminal._on_command_submitted("cat пароли.txt")

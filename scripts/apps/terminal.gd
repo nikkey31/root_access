@@ -86,6 +86,10 @@ func _process_command(command_line: String) -> void:
 			_cmd_help(args)
 		"clear", "cls":
 			_cmd_clear()
+		"pwd":
+			_cmd_pwd(args)
+		"cd", "chdir":
+			_cmd_cd(args)
 		"ls", "dir":
 			_cmd_ls(args)
 		"cat", "type":
@@ -101,6 +105,8 @@ func _cmd_help(_args: Array) -> void:
 	var text = "[color=%s][b]Список доступных системных утилит:[/b]\n" % COLOR_GREEN
 	text += "  [b]help[/b]                 - вывод списка доступных утилит\n"
 	text += "  [b]clear[/b] (алиас: cls)    - очистка экрана терминала\n"
+	text += "  [b]pwd[/b]                  - вывод текущей рабочей директории\n"
+	text += "  [b]cd <папка>[/b]          - переход в указанную директорию (cd .. - вверх)\n"
 	text += "  [b]ls[/b]    (алиас: dir)    - вывод файлов текущей директории через VFS\n"
 	text += "  [b]cat <file>[/b]           - просмотр содержимого текстового файла\n"
 	text += "  [b]decrypt <file> -k <key>[/b] - дешифрование зашифрованного файла (.enc)\n"
@@ -109,6 +115,28 @@ func _cmd_help(_args: Array) -> void:
 
 func _cmd_clear() -> void:
 	output_label.clear()
+
+func _cmd_pwd(_args: Array = []) -> void:
+	if not vfs:
+		_print_error("Ошибка: подсистема VFS недоступна.")
+		return
+	output_label.append_text("[color=%s]%s[/color]\n" % [COLOR_GREEN, vfs.get_current_directory()])
+
+func _cmd_cd(args: Array) -> void:
+	if not vfs:
+		_print_error("Ошибка: подсистема VFS недоступна.")
+		return
+	
+	if args.is_empty():
+		output_label.append_text("[color=%s]%s[/color]\n" % [COLOR_GREEN, vfs.get_current_directory()])
+		return
+	
+	var target = " ".join(args)
+	var res = vfs.change_directory(target)
+	if not res.get("success", false):
+		_print_error(res.get("error", "Каталог не найден."))
+	else:
+		_update_prompt()
 
 func _cmd_ls(_args: Array) -> void:
 	if not vfs:
@@ -161,24 +189,53 @@ func _cmd_decrypt(args: Array) -> void:
 	var filename = args[0]
 	var key = ""
 	
-	if args[1] == "-k" or args[1] == "--key":
-		if args.size() >= 3:
-			key = args[2]
+	var k_idx = -1
+	for i in range(args.size()):
+		if args[i] == "-k" or args[i] == "--key":
+			k_idx = i
+			break
+	
+	if k_idx != -1:
+		if k_idx + 1 < args.size():
+			var key_tokens = args.slice(k_idx + 1)
+			key = " ".join(key_tokens)
 		else:
 			_print_error("Флаг -k требует указания ключа дешифрования.")
 			return
+	elif args.size() >= 2:
+		var key_tokens = args.slice(1)
+		key = " ".join(key_tokens)
 	else:
-		key = args[1]
+		_print_error("Укажите ключ дешифрования: decrypt " + filename + " -k <ключ>")
+		return
+	
+	output_label.append_text("[color=%s]Запуск дешифрования криптоконтейнера: %s...[/color]\n" % [COLOR_CYAN, filename])
+	
+	var progress_steps = [
+		"[░░░░░░░░░░░░░░░░]   0%",
+		"[████░░░░░░░░░░░░]  25%",
+		"[████████░░░░░░░░]  50%",
+		"[████████████░░░░]  75%",
+		"[████████████████] 100% COMPLETE"
+	]
+	
+	for step in progress_steps:
+		output_label.append_text("[color=%s]%s[/color]\n" % [COLOR_GREEN, step])
+		_scroll_to_bottom()
+		if get_tree() and not get_tree().root.get_meta("is_test", false):
+			await get_tree().create_timer(0.04).timeout
 	
 	var res = vfs.decrypt_file(filename, key)
 	if not res.get("success", false):
 		_print_error(res.get("error", "Ошибка дешифрования."))
 		return
 	
-	var unlocked_file = res.get("unlocked_file", "")
-	var success_text = "[color=%s][SUCCESS] Ключ подтвержден!\n" % COLOR_GREEN
-	success_text += "Файл успешно расшифрован: %s\n" % unlocked_file
-	success_text += "Содержимое:\n%s[/color]\n" % res.get("content", "")
+	var unlocked_file = res.get("unlocked_file", "record.wav")
+	var success_text = "[color=%s][SUCCESS] Ключ подтвержден: контрольная сумма совпадает!\n" % COLOR_GREEN
+	success_text += "Разблокирован скрытый аудиофайл: %s\n" % unlocked_file
+	success_text += "Файл сохранён в папку: \\Работа\\%s\n" % unlocked_file
+	success_text += "Сюжетное время на часах перемотано на 03:40.\n"
+	success_text += "Аудиозапись доступна для прослушивания в Проводнике.[/color]\n"
 	output_label.append_text(success_text)
 
 func _cmd_wipe(args: Array) -> void:
