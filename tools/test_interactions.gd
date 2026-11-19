@@ -65,7 +65,7 @@ func _ready() -> void:
 	_check(moved.x > 60.0 and moved.y > 30.0, "Окно перетаскивается за заголовок (сдвиг %s)" % moved)
 
 	# 3. Сворачивание и восстановление с панели задач.
-	var minimize_point := window.global_position + Vector2(window.size.x - 45, 13)
+	var minimize_point := window.btn_minimize.global_position + window.btn_minimize.size * 0.5
 	await _click(minimize_point)
 	await get_tree().process_frame
 	_check(not window.visible, "Кнопка «Свернуть» скрывает окно")
@@ -77,7 +77,7 @@ func _ready() -> void:
 		_check(window.visible and window.is_active, "Клик по панели задач восстанавливает окно")
 
 	# 4. Закрытие крестиком.
-	var close_point := window.global_position + Vector2(window.size.x - 14, 13)
+	var close_point := window.btn_close.global_position + window.btn_close.size * 0.5
 	await _click(close_point)
 	await get_tree().process_frame
 	_check(desktop._windows.is_empty(), "Крестик закрывает окно")
@@ -149,15 +149,20 @@ func _ready() -> void:
 	desktop.open_app("browser")
 	await get_tree().process_frame
 	var browser_window := desktop._find_window("browser")
-	var browser := browser_window.content_container.get_child(0) as BrowserApp
+	var browser = browser_window.content_container.get_child(0)
 	await _click(browser.history_button.global_position + browser.history_button.size * 0.5)
 	await get_tree().process_frame
-	_check(browser.current_view == "history", "Кнопка «История» открывает историю браузера")
-	var messenger_row := browser.history_rows.get_child(3) as Button
-	await _click(messenger_row.global_position + messenger_row.size * 0.5)
-	await get_tree().process_frame
-	_check(browser.current_view == "messenger", "Клик по истории мессенджера открывает чат с Юджином")
-	_check(browser.messenger_banner != null and browser.messenger_banner.text.contains("30 дней"), "В чате видна плашка об удалённых сообщениях")
+	var messenger_row: Button = null
+	for child in browser.history_rows.get_children():
+		if child is Button and (child.text.to_lower().contains("рейвенс") or child.text.to_lower().contains("eugene") or child.text.to_lower().contains("мессенджер")):
+			messenger_row = child
+			break
+	_check(messenger_row != null, "Строка мессенджера найдена в истории")
+	if messenger_row:
+		await _click(messenger_row.global_position + messenger_row.size * 0.5)
+		await get_tree().process_frame
+		_check(browser.current_view == "messenger", "Клик по истории мессенджера открывает чат с Юджином")
+		_check(browser.messenger_banner != null and browser.messenger_banner.text.contains("30 дней"), "В чате видна плашка об удалённых сообщениях")
 	browser_window.close()
 
 	_finish()

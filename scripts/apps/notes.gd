@@ -17,12 +17,12 @@ signal note_opened(note_name: String)
 const ICON_FILE := preload("res://assets/icons/file_text.png")
 
 const DEFAULT_NOTES: Array[String] = [
-	"пароли.txt",
 	"список_дел.txt",
 	"дела_на_неделю.txt",
 	"покупки.txt",
 	"контакты.txt",
 	"гараж_инвентарь.txt",
+	"пароли.txt",
 	"долги.txt",
 	"рецепт_плова.txt",
 	"черновик_объявления.txt",
@@ -35,6 +35,8 @@ var current_file: String = ""
 func _ready() -> void:
 	_populate_notes_list()
 	notes_list.item_selected.connect(_on_note_selected)
+	notes_list.gui_input.connect(_on_notes_list_gui_input)
+	text_display.gui_input.connect(_on_text_display_gui_input)
 	
 	if notes_list.item_count > 0:
 		notes_list.select(0)
@@ -42,6 +44,40 @@ func _ready() -> void:
 		
 	if GameState:
 		GameState.is_notes_opened = true
+
+func _on_notes_list_gui_input(event: InputEvent) -> void:
+	var scroll := notes_list.get_v_scroll_bar()
+	if not scroll:
+		return
+	if event is InputEventPanGesture:
+		scroll.value += event.delta.y * 30.0
+		accept_event()
+	elif event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.is_pressed():
+			if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
+				scroll.value -= scroll.step * 3.0
+				accept_event()
+			elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				scroll.value += scroll.step * 3.0
+				accept_event()
+
+func _on_text_display_gui_input(event: InputEvent) -> void:
+	var scroll := text_display.get_v_scroll_bar()
+	if not scroll:
+		return
+	if event is InputEventPanGesture:
+		scroll.value += event.delta.y * 30.0
+		accept_event()
+	elif event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		if mb.is_pressed():
+			if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
+				scroll.value -= scroll.step * 3.0
+				accept_event()
+			elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+				scroll.value += scroll.step * 3.0
+				accept_event()
 
 func _populate_notes_list() -> void:
 	notes_list.clear()

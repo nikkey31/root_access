@@ -96,37 +96,66 @@ func _load_data() -> void:
 func show_home() -> void:
 	_clear_content()
 	current_view = "home"
-	address.text = "local://home"
-	_set_status("Локальная домашняя страница")
+	address.text = "http://www.google.com/"
+	_set_status("Невозможно найти сервер")
 
 	var page := VBoxContainer.new()
-	page.add_theme_constant_override("separation", 8)
+	page.add_theme_constant_override("separation", 10)
 	content.add_child(page)
 
-	var title := _make_heading("FARA NET", 22, C_NAVY)
-	page.add_child(title)
-	var subtitle := _make_label("Локальный архив браузера · только сохранённые страницы", 11, C_DARK_GRAY)
-	page.add_child(subtitle)
-
 	var panel := _make_white_panel()
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	page.add_child(panel)
+
 	var inner := VBoxContainer.new()
-	inner.add_theme_constant_override("separation", 8)
+	inner.add_theme_constant_override("separation", 10)
 	panel.add_child(inner)
 
-	var welcome := _make_label("Добро пожаловать в локальный архив.", 12, Color.BLACK)
-	inner.add_child(welcome)
-	var history_btn := _make_action_button("История посещений")
-	history_btn.pressed.connect(show_history)
-	inner.add_child(history_btn)
-	var messenger_btn := _make_action_button("Мессенджер: Юджин Рейвенс (Брат)")
-	messenger_btn.tooltip_text = "Открыть сохранённую сессию веб-мессенджера"
-	messenger_btn.pressed.connect(open_messenger)
-	inner.add_child(messenger_btn)
+	var title := _make_heading("Невозможно отобразить страницу", 16, Color(0.1, 0.1, 0.1))
+	inner.add_child(title)
 
-	var note := _make_label("Страницы открываются из локального кэша. Внешняя сеть недоступна.", 10, C_DARK_GRAY)
-	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	inner.add_child(note)
+	var sep := HSeparator.new()
+	inner.add_child(sep)
+
+	var desc := _make_label("Веб-узел не отвечает или сетевое подключение отключено.\n\nВозможные причины:\n• Сетевой кабель не подключен к сетевому адаптеру.\n• Удалённый сервер временно недоступен или отключен от сети.\n• Настройки подключения к Интернету не заданы в панели управления.", 11, Color(0.2, 0.2, 0.2))
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	inner.add_child(desc)
+
+	var hint_box := PanelContainer.new()
+	var hint_style := StyleBoxFlat.new()
+	hint_style.bg_color = Color(0.96, 0.96, 0.96)
+	hint_style.border_width_left = 1
+	hint_style.border_width_top = 1
+	hint_style.border_width_right = 1
+	hint_style.border_width_bottom = 1
+	hint_style.border_color = C_GRAY
+	hint_style.content_margin_left = 8
+	hint_style.content_margin_top = 8
+	hint_style.content_margin_right = 8
+	hint_style.content_margin_bottom = 8
+	hint_box.add_theme_stylebox_override("panel", hint_style)
+	inner.add_child(hint_box)
+
+	var hint_vbox := VBoxContainer.new()
+	hint_vbox.add_theme_constant_override("separation", 6)
+	hint_box.add_child(hint_vbox)
+
+	var hint_text := _make_label("Попробуйте выполнить следующие действия:\n• Нажмите кнопку «Обновить» на панели инструментов для повторной попытки.\n• Для просмотра ранее открывавшихся страниц перейдите в журнал:", 11, Color.BLACK)
+	hint_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint_vbox.add_child(hint_text)
+
+	var history_link := Button.new()
+	history_link.flat = true
+	history_link.text = "Открыть журнал посещений (История)"
+	history_link.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	history_link.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	history_link.add_theme_color_override("font_color", Color(0.0, 0.2, 0.85))
+	history_link.add_theme_color_override("font_hover_color", Color(0.85, 0.0, 0.0))
+	history_link.pressed.connect(show_history)
+	hint_vbox.add_child(history_link)
+
+	var tech_info := _make_label("Код ошибки: ERR_INTERNET_DISCONNECTED / DNS_PROBE_FINISHED_NO_INTERNET\nRetroOS Web Explorer 5.0  |  Автономный режим", 10, C_DARK_GRAY)
+	inner.add_child(tech_info)
 
 func show_history() -> void:
 	_clear_content()
@@ -151,6 +180,23 @@ func show_history() -> void:
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.gui_input.connect(func(event: InputEvent) -> void:
+		var v_bar := scroll.get_v_scroll_bar()
+		if not v_bar:
+			return
+		if event is InputEventPanGesture:
+			v_bar.value += event.delta.y * 30.0
+			accept_event()
+		elif event is InputEventMouseButton:
+			var mb := event as InputEventMouseButton
+			if mb.is_pressed():
+				if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
+					v_bar.value -= v_bar.step * 3.0
+					accept_event()
+				elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+					v_bar.value += v_bar.step * 3.0
+					accept_event()
+	)
 	page.add_child(scroll)
 
 	history_rows = VBoxContainer.new()
@@ -187,42 +233,46 @@ func _add_history_row(index: int, entry: Dictionary) -> void:
 		return
 	var title := str(entry.get("title", "Без названия"))
 	var time := str(entry.get("time", ""))
-	var is_messenger := title.to_lower().contains("мессенджер") or title.to_lower().contains("юджин")
 
 	var row := Button.new()
 	row.flat = true
-	row.text = "%s    %s%s" % [time, title, "    [открыть чат]" if is_messenger else ""]
+	row.text = "%s    %s" % [time, title]
 	row.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	row.clip_text = true
 	row.focus_mode = Control.FOCUS_NONE
 	row.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	row.custom_minimum_size = Vector2(0, 30)
+	row.custom_minimum_size = Vector2(0, 26)
 	row.add_theme_font_size_override("font_size", 11)
-	row.tooltip_text = "Открыть сохранённую страницу" if not is_messenger else "Открыть чат с Юджином"
+	row.tooltip_text = title
 
+	# Единый стиль классических синих гиперссылок для всех записей
 	var normal := StyleBoxFlat.new()
-	normal.bg_color = Color(0.86, 0.92, 1.0, 1.0) if is_messenger else Color(1, 1, 1, 0)
+	normal.bg_color = Color(1, 1, 1, 0)
 	normal.content_margin_left = 6.0
-	normal.content_margin_top = 3.0
+	normal.content_margin_top = 2.0
 	normal.content_margin_right = 6.0
-	normal.content_margin_bottom = 3.0
-	normal.border_width_left = 3 if is_messenger else 0
-	normal.border_color = C_NAVY
+	normal.content_margin_bottom = 2.0
 	row.add_theme_stylebox_override("normal", normal)
 
 	var hover := StyleBoxFlat.new()
-	hover.bg_color = C_NAVY
+	hover.bg_color = Color(0.9, 0.94, 1.0, 0.7)
 	hover.content_margin_left = 6.0
-	hover.content_margin_top = 3.0
+	hover.content_margin_top = 2.0
 	hover.content_margin_right = 6.0
-	hover.content_margin_bottom = 3.0
+	hover.content_margin_bottom = 2.0
 	row.add_theme_stylebox_override("hover", hover)
-	var pressed := hover.duplicate() as StyleBoxFlat
-	pressed.bg_color = C_DARK_NAVY
+
+	var pressed := StyleBoxFlat.new()
+	pressed.bg_color = Color(0.82, 0.88, 0.98, 1.0)
+	pressed.content_margin_left = 6.0
+	pressed.content_margin_top = 2.0
+	pressed.content_margin_right = 6.0
+	pressed.content_margin_bottom = 2.0
 	row.add_theme_stylebox_override("pressed", pressed)
-	row.add_theme_color_override("font_color", C_NAVY if is_messenger else Color.BLACK)
-	row.add_theme_color_override("font_hover_color", C_WHITE)
-	row.add_theme_color_override("font_pressed_color", C_WHITE)
+
+	row.add_theme_color_override("font_color", Color(0.0, 0.2, 0.85))
+	row.add_theme_color_override("font_hover_color", Color(0.85, 0.0, 0.0))
+	row.add_theme_color_override("font_pressed_color", Color(0.5, 0.0, 0.5))
 	row.pressed.connect(_on_history_row_pressed.bind(index))
 	history_rows.add_child(row)
 
@@ -231,7 +281,7 @@ func _on_history_row_pressed(index: int) -> void:
 		return
 	var entry: Dictionary = history[index]
 	var title := str(entry.get("title", ""))
-	if title.to_lower().contains("мессенджер") or title.to_lower().contains("юджин"):
+	if entry.get("kind", "") == "messenger" or title.to_lower().contains("мессенджер") or title.to_lower().contains("юджин") or title.to_lower().contains("eugene"):
 		open_messenger()
 	else:
 		_show_page_stub(entry)
@@ -311,6 +361,23 @@ func open_messenger() -> void:
 	chat_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	chat_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	chat_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	chat_scroll.gui_input.connect(func(event: InputEvent) -> void:
+		var v_bar := chat_scroll.get_v_scroll_bar()
+		if not v_bar:
+			return
+		if event is InputEventPanGesture:
+			v_bar.value += event.delta.y * 30.0
+			accept_event()
+		elif event is InputEventMouseButton:
+			var mb := event as InputEventMouseButton
+			if mb.is_pressed():
+				if mb.button_index == MOUSE_BUTTON_WHEEL_UP:
+					v_bar.value -= v_bar.step * 3.0
+					accept_event()
+				elif mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+					v_bar.value += v_bar.step * 3.0
+					accept_event()
+	)
 	page.add_child(chat_scroll)
 
 	message_rows = VBoxContainer.new()

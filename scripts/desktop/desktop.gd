@@ -650,7 +650,7 @@ func _apply_crt_settings() -> void:
 		return
 	crt_layer.visible = crt_enabled
 	crt_cursor.visible = false
-	input_catcher.mouse_filter = Control.MOUSE_FILTER_STOP if crt_enabled else Control.MOUSE_FILTER_IGNORE
+	input_catcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if not crt_enabled:
 		_set_os_cursor_hidden(false)
 		return
@@ -782,10 +782,18 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventMouse:
-		if crt_enabled and not _forwarding_input:
-			# Сырые экранные координаты обрабатывает InputCatcher.
-			return
-		if not crt_enabled:
+		var mouse_event := event as InputEventMouse
+		var screen_point := mouse_event.position
+		if crt_enabled:
+			var mapped := crt_screen_to_ui(screen_point)
+			if event is InputEventMouseMotion:
+				var motion := event as InputEventMouseMotion
+				var previous := crt_screen_to_ui(screen_point - motion.relative)
+				motion.relative = mapped - previous
+			mouse_event.position = mapped
+			mouse_event.global_position = mapped
+			_update_crt_cursor(mapped, screen_point)
+		else:
 			crt_cursor.visible = false
 
 	if not (event is InputEventMouseButton):
