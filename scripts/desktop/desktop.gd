@@ -24,6 +24,14 @@ const APPS := [
 		"min_size": Vector2(560, 360),
 	},
 	{
+		"id": "browser",
+		"title": "Браузер",
+		"icon": preload("res://assets/icons/browser.png"),
+		"kind": "browser",
+		"size": Vector2(920, 620),
+		"min_size": Vector2(640, 420),
+	},
+	{
 		"id": "terminal",
 		"title": "Терминал",
 		"icon": preload("res://assets/icons/terminal.png"),
@@ -93,6 +101,7 @@ const APPS := [
 @onready var crt_layer: CanvasLayer = $CRTLayer
 @onready var crt_effect: ColorRect = $CRTLayer/CRTEffect
 @onready var crt_cursor: Control = $Cursor
+@onready var input_catcher: Control = $InputCatcher
 @onready var thought_box: ThoughtBox = $ThoughtBox
 @onready var final_timer_bar: FinalTimerBar = $FinalTimerBar
 @onready var toast_banner: ToastBanner = $ToastBanner
@@ -104,6 +113,7 @@ var _active_window: WindowFrame = null
 var _selected_icon: DesktopIcon = null
 var _cascade_index: int = 0
 var _tray_kind: String = ""
+var _forwarding_input: bool = false
 var _time_tween: Tween = null
 var _crt_glitch_tween: Tween = null
 
@@ -386,7 +396,10 @@ func open_app(app_id: String) -> void:
 		return
 
 	var app_content: Control
-	if app_id == "terminal":
+	if app_id == "browser":
+		var browser_scene: PackedScene = load("res://scenes/apps/Browser.tscn")
+		app_content = browser_scene.instantiate()
+	elif app_id == "terminal":
 		var term_scene: PackedScene = load("res://scenes/apps/Terminal.tscn")
 		app_content = term_scene.instantiate()
 	elif app_id == "notes":
@@ -459,7 +472,7 @@ func _add_task_button(frame: WindowFrame) -> void:
 	button.toggle_mode = true
 	button.focus_mode = Control.FOCUS_NONE
 	button.clip_text = true
-	button.custom_minimum_size = Vector2(140, 36)
+	button.custom_minimum_size = Vector2(124, 36)
 	button.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	button.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
@@ -637,6 +650,7 @@ func _apply_crt_settings() -> void:
 		return
 	crt_layer.visible = crt_enabled
 	crt_cursor.visible = false
+	input_catcher.mouse_filter = Control.MOUSE_FILTER_STOP if crt_enabled else Control.MOUSE_FILTER_IGNORE
 	if not crt_enabled:
 		_set_os_cursor_hidden(false)
 		return
@@ -709,6 +723,30 @@ func _update_crt_cursor(ui_pos: Vector2, screen_pos: Vector2) -> void:
 	crt_cursor.position = ui_pos
 	crt_cursor.visible = crt_is_visible(screen_pos)
 
+## InputCatcher отдаёт сюда сырые экранные координаты. Пересчитываем их
+## в координаты интерфейса и отправляем уже исправленное событие в GUI.
+func handle_crt_gui_input(event: InputEvent) -> void:
+	if not crt_enabled or not (event is InputEventMouse):
+		return
+	var mouse_event := event as InputEventMouse
+	var screen_point := mouse_event.position
+	var mapped := crt_screen_to_ui(screen_point)
+	var forwarded := event.duplicate() as InputEventMouse
+	forwarded.position = mapped
+	forwarded.global_position = mapped
+	if forwarded is InputEventMouseMotion and mouse_event is InputEventMouseMotion:
+		var motion := mouse_event as InputEventMouseMotion
+		var forwarded_motion := forwarded as InputEventMouseMotion
+		forwarded_motion.relative = mapped - crt_screen_to_ui(screen_point - motion.relative)
+	_update_crt_cursor(mapped, screen_point)
+
+	_forwarding_input = true
+	var previous_filter := input_catcher.mouse_filter
+	input_catcher.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	get_viewport().push_input(forwarded, true)
+	input_catcher.mouse_filter = previous_filter
+	_forwarding_input = false
+
 func _set_os_cursor_hidden(hidden: bool) -> void:
 	if DisplayServer.get_name() == "headless":
 		return
@@ -744,18 +782,10 @@ func _input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventMouse:
-		var mouse_event := event as InputEventMouse
-		var screen_point := mouse_event.position
-		if crt_enabled:
-			var mapped := crt_screen_to_ui(screen_point)
-			if event is InputEventMouseMotion:
-				var motion := event as InputEventMouseMotion
-				var previous := crt_screen_to_ui(screen_point - motion.relative)
-				motion.relative = mapped - previous
-			mouse_event.position = mapped
-			mouse_event.global_position = mapped
-			_update_crt_cursor(mapped, screen_point)
-		else:
+		if crt_enabled and not _forwarding_input:
+			# Сырые экранные координаты обрабатывает InputCatcher.
+			return
+		if not crt_enabled:
 			crt_cursor.visible = false
 
 	if not (event is InputEventMouseButton):

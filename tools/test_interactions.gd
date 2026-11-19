@@ -14,6 +14,9 @@ func _ready() -> void:
 	_desktop = desktop
 	await get_tree().process_frame
 	await get_tree().process_frame
+	if desktop.thought_box:
+		desktop.thought_box.clear_thoughts()
+		desktop.thought_box.visible = false
 
 	# 0. Курсор рисуется внутри линзы и совпадает с точкой интерфейса.
 	var icon: DesktopIcon = desktop.get_node("DesktopSurface/Icons/ComputerIcon")
@@ -37,6 +40,9 @@ func _ready() -> void:
 		_finish()
 		return
 	var window: WindowFrame = desktop._windows[0]
+	if desktop.thought_box:
+		desktop.thought_box.clear_thoughts()
+		desktop.thought_box.visible = false
 	var start_pos := window.global_position
 
 	# 2. Перетаскивание за заголовок.
@@ -110,6 +116,8 @@ func _ready() -> void:
 	await get_tree().process_frame
 	var gallery_window := desktop._find_window("gallery")
 	var gallery_preview := gallery_window.content_container.get_child(0) as AppPreview
+	gallery_preview.select_photo_by_filename("IMG_0488.JPG")
+	await get_tree().process_frame
 	var toolbar: Dictionary = gallery_preview.get("_toolbar_buttons")
 	var properties_button := toolbar.get("Свойства / Подробнее") as Button
 	await _click(properties_button.global_position + properties_button.size * 0.5)
@@ -118,7 +126,39 @@ func _ready() -> void:
 	_check(photo_card.visible, "Кнопка «Свойства / Подробнее» открывает карточку")
 	_check(photo_card.body_label.text.contains("24.09.2009"), "Свойства фото показывают дату 24.09.2009")
 	photo_card.close()
+
+	# 8. Реальный зум колесом и перетаскивание фото под CRT.
+	gallery_preview._open_photo_viewer()
+	await get_tree().process_frame
+	var viewer := gallery_preview.get("_photo_viewer_viewport") as Control
+	var viewer_center := viewer.global_position + viewer.size * 0.5
+	await _wheel(viewer_center, MOUSE_BUTTON_WHEEL_UP)
+	await get_tree().process_frame
+	_check(gallery_preview.get("_photo_zoom") > 1.0, "Колесо мыши увеличивает фото в просмотрщике")
+	var pan_before: Vector2 = gallery_preview.get("_photo_pan")
+	await _press(viewer_center)
+	await _move(viewer_center, viewer_center + Vector2(42, 24))
+	await _release(viewer_center + Vector2(42, 24))
+	await get_tree().process_frame
+	_check(gallery_preview.get("_photo_pan") != pan_before, "Увеличенное фото перетаскивается мышью")
+	gallery_preview._close_photo_viewer()
 	gallery_window.close()
+	await get_tree().process_frame
+
+	# 9. Браузер: реальный клик по «История» и по строке мессенджера.
+	desktop.open_app("browser")
+	await get_tree().process_frame
+	var browser_window := desktop._find_window("browser")
+	var browser := browser_window.content_container.get_child(0) as BrowserApp
+	await _click(browser.history_button.global_position + browser.history_button.size * 0.5)
+	await get_tree().process_frame
+	_check(browser.current_view == "history", "Кнопка «История» открывает историю браузера")
+	var messenger_row := browser.history_rows.get_child(3) as Button
+	await _click(messenger_row.global_position + messenger_row.size * 0.5)
+	await get_tree().process_frame
+	_check(browser.current_view == "messenger", "Клик по истории мессенджера открывает чат с Юджином")
+	_check(browser.messenger_banner != null and browser.messenger_banner.text.contains("30 дней"), "В чате видна плашка об удалённых сообщениях")
+	browser_window.close()
 
 	_finish()
 
@@ -139,6 +179,31 @@ func _press(point: Vector2) -> void:
 	event.position = screen_point
 	event.global_position = screen_point
 	event.button_mask = MOUSE_BUTTON_MASK_LEFT
+	Input.parse_input_event(event)
+	await get_tree().process_frame
+
+func _move(from_point: Vector2, to_point: Vector2) -> void:
+	var from_screen := _screen(from_point)
+	var screen_point := _screen(to_point)
+	Input.warp_mouse(screen_point)
+	await get_tree().process_frame
+	var event := InputEventMouseMotion.new()
+	event.position = screen_point
+	event.global_position = screen_point
+	event.relative = screen_point - from_screen
+	event.button_mask = MOUSE_BUTTON_MASK_LEFT
+	Input.parse_input_event(event)
+	await get_tree().process_frame
+
+func _wheel(point: Vector2, button: int) -> void:
+	var screen_point := _screen(point)
+	Input.warp_mouse(screen_point)
+	await get_tree().process_frame
+	var event := InputEventMouseButton.new()
+	event.button_index = button
+	event.pressed = true
+	event.position = screen_point
+	event.global_position = screen_point
 	Input.parse_input_event(event)
 	await get_tree().process_frame
 
