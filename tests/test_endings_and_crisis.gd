@@ -40,6 +40,40 @@ func _ready() -> void:
 	await get_tree().process_frame
 	_check(ending_screen.title_label.text.contains("ОПОЗДАНИЕ"), "Заголовок концовки 3: ОПОЗДАНИЕ")
 	GameState.reset_state()
+
+	# 5. Проверка модального окна кризисных событий (CrisisDialog) и Концовки 4 (Юджин)
+	var crisis: Control = desktop.crisis_dialog
+	_check(crisis != null, "Узел CrisisDialog присутствует на рабочем столе")
+	_check(not crisis.visible, "CrisisDialog скрыт до триггеров")
+
+	# Триггер взятки ($100k)
+	GameState.is_timer_active = true
+	GameState.emit_signal("bribe_triggered")
+	await get_tree().process_frame
+	_check(crisis.visible, "Взятка открывает модальное окно CrisisDialog")
+	_check(crisis.title_label.text.contains("Пейджер"), "Заголовок окна взятки: Пейджер")
+	_check(crisis.btn_cancel.visible, "В окне взятки видна кнопка Отмена")
+
+	# Нажатие Отмена в окне взятки
+	crisis.btn_cancel.emit_signal("pressed")
+	await get_tree().process_frame
+	_check(not crisis.visible, "Нажатие Отмена закрывает окно взятки")
+	_check(GameState.bribe_cancelled, "Отмена взятки устанавливает флаг GameState.bribe_cancelled")
+
+	# Триггер фишинга с геометкой
+	GameState.emit_signal("phishing_triggered")
+	await get_tree().process_frame
+	_check(crisis.visible, "Фишинг открывает модальное окно с запросом геометки")
+	_check(crisis.title_label.text.contains("Служба безопасности"), "Заголовок окна фишинга: Служба безопасности")
+	_check(crisis.btn_primary.visible, "В окне фишинга есть кнопка Продолжить")
+
+	# Клик по Продолжить (тёмный UX-паттерн -> Концовка 4 с Юджином)
+	crisis.btn_primary.emit_signal("pressed")
+	await get_tree().process_frame
+	_check(ending_screen.visible, "Клик по Продолжить активирует экран концовок")
+	_check(ending_screen.title_label.text.contains("НЕЗВАНЫЙ ГОСТЬ"), "Заголовок концовки 4: НЕЗВАНЫЙ ГОСТЬ")
+	_check(ending_screen._full_text.contains("Юджин Рейвенс"), "Текст концовки 4 содержит имя сообщника: Юджин Рейвенс")
+	GameState.reset_state()
 	
 	# 5. Проверка динамической VFS и команды wipe_storage
 	var vfs = get_node_or_null("/root/VFS")

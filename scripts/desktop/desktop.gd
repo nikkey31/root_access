@@ -106,6 +106,7 @@ const APPS := [
 @onready var final_timer_bar: FinalTimerBar = $FinalTimerBar
 @onready var toast_banner: ToastBanner = $ToastBanner
 @onready var ending_screen: Control = $EndingScreen
+@onready var crisis_dialog: Control = $CrisisDialog
 
 var _windows: Array[WindowFrame] = []
 var _task_buttons: Dictionary = {}
@@ -123,6 +124,11 @@ func _ready() -> void:
 	_connect_tray()
 	_connect_game_state()
 	_update_clock()
+	if crisis_dialog:
+		if crisis_dialog.has_signal("bribe_cancelled"):
+			crisis_dialog.bribe_cancelled.connect(_on_crisis_bribe_cancelled)
+		if crisis_dialog.has_signal("phishing_accepted"):
+			crisis_dialog.phishing_accepted.connect(_on_crisis_phishing_accepted)
 	start_menu.visible = false
 	tray_popup.visible = false
 	start_button.pressed.connect(_on_start_button_pressed)
@@ -304,16 +310,33 @@ func _on_game_timer_updated(time_left: float) -> void:
 func _on_game_timer_expired() -> void:
 	if final_timer_bar:
 		final_timer_bar.show_expired()
+	if crisis_dialog and crisis_dialog.has_method("close_dialog"):
+		crisis_dialog.close_dialog()
 
 func _on_game_bribe_triggered() -> void:
-	if toast_banner:
+	open_app("terminal")
+	if crisis_dialog and crisis_dialog.has_method("show_bribe"):
+		crisis_dialog.show_bribe()
+	elif toast_banner:
 		toast_banner.show_message("Анонимный пейджер: $100 000 зачистят всё. Введи wipe --force и забудь.")
 
 func _on_game_phishing_triggered() -> void:
-	if toast_banner:
+	if crisis_dialog and crisis_dialog.has_method("show_phishing"):
+		crisis_dialog.show_phishing()
+	elif toast_banner:
 		toast_banner.show_message("ТРЕВОГА: Обнаружена внешняя трассировка IP! Утечка координат.")
 
+func _on_crisis_bribe_cancelled() -> void:
+	if has_node("/root/GameState"):
+		get_node("/root/GameState").cancel_bribe()
+
+func _on_crisis_phishing_accepted() -> void:
+	if has_node("/root/GameState"):
+		get_node("/root/GameState").trigger_ending(GameState.Ending.HORROR, {"reason": "phishing_geotag_leaked"})
+
 func _on_game_ended(ending_id: int, details: Dictionary) -> void:
+	if crisis_dialog and crisis_dialog.has_method("close_dialog"):
+		crisis_dialog.close_dialog()
 	if thought_box:
 		thought_box.set_compact_top_mode(false)
 	if final_timer_bar:

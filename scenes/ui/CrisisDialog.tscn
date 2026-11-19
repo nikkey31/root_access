@@ -1,0 +1,161 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/crisis_dialog.gd" id="1_crisis"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_raised.png" id="2_raised"]
+[ext_resource type="Texture2D" path="res://assets/ui/titlebar_active.png" id="3_titlebar"]
+[ext_resource type="Texture2D" path="res://assets/ui/panel_pressed.png" id="4_pressed"]
+
+[sub_resource type="SystemFont" id="SystemFont_title"]
+font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
+font_weight = 700
+antialiasing = 0
+subpixel_positioning = 0
+hinting = 1
+
+[sub_resource type="SystemFont" id="SystemFont_body"]
+font_names = PackedStringArray("Tahoma", "MS Sans Serif", "Segoe UI", "Arial")
+font_weight = 400
+antialiasing = 0
+subpixel_positioning = 0
+hinting = 1
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_window"]
+content_margin_left = 3.0
+content_margin_top = 3.0
+content_margin_right = 3.0
+content_margin_bottom = 3.0
+texture = ExtResource("2_raised")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBox_title"]
+content_margin_left = 6.0
+content_margin_top = 2.0
+content_margin_right = 3.0
+content_margin_bottom = 2.0
+texture = ExtResource("3_titlebar")
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_btn_normal"]
+bg_color = Color(0.75, 0.75, 0.75, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.4, 0.4, 0.4, 1)
+content_margin_left = 14.0
+content_margin_top = 4.0
+content_margin_right = 14.0
+content_margin_bottom = 4.0
+
+[node name="CrisisDialog" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1_crisis")
+
+[node name="ModalBackdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+color = Color(0, 0, 0, 0.35)
+
+[node name="Center" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="WindowPanel" type="PanelContainer" parent="Center"]
+custom_minimum_size = Vector2(490, 270)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_window")
+
+[node name="VBox" type="VBoxContainer" parent="Center/WindowPanel"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="TitleBar" type="PanelContainer" parent="Center/WindowPanel/VBox"]
+custom_minimum_size = Vector2(0, 26)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_title")
+
+[node name="HBox" type="HBoxContainer" parent="Center/WindowPanel/VBox/TitleBar"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Center/WindowPanel/VBox/TitleBar/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_fonts/font = SubResource("SystemFont_title")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.6)
+text = "Системное оповещение"
+vertical_alignment = 1
+clip_text = true
+
+[node name="BtnClose" type="Button" parent="Center/WindowPanel/VBox/TitleBar/HBox"]
+custom_minimum_size = Vector2(20, 18)
+layout_mode = 2
+focus_mode = 0
+theme_override_fonts/font = SubResource("SystemFont_title")
+theme_override_font_sizes/font_size = 12
+text = "×"
+
+[node name="Margin" type="MarginContainer" parent="Center/WindowPanel/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="ContentVBox" type="VBoxContainer" parent="Center/WindowPanel/VBox/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MessageLabel" type="Label" parent="Center/WindowPanel/VBox/Margin/ContentVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_fonts/font = SubResource("SystemFont_body")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Текст сообщения..."
+autowrap_mode = 3
+
+[node name="ButtonBox" type="HBoxContainer" parent="Center/WindowPanel/VBox/Margin/ContentVBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 2
+
+[node name="BtnPrimary" type="Button" parent="Center/WindowPanel/VBox/Margin/ContentVBox/ButtonBox"]
+custom_minimum_size = Vector2(100, 26)
+layout_mode = 2
+focus_mode = 0
+theme_override_fonts/font = SubResource("SystemFont_body")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBox_btn_normal")
+text = "Продолжить"
+
+[node name="BtnCancel" type="Button" parent="Center/WindowPanel/VBox/Margin/ContentVBox/ButtonBox"]
+custom_minimum_size = Vector2(90, 26)
+layout_mode = 2
+focus_mode = 0
+theme_override_fonts/font = SubResource("SystemFont_body")
+theme_override_font_sizes/font_size = 11
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBox_btn_normal")
+text = "Отмена"
