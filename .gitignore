@@ -15,5 +15,7 @@ exports/
 ~$*
 *.tmp
 
-# Local Godot run logs
+# Local logs and scripts
 godot*.log
+generate_report*.py
+/ТРПОПР*.docx
