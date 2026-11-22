@@ -18,11 +18,22 @@
   "filesystem": {
     "/": {
       "type": "dir",
-      "children": ["A:", "C:", "D:"]
+      "children": [
+        "A:",
+        "C:",
+        "D:"
+      ]
     },
     "/C:": {
       "type": "dir",
-      "children": ["Мои документы", "Архив_2008", "Фото", "Загрузки", "Windows", "Работа"]
+      "children": [
+        "Мои документы",
+        "Архив_2008",
+        "Фото",
+        "Загрузки",
+        "Windows",
+        "Работа"
+      ]
     },
     "/C:/Мои документы": {
       "type": "dir",
@@ -97,7 +108,10 @@
     },
     "/C:/Архив_2008": {
       "type": "dir",
-      "children": ["заказ_запчастей_2008.txt", "квартальный_отчёт.txt"]
+      "children": [
+        "заказ_запчастей_2008.txt",
+        "квартальный_отчёт.txt"
+      ]
     },
     "/C:/Архив_2008/заказ_запчастей_2008.txt": {
       "type": "file",
@@ -111,7 +125,10 @@
     },
     "/C:/Загрузки": {
       "type": "dir",
-      "children": ["setup_winamp.exe", "photo_resize.zip"]
+      "children": [
+        "setup_winamp.exe",
+        "photo_resize.zip"
+      ]
     },
     "/C:/Работа": {
       "type": "dir",
@@ -192,82 +209,408 @@
     "status": "Был в сети 20 минут назад",
     "notice": "Сообщения старше 30 дней были автоматически удалены пользователем.",
     "messages": [
-      {"sender": "Eugene", "text": "Живой? Давно не писал", "timestamp": "03.09 20:41"},
-      {"sender": "Simon", "text": "Живой. Работы много.", "timestamp": "03.09 20:55"},
-      {"sender": "Eugene", "text": "Мама спрашивала, когда приедешь. Пирог обещала", "timestamp": "05.09 21:14"},
-      {"sender": "Simon", "text": "Позже. На выходных не выйдет.", "timestamp": "05.09 21:20"},
-      {"sender": "Eugene", "text": "Скинь до пятницы 3000, отдам с зарплаты", "timestamp": "07.09 13:02"},
-      {"sender": "Simon", "text": "Скинул.", "timestamp": "07.09 13:30"},
-      {"sender": "Eugene", "text": "Пикап твой как? Педаль всё скрипит?", "timestamp": "09.09 19:20"},
-      {"sender": "Simon", "text": "Скрипит. На днях в сервис.", "timestamp": "09.09 19:33"},
-      {"sender": "Eugene", "text": "Фургон на мне, забираю в десять. Куда потом пригнать?", "timestamp": "11.09 09:02"},
-      {"sender": "Simon", "text": "Сам знаешь. Не пиши лишнего.", "timestamp": "11.09 09:05"},
-      {"sender": "Eugene", "text": "Всё, фургон на месте. Устал как собака", "timestamp": "11.09 21:50"},
-      {"sender": "Eugene", "text": "Смотрел вчера матч? Вот это был финиш", "timestamp": "13.09 16:10"},
-      {"sender": "Simon", "text": "Не смотрел.", "timestamp": "13.09 16:44"},
-      {"sender": "Eugene", "text": "Кот как? Прививку сделали?", "timestamp": "15.09 18:30"},
-      {"sender": "Simon", "text": "Спит на мониторе, как обычно.", "timestamp": "15.09 18:42"},
-      {"sender": "Eugene", "text": "Свечи для твоего пикапа нашёл на разборке, дёшево. Брать?", "timestamp": "17.09 12:05"},
-      {"sender": "Simon", "text": "Бери четыре.", "timestamp": "17.09 12:20"},
-      {"sender": "Eugene", "text": "В четверг мой др, не забудь. Ты обещал приехать.", "timestamp": "20.09 23:10"},
-      {"sender": "Simon", "text": "Приеду. Пикап заведу.", "timestamp": "20.09 23:12"},
-      {"sender": "Eugene", "text": "Ключи от гаража не потеряй, у тебя дубликат", "timestamp": "22.09 08:30"},
-      {"sender": "Eugene", "text": "Жду к шести, пиво уже в холодильнике", "timestamp": "24.09 10:15"},
-      {"sender": "Eugene", "text": "Саймон, спасибо, что приехал на мои 27! Та фотка у ржавого пикапа на фоне гаражей в мой др получилась зачётной, скинь в альбом", "timestamp": "25.09 00:20"},
-      {"sender": "Eugene", "text": "Кстати, а груз ты забрал?", "timestamp": "25.09 00:21"},
-      {"sender": "Simon", "text": "Всё на месте, не пиши сюда лишнего.", "timestamp": "25.09 00:31"},
-      {"sender": "Eugene", "text": "Прикинь, соседка всё про вечеринку жалуется :)", "timestamp": "26.09 14:00"},
-      {"sender": "Simon", "text": "Пусть жалуется.", "timestamp": "26.09 14:12"},
-      {"sender": "Eugene", "text": "Продлил аренду фургона ещё на неделю, как договаривались.", "timestamp": "28.09 19:05"},
-      {"sender": "Eugene", "text": "Мама звонила, зовёт на выходные. Поедем вместе?", "timestamp": "29.09 17:40"},
-      {"sender": "Eugene", "text": "Позвони, как сможешь. Не нравится мне эта тишина.", "timestamp": "01.10 22:15"}
+      {
+        "sender": "Eugene",
+        "text": "Живой? Давно не писал",
+        "timestamp": "03.09 20:41"
+      },
+      {
+        "sender": "Simon",
+        "text": "Живой. Работы много.",
+        "timestamp": "03.09 20:55"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Мама спрашивала, когда приедешь. Пирог обещала",
+        "timestamp": "05.09 21:14"
+      },
+      {
+        "sender": "Simon",
+        "text": "Позже. На выходных не выйдет.",
+        "timestamp": "05.09 21:20"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Скинь до пятницы 3000, отдам с зарплаты",
+        "timestamp": "07.09 13:02"
+      },
+      {
+        "sender": "Simon",
+        "text": "Скинул.",
+        "timestamp": "07.09 13:30"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Пикап твой как? Педаль всё скрипит?",
+        "timestamp": "09.09 19:20"
+      },
+      {
+        "sender": "Simon",
+        "text": "Скрипит. На днях в сервис.",
+        "timestamp": "09.09 19:33"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Фургон на мне, забираю в десять. Куда потом пригнать?",
+        "timestamp": "11.09 09:02"
+      },
+      {
+        "sender": "Simon",
+        "text": "Сам знаешь. Не пиши лишнего.",
+        "timestamp": "11.09 09:05"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Всё, фургон на месте. Устал как собака",
+        "timestamp": "11.09 21:50"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Смотрел вчера матч? Вот это был финиш",
+        "timestamp": "13.09 16:10"
+      },
+      {
+        "sender": "Simon",
+        "text": "Не смотрел.",
+        "timestamp": "13.09 16:44"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Кот как? Прививку сделали?",
+        "timestamp": "15.09 18:30"
+      },
+      {
+        "sender": "Simon",
+        "text": "Спит на мониторе, как обычно.",
+        "timestamp": "15.09 18:42"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Свечи для твоего пикапа нашёл на разборке, дёшево. Брать?",
+        "timestamp": "17.09 12:05"
+      },
+      {
+        "sender": "Simon",
+        "text": "Бери четыре.",
+        "timestamp": "17.09 12:20"
+      },
+      {
+        "sender": "Eugene",
+        "text": "В четверг мой др, не забудь. Ты обещал приехать.",
+        "timestamp": "20.09 23:10"
+      },
+      {
+        "sender": "Simon",
+        "text": "Приеду. Пикап заведу.",
+        "timestamp": "20.09 23:12"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Ключи от гаража не потеряй, у тебя дубликат",
+        "timestamp": "22.09 08:30"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Жду к шести, пиво уже в холодильнике",
+        "timestamp": "24.09 10:15"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Саймон, спасибо, что приехал на мои 27! Та фотка у ржавого пикапа на фоне гаражей в мой др получилась зачётной, скинь в альбом",
+        "timestamp": "25.09 00:20"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Кстати, а груз ты забрал?",
+        "timestamp": "25.09 00:21"
+      },
+      {
+        "sender": "Simon",
+        "text": "Всё на месте, не пиши сюда лишнего.",
+        "timestamp": "25.09 00:31"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Прикинь, соседка всё про вечеринку жалуется :)",
+        "timestamp": "26.09 14:00"
+      },
+      {
+        "sender": "Simon",
+        "text": "Пусть жалуется.",
+        "timestamp": "26.09 14:12"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Продлил аренду фургона ещё на неделю, как договаривались.",
+        "timestamp": "28.09 19:05"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Мама звонила, зовёт на выходные. Поедем вместе?",
+        "timestamp": "29.09 17:40"
+      },
+      {
+        "sender": "Eugene",
+        "text": "Позвони, как сможешь. Не нравится мне эта тишина.",
+        "timestamp": "01.10 22:15"
+      }
     ]
   },
   "browser_history": [
-    {"title": "как безвозвратно стереть жёсткий диск", "time": "02.10 01:20"},
-    {"title": "прогноз погоды ночью дождь", "time": "01.10 23:05"},
-    {"title": "купить хлороформ дешево оптом", "time": "01.10 22:40", "thought_key": "history_chloroform"},
-    {"title": "как приготовить плов в казане", "time": "01.10 19:30"},
-    {"title": "сколько стоит замена ремня ГРМ", "time": "01.10 18:12"},
-    {"title": "веб-мессенджер: диалог с Юджином Рейвенсом", "time": "01.10 17:45", "kind": "messenger"},
-    {"title": "аренда ячейки в банке условия", "time": "30.09 19:12"},
-    {"title": "как зашифровать файл паролем", "time": "30.09 12:30"},
-    {"title": "кот чихает видео", "time": "30.09 09:40"},
-    {"title": "расписание автобусов №14", "time": "29.09 18:44"},
-    {"title": "как отличить бензин 92 от 95", "time": "29.09 11:20"},
-    {"title": "почему скрипит левая педаль", "time": "28.09 09:15"},
-    {"title": "гаражный кооператив «Восход» отзывы", "time": "27.09 22:05"},
-    {"title": "прокат грузовых фургонов цены", "time": "27.09 14:10"},
-    {"title": "кроссворд онлайн", "time": "27.09 10:00"},
-    {"title": "рецепт плова с бараниной", "time": "26.09 20:30"},
-    {"title": "курс доллара сегодня", "time": "26.09 11:02"},
-    {"title": "как сварить яйцо вкрутую", "time": "25.09 13:20"},
-    {"title": "где купить дешёвый скотч оптом", "time": "25.09 09:45"},
-    {"title": "подарок брату на 27 лет идеи", "time": "24.09 12:00"},
-    {"title": "новости футбол", "time": "23.09 15:30"},
-    {"title": "как вывести пятно от масла с куртки", "time": "22.09 21:00"},
-    {"title": "как отключить автообновление", "time": "21.09 23:10"},
-    {"title": "смешные коты 2009", "time": "20.09 14:20"}
+    {
+      "title": "как безвозвратно стереть жёсткий диск wipe",
+      "time": "02.10 01:20"
+    },
+    {
+      "title": "прогноз погоды ночью дождь лужи на трассе",
+      "time": "01.10 23:05"
+    },
+    {
+      "title": "купить хлороформ дешево оптом без рецепта",
+      "time": "01.10 22:40",
+      "thought_key": "history_chloroform"
+    },
+    {
+      "title": "звукоизоляция своими руками поролон или войлок в гараж",
+      "time": "01.10 20:15"
+    },
+    {
+      "title": "как приготовить плов в казане чтобы рис не слипался",
+      "time": "01.10 19:30"
+    },
+    {
+      "title": "сколько стоит замена ремня ГРМ",
+      "time": "01.10 18:12"
+    },
+    {
+      "title": "веб-мессенджер: диалог с Юджином Рейвенсом",
+      "time": "01.10 17:45",
+      "kind": "messenger"
+    },
+    {
+      "title": "приколы с котами 3gp скачать на телефон",
+      "time": "01.10 14:10"
+    },
+    {
+      "title": "сколько выветривается запах хлорки в закрытом подвале",
+      "time": "30.09 23:50"
+    },
+    {
+      "title": "почему скрипит левая педаль сцепления пикап форд",
+      "time": "30.09 21:15"
+    },
+    {
+      "title": "аренда ячейки в банке условия анонимности наличные",
+      "time": "30.09 19:12"
+    },
+    {
+      "title": "как зашифровать файл паролем",
+      "time": "30.09 12:30"
+    },
+    {
+      "title": "кот чихает видео",
+      "time": "30.09 09:40"
+    },
+    {
+      "title": "кот чихает видео смотреть онлайн",
+      "time": "29.09 20:05"
+    },
+    {
+      "title": "расписание автобусов №14",
+      "time": "29.09 18:44"
+    },
+    {
+      "title": "как отличить бензин 92 от 95",
+      "time": "29.09 11:20"
+    },
+    {
+      "title": "сонник к чему снится запертая железная дверь и темнота",
+      "time": "29.09 04:30"
+    },
+    {
+      "title": "дешевые авиабилеты минск стамбул в один конец",
+      "time": "28.09 16:40"
+    },
+    {
+      "title": "почему скрипит левая педаль",
+      "time": "28.09 09:15"
+    },
+    {
+      "title": "гаражный кооператив «Восход» отзывы",
+      "time": "27.09 22:05"
+    },
+    {
+      "title": "прокат грузовых фургонов цены",
+      "time": "27.09 14:10"
+    },
+    {
+      "title": "кроссворд онлайн",
+      "time": "27.09 10:00"
+    },
+    {
+      "title": "рецепт плова с бараниной",
+      "time": "26.09 20:30"
+    },
+    {
+      "title": "курс доллара сегодня",
+      "time": "26.09 11:02"
+    },
+    {
+      "title": "как сварить яйцо вкрутую",
+      "time": "25.09 13:20"
+    },
+    {
+      "title": "где купить дешёвый скотч оптом",
+      "time": "25.09 09:45"
+    },
+    {
+      "title": "подарок брату на 27 лет идеи",
+      "time": "24.09 12:00"
+    },
+    {
+      "title": "новости футбол",
+      "time": "23.09 15:30"
+    },
+    {
+      "title": "как вывести пятно от масла с куртки",
+      "time": "22.09 21:00"
+    },
+    {
+      "title": "как отключить автообновление",
+      "time": "21.09 23:10"
+    },
+    {
+      "title": "смешные коты 2009",
+      "time": "20.09 14:20"
+    }
   ],
   "map_points": [
-    {"id": "my_home", "name": "Мой дом", "address": "SADOVAYA 12", "description": "Одноэтажный частный дом", "is_correct": false},
-    {"id": "brother_house", "name": "Дом брата", "address": "ZAVODSKAYA 7, APT 31", "description": "Женя. Запасной ключ у соседки", "is_correct": false},
-    {"id": "garages", "name": "Гаражи", "address": "GARAGE COOP VOSKHOD, ROW 4", "description": "Мастерская, верстак", "is_correct": false},
-    {"id": "michelle_address", "name": "Адрес Мишель", "address": "LENINA 54", "description": "М.", "is_correct": false},
-    {"id": "box_6752", "name": "Бокс № 6752", "address": "GARAGE COOP VOSKHOD, BOX 6752", "description": "Старый бокс, давно не открывал", "is_correct": false},
-    {"id": "warehouse_3", "name": "Склад № 3", "address": "SEVERNAYA PROMZONA, WAREHOUSE 3", "description": "Хранение оборудования", "is_correct": true},
-    {"id": "junkyard", "name": "Свалка", "address": "ZAVODSKOE SHOSSE 9", "description": "Металлолом", "is_correct": false},
-    {"id": "service_motor", "name": "Автосервис «Мотор»", "address": "MOTORNAYA 3", "description": "Педаль, пружина", "is_correct": false},
-    {"id": "gas_trassa", "name": "АЗС «Трасса»", "address": "TRASSA M7, KM 14", "description": "Заправка", "is_correct": false},
-    {"id": "bus_stop_uni", "name": "Остановка «Университет»", "address": "UNIVERSITETSKAYA 1", "description": "Маршрут 14", "is_correct": false},
-    {"id": "library", "name": "Библиотека", "address": "BIBLIOTECHNAYA 6", "description": "—", "is_correct": false},
-    {"id": "cafe_ugolok", "name": "Кафе «Уголок»", "address": "UNIVERSITETSKAYA 3", "description": "Утром открыто", "is_correct": false},
-    {"id": "shop_produkty", "name": "Магазин «Продукты»", "address": "SADOVAYA 20", "description": "—", "is_correct": false},
-    {"id": "vet_aibolit", "name": "Ветклиника «Айболит»", "address": "KOMSOMOLSKAYA 15", "description": "Кот, прививка", "is_correct": false},
-    {"id": "bank_severny", "name": "Банк «Северный»", "address": "SEVERNAYA 2", "description": "Отделение", "is_correct": false},
-    {"id": "market", "name": "Рынок", "address": "RYNOCHNAYA 1", "description": "—", "is_correct": false},
-    {"id": "park_rechnoy", "name": "Парк «Речной»", "address": "RECHNAYA NAB. 5", "description": "Прогулки", "is_correct": false},
-    {"id": "dacha_old", "name": "Дача (старая)", "address": "DACHA KOOP RASSVET 14", "description": "Не езжу", "is_correct": false}
+    {
+      "id": "my_home",
+      "name": "Мой дом",
+      "address": "SADOVAYA 12",
+      "description": "Одноэтажный частный дом",
+      "is_correct": false
+    },
+    {
+      "id": "brother_house",
+      "name": "Дом брата",
+      "address": "ZAVODSKAYA 7, APT 31",
+      "description": "Женя. Запасной ключ у соседки",
+      "is_correct": false
+    },
+    {
+      "id": "garages",
+      "name": "Гаражи",
+      "address": "GARAGE COOP VOSKHOD, ROW 4",
+      "description": "Мастерская, верстак",
+      "is_correct": false
+    },
+    {
+      "id": "michelle_address",
+      "name": "Адрес Мишель",
+      "address": "LENINA 54",
+      "description": "М.",
+      "is_correct": false
+    },
+    {
+      "id": "box_6752",
+      "name": "Бокс № 6752",
+      "address": "GARAGE COOP VOSKHOD, BOX 6752",
+      "description": "Старый бокс, давно не открывал",
+      "is_correct": false
+    },
+    {
+      "id": "warehouse_3",
+      "name": "Склад № 3",
+      "address": "SEVERNAYA PROMZONA, WAREHOUSE 3",
+      "description": "Хранение оборудования",
+      "is_correct": true
+    },
+    {
+      "id": "junkyard",
+      "name": "Свалка",
+      "address": "ZAVODSKOE SHOSSE 9",
+      "description": "Металлолом",
+      "is_correct": false
+    },
+    {
+      "id": "service_motor",
+      "name": "Автосервис «Мотор»",
+      "address": "MOTORNAYA 3",
+      "description": "Педаль, пружина",
+      "is_correct": false
+    },
+    {
+      "id": "gas_trassa",
+      "name": "АЗС «Трасса»",
+      "address": "TRASSA M7, KM 14",
+      "description": "Заправка",
+      "is_correct": false
+    },
+    {
+      "id": "bus_stop_uni",
+      "name": "Остановка «Университет»",
+      "address": "UNIVERSITETSKAYA 1",
+      "description": "Маршрут 14",
+      "is_correct": false
+    },
+    {
+      "id": "library",
+      "name": "Библиотека",
+      "address": "BIBLIOTECHNAYA 6",
+      "description": "—",
+      "is_correct": false
+    },
+    {
+      "id": "cafe_ugolok",
+      "name": "Кафе «Уголок»",
+      "address": "UNIVERSITETSKAYA 3",
+      "description": "Утром открыто",
+      "is_correct": false
+    },
+    {
+      "id": "shop_produkty",
+      "name": "Магазин «Продукты»",
+      "address": "SADOVAYA 20",
+      "description": "—",
+      "is_correct": false
+    },
+    {
+      "id": "vet_aibolit",
+      "name": "Ветклиника «Айболит»",
+      "address": "KOMSOMOLSKAYA 15",
+      "description": "Кот, прививка",
+      "is_correct": false
+    },
+    {
+      "id": "bank_severny",
+      "name": "Банк «Северный»",
+      "address": "SEVERNAYA 2",
+      "description": "Отделение",
+      "is_correct": false
+    },
+    {
+      "id": "market",
+      "name": "Рынок",
+      "address": "RYNOCHNAYA 1",
+      "description": "—",
+      "is_correct": false
+    },
+    {
+      "id": "park_rechnoy",
+      "name": "Парк «Речной»",
+      "address": "RECHNAYA NAB. 5",
+      "description": "Прогулки",
+      "is_correct": false
+    },
+    {
+      "id": "dacha_old",
+      "name": "Дача (старая)",
+      "address": "DACHA KOOP RASSVET 14",
+      "description": "Не езжу",
+      "is_correct": false
+    }
   ],
   "portraits": {
     "michelle": {
