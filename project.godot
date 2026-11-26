@@ -20,6 +20,7 @@ config/icon="res://assets/icons/root_access.svg"
 
 GameState="*res://scripts/core/GameState.gd"
 VFS="*res://scripts/core/VFS.gd"
+AudioManager="*res://scripts/core/AudioManager.gd"
 
 [display]
 

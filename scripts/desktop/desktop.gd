@@ -134,6 +134,7 @@ func _ready() -> void:
 	start_button.pressed.connect(_on_start_button_pressed)
 	get_viewport().size_changed.connect(_on_viewport_resized)
 	_apply_crt_settings()
+	_play_audio("start_ambient")
 
 func _build_desktop_icons() -> void:
 	for child in icons_root.get_children():
@@ -350,6 +351,7 @@ func _on_game_ended(ending_id: int, details: Dictionary) -> void:
 # ---------------------------------------------------------------------------
 
 func _on_icon_pressed(icon: DesktopIcon) -> void:
+	_play_audio("play_mouse_click")
 	_select_icon(icon)
 
 func _on_icon_focused(icon: DesktopIcon) -> void:
@@ -461,6 +463,7 @@ func open_app(app_id: String) -> void:
 	_cascade_index += 1
 	_add_task_button(frame)
 	_bring_to_front(frame)
+	_play_audio("play_window_open")
 
 func _find_app(app_id: String) -> Dictionary:
 	for app in APPS:
@@ -531,12 +534,14 @@ func _on_window_focus(window: WindowFrame) -> void:
 	_bring_to_front(window)
 
 func _on_window_minimize(window: WindowFrame) -> void:
+	_play_audio("play_window_close")
 	_update_task_buttons()
 	if window == _active_window:
 		_active_window = null
 		_activate_topmost_visible()
 
 func _on_window_close(window: WindowFrame) -> void:
+	_play_audio("play_window_close")
 	_windows.erase(window)
 	if _task_buttons.has(window):
 		var button: Button = _task_buttons[window]
@@ -581,6 +586,7 @@ func _window_at(global_point: Vector2) -> WindowFrame:
 # ---------------------------------------------------------------------------
 
 func _on_start_button_pressed() -> void:
+	_play_audio("play_mouse_click")
 	if start_menu.visible:
 		_close_start_menu()
 	else:
@@ -618,13 +624,18 @@ func _on_start_search_submitted(_query: String) -> void:
 			return
 
 func _on_tray_pressed(kind: String) -> void:
+	_play_audio("play_mouse_click")
 	if tray_popup.visible and _tray_kind == kind:
 		_hide_tray_popup()
 		return
 	_tray_kind = kind
 	match kind:
 		"volume":
-			tray_popup_label.text = "Громкость: 68%\nЗвук ноутбука включён."
+			var am := get_node_or_null("/root/AudioManager")
+			var pct := int(am.call("get_volume_percent")) if am and am.has_method("get_volume_percent") else 68
+			var muted := bool(am.get("is_muted")) if am else false
+			var state_str := "выключен (Mute)" if muted else "включён"
+			tray_popup_label.text = "Громкость: %d%%\nЗвук ноутбука %s." % [pct, state_str]
 		"network":
 			tray_popup_label.text = "Сеть: нет подключения\nЛокальный сеанс, без внешней сети."
 		"battery":
@@ -633,6 +644,11 @@ func _on_tray_pressed(kind: String) -> void:
 			tray_popup_label.text = ""
 	tray_popup.visible = true
 	call_deferred("_position_tray_popup")
+
+func _play_audio(method_name: String) -> void:
+	var am := get_node_or_null("/root/AudioManager")
+	if am and am.has_method(method_name):
+		am.call(method_name)
 
 func _position_tray_popup() -> void:
 	if not tray_popup.visible:

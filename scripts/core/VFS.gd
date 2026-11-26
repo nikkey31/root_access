@@ -97,6 +97,7 @@ var files_database: Dictionary = {
 			"Архив_2008",
 			"Фото",
 			"Загрузки",
+			"Игры",
 			"Windows",
 			"Работа"
 		],
@@ -158,6 +159,43 @@ var files_database: Dictionary = {
 			"photo_resize.zip"
 		],
 		"type_str": "Папка"
+	},
+	"C:\\ROOT_ACCESS\\Игры": {
+		"type": "dir",
+		"items": [
+			"fishing.exe",
+			"chess.exe",
+			"shadow_fight_1.exe"
+		],
+		"date_str": "27.09.2009 22:18",
+		"type_str": "Папка"
+	},
+	"C:\\ROOT_ACCESS\\Игры\\fishing.exe": {
+		"type": "unsupported",
+		"app_id": "fishing",
+		"cache_hint": "temp_catch.cache",
+		"error_msg": "Ярлык мини-игры fishing.exe.\nПри необходимости диагностики локального кэша воспользуйтесь утилитой chkdsk в Терминале.",
+		"size_str": "1,4 МБ",
+		"date_str": "27.09.2009 22:18",
+		"type_str": "Приложение"
+	},
+	"C:\\ROOT_ACCESS\\Игры\\chess.exe": {
+		"type": "unsupported",
+		"app_id": "chess",
+		"error_msg": "Ярлык мини-игры chess.exe.",
+		"size_str": "980 КБ",
+		"date_str": "21.09.2009 19:05",
+		"type_str": "Приложение"
+	},
+	"C:\\ROOT_ACCESS\\Игры\\shadow_fight_1.exe": {
+		"type": "unsupported",
+		"app_id": "shadow_fight_1",
+		"is_corrupted": true,
+		"bad_sectors": 3,
+		"error_msg": "Ошибка запуска shadow_fight_1.exe (0xC0000005): обнаружены битые сектора исполняемого модуля.\nВыполните проверку тома командой chkdsk в Терминале.",
+		"size_str": "2,1 МБ",
+		"date_str": "01.10.2009 03:11",
+		"type_str": "Приложение (повреждено)"
 	},
 	"C:\\ROOT_ACCESS\\Windows": {
 		"type": "dir",
@@ -537,7 +575,14 @@ func change_directory(path: String) -> Dictionary:
 		"error": "Системе не удается найти указанный путь: " + path
 	}
 
-func decrypt_file(file_path: String, key: String) -> Dictionary:
+static func normalize_decrypt_key(raw: String) -> String:
+	var normalized := raw.strip_edges().to_upper()
+	for sep in [" ", "\t", "+", "-", "_", ",", ";", ":", "/"]:
+		normalized = normalized.replace(sep, "")
+	return normalized
+
+
+func decrypt_file(file_path: String, key: String, key_parts: Array = []) -> Dictionary:
 	var resolved = _resolve_path(file_path)
 	if not files_database.has(resolved):
 		var base_name = file_path.replace("/", "\\").split("\\")[-1]
@@ -558,10 +603,24 @@ func decrypt_file(file_path: String, key: String) -> Dictionary:
 			"success": false,
 			"error": "Файл не зашифрован."
 		}
-	var expected_key: String = node.get("key", "").strip_edges().to_upper().replace(" ", "")
-	var entered_key: String = key.strip_edges().to_upper().replace(" ", "")
+
+	var expected_raw: String = str(node.get("key", ""))
+	var expected_parts_raw: Array = node.get("key_parts", [])
+	if expected_raw == "" and not expected_parts_raw.is_empty():
+		expected_raw = "".join(expected_parts_raw)
+	var expected_key: String = normalize_decrypt_key(expected_raw)
+
+	var combined_entered_raw := key if key_parts.is_empty() else "".join(key_parts)
+	var entered_key: String = normalize_decrypt_key(combined_entered_raw)
 
 	if expected_key == "" or entered_key != expected_key:
+		if not expected_parts_raw.is_empty() and entered_key != "":
+			for part in expected_parts_raw:
+				if normalize_decrypt_key(str(part)) == entered_key:
+					return {
+						"success": false,
+						"error": "Ошибка контрольной суммы: введена только одна часть составного ключа!"
+					}
 		return {
 			"success": false,
 			"error": "Ошибка контрольной суммы: неверный ключ дешифрования!"
@@ -570,21 +629,25 @@ func decrypt_file(file_path: String, key: String) -> Dictionary:
 	var unlocked_name: String = node.get("unlocked_file", "record.wav")
 	var parent_dir = resolved.get_base_dir()
 	var unlocked_full_path = parent_dir + "\\" + unlocked_name
+	var unlocked_type := "Звуковой файл WAV" if unlocked_name.to_lower().ends_with(".wav") else "Расшифрованный документ"
 
-	var record_node = {
+	var unlocked_node = {
 		"type": "file",
 		"is_encrypted": false,
 		"content": node.get("unlocked_content", ""),
 		"size_str": "820 КБ",
 		"date_str": "02.10.2009 03:40",
-		"type_str": "Звуковой файл WAV"
+		"type_str": unlocked_type
 	}
 
-	files_database[unlocked_full_path] = record_node
-	files_database["C:\\ROOT_ACCESS\\Работа\\" + unlocked_name] = record_node
-	files_database["C:\\ROOT_ACCESS\\WORK\\" + unlocked_name] = record_node
+	files_database[unlocked_full_path] = unlocked_node
+	if unlocked_name == "record.wav":
+		files_database["C:\\ROOT_ACCESS\\Работа\\" + unlocked_name] = unlocked_node
+		files_database["C:\\ROOT_ACCESS\\WORK\\" + unlocked_name] = unlocked_node
 
-	var target_dirs = [parent_dir, "C:\\ROOT_ACCESS\\Работа", "C:\\ROOT_ACCESS\\WORK", "C:\\ROOT_ACCESS"]
+	var target_dirs = [parent_dir]
+	if unlocked_name == "record.wav":
+		target_dirs.append_array(["C:\\ROOT_ACCESS\\Работа", "C:\\ROOT_ACCESS\\WORK", "C:\\ROOT_ACCESS"])
 	for d in target_dirs:
 		if files_database.has(d):
 			var dir_items: Array = files_database[d]["items"]
@@ -593,12 +656,13 @@ func decrypt_file(file_path: String, key: String) -> Dictionary:
 
 	# Уведомляем GameState
 	if GameState:
-		GameState.verify_decryption(resolved.get_file(), key)
+		GameState.verify_decryption(resolved.get_file(), combined_entered_raw)
 
 	return {
 		"success": true,
 		"unlocked_file": unlocked_name,
-		"content": node.get("unlocked_content", "")
+		"content": node.get("unlocked_content", ""),
+		"used_composite": key_parts.size() > 1
 	}
 
 func _resolve_path(path: String) -> String:
@@ -617,6 +681,8 @@ func _resolve_path(path: String) -> String:
 		return "C:\\ROOT_ACCESS\\Архив_2008"
 	if clean == "Загрузки":
 		return "C:\\ROOT_ACCESS\\Загрузки"
+	if clean == "Игры" or clean == "GAMES":
+		return "C:\\ROOT_ACCESS\\Игры"
 	if clean == "Windows":
 		return "C:\\ROOT_ACCESS\\Windows"
 	if clean.begins_with("C:\\ROOT_ACCESS") or clean.begins_with("c:\\root_access"):
@@ -629,5 +695,7 @@ func _resolve_path(path: String) -> String:
 			return "C:\\ROOT_ACCESS\\Работа"
 		if rel == "Корзина" or rel == "RECYCLE_BIN":
 			return "C:\\ROOT_ACCESS\\Корзина"
+		if rel == "Игры" or rel == "GAMES":
+			return "C:\\ROOT_ACCESS\\Игры"
 		return "C:\\ROOT_ACCESS\\" + rel
 	return current_directory + "\\" + clean

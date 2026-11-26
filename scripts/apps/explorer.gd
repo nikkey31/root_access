@@ -61,6 +61,19 @@ const ICON_LOCK := preload("res://assets/icons/folder_locked.png")
 const ICON_RECYCLE := preload("res://assets/icons/recycle_bin.png")
 const ICON_COMPUTER := preload("res://assets/icons/computer.png")
 const ICON_SPEAKER := preload("res://assets/icons/speaker.svg")
+const ICON_GAMES_FOLDER := preload("res://assets/icons/games_folder.png")
+const ICON_FISHING := preload("res://assets/icons/fishing.png")
+const ICON_CHESS := preload("res://assets/icons/chess.png")
+const ICON_SHADOW_FIGHT := preload("res://assets/icons/shadow_fight_1.png")
+
+const GAME_ICON_MAP := {
+	"fishing": ICON_FISHING,
+	"fishing.exe": ICON_FISHING,
+	"chess": ICON_CHESS,
+	"chess.exe": ICON_CHESS,
+	"shadow_fight_1": ICON_SHADOW_FIGHT,
+	"shadow_fight_1.exe": ICON_SHADOW_FIGHT,
+}
 
 # Цвета ретро-интерфейса
 const C_NAVY := Color(0, 0, 0.501961, 1.0)
@@ -182,6 +195,7 @@ func _build_sidebar() -> void:
 	_add_sidebar_item("Архив_2008", "C:\\ROOT_ACCESS\\Архив_2008", ICON_FOLDER)
 	_add_sidebar_item("Фото", "APP:gallery", ICON_PHOTO)
 	_add_sidebar_item("Загрузки", "C:\\ROOT_ACCESS\\Загрузки", ICON_FOLDER)
+	_add_sidebar_item("Игры", "C:\\ROOT_ACCESS\\Игры", ICON_GAMES_FOLDER)
 	_add_sidebar_item("Windows", "C:\\ROOT_ACCESS\\Windows", ICON_FOLDER)
 	
 	var is_locked = not (GameState and GameState.is_work_folder_unlocked)
@@ -436,22 +450,27 @@ func _create_file_row(item_data: Dictionary, alt_bg: bool) -> PanelContainer:
 
 func _get_icon_for_item(item_data: Dictionary) -> Texture2D:
 	var name: String = item_data["name"]
+	var lower_name := name.to_lower()
 	var ntype: String = str(item_data.get("node_type", ""))
 	if ntype == "device" or ntype == "dir_link":
 		return ICON_DRIVE
 	if ntype == "app_link":
-		return ICON_PHOTO
+		return GAME_ICON_MAP.get(str(item_data.get("app_id", "")), ICON_PHOTO)
 	if item_data.get("is_dir", false):
 		if name == "Корзина" or name == "RECYCLE_BIN":
 			return ICON_RECYCLE
+		if name == "Игры" or name == "GAMES":
+			return ICON_GAMES_FOLDER
 		if name == "Работа" and GameState and not GameState.is_work_folder_unlocked:
 			return ICON_LOCK
 		return ICON_FOLDER
+	if GAME_ICON_MAP.has(lower_name):
+		return GAME_ICON_MAP[lower_name]
 	if name.ends_with(".enc"):
 		return ICON_LOCK
 	if name.ends_with(".wav"):
 		return ICON_SPEAKER
-	if name.to_lower().ends_with(".jpg") or name.to_lower().ends_with(".png"):
+	if lower_name.ends_with(".jpg") or lower_name.ends_with(".png"):
 		return ICON_PHOTO
 	return ICON_FILE
 
@@ -516,26 +535,33 @@ func _activate_item(item_data: Dictionary) -> void:
 	var ntype: String = str(item_data.get("node_type", ""))
 
 	if ntype == "device":
+		_play_audio("play_error")
 		_show_preview(name, "[color=#800000][b]%s[/b][/color]" % item_data.get("error_msg", "Устройство не готово."), false)
 		return
 	if ntype == "dir_link":
+		_play_audio("play_mouse_click")
 		var target_path: String = str(item_data.get("target", "C:\\ROOT_ACCESS"))
 		navigate_to(target_path)
 		return
 	if ntype == "app_link":
+		_play_audio("play_mouse_click")
 		_open_desktop_app(str(item_data.get("app_id", "gallery")))
 		return
 	if bool(item_data.get("access_denied", false)):
+		_play_audio("play_error")
 		_show_preview("C:\\" + name, "[color=#800000][b]Доступ запрещён.[/b][/color]\n\nСистемный каталог защищён от просмотра.", false)
 		return
 	if ntype == "unsupported":
+		_play_audio("play_error")
 		_show_preview(name, "[color=#800000][b]Нет программы для открытия[/b][/color]\n\n%s" % item_data.get("error_msg", "Формат не поддерживается."), false)
 		return
 	if ntype == "image" or name.to_lower().ends_with(".jpg") or name.to_lower().ends_with(".png"):
+		_play_audio("play_mouse_click")
 		_open_desktop_app("gallery")
 		return
 
 	if item_data.get("is_dir", false):
+		_play_audio("play_mouse_click")
 		if name == "Работа" or name == "WORK":
 			if GameState and not GameState.is_work_folder_unlocked:
 				_show_password_dialog()
@@ -547,6 +573,7 @@ func _activate_item(item_data: Dictionary) -> void:
 	# Если это файл
 	var file_path = current_path + "\\" + name
 	if name.ends_with(".enc"):
+		_play_audio("play_error")
 		_show_preview("Ошибка чтения: " + name, 
 			"[color=#800000][b]НЕВОЗМОЖНО ОТКРЫТЬ ФАЙЛ[/b][/color]\n\n" +
 			"Формат файла не распознан или данные зашифрованы (заголовок 0x7F454C46).\n" +
@@ -608,6 +635,7 @@ func _on_password_ok_pressed() -> void:
 			GameState.trigger_thought("Ник: «Пароль подошёл! Папка «Работа» открыта. Посмотрим на улики...»", true)
 	else:
 		password_error.text = "Неверный пароль. Доступ запрещен!"
+		_play_audio("play_error")
 		password_input.select_all()
 
 func _on_password_cancel_pressed() -> void:
@@ -669,6 +697,9 @@ func _play_audio_record() -> void:
 		audio_time_label.text = "00:00 / 00:08"
 	if audio_subtitles:
 		audio_subtitles.text = "[color=#000000][b]Саймон:[/b] «...время почти вышло. Грузовик 6-7-5-2... Она останется здесь навсегда...»[/color]"
+	var am := get_node_or_null("/root/AudioManager")
+	if am and am.has_method("play_loop_sfx"):
+		am.call("play_loop_sfx", "record_static", -10.0)
 
 func _stop_audio_record() -> void:
 	_is_audio_playing = false
@@ -676,6 +707,14 @@ func _stop_audio_record() -> void:
 		btn_play_audio.disabled = false
 	if btn_stop_audio:
 		btn_stop_audio.disabled = true
+	var am := get_node_or_null("/root/AudioManager")
+	if am and am.has_method("stop_loop_sfx"):
+		am.call("stop_loop_sfx", "record_static")
+
+func _play_audio(method_name: String) -> void:
+	var am := get_node_or_null("/root/AudioManager")
+	if am and am.has_method(method_name):
+		am.call(method_name)
 
 func _on_audio_finished() -> void:
 	_stop_audio_record()

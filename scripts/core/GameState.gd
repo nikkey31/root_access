@@ -15,6 +15,7 @@ signal timer_expired()
 signal bribe_triggered()
 signal phishing_triggered()
 signal game_ended(ending_id: int, details: Dictionary)
+signal state_reset()
 
 enum Difficulty {
 	EASY,
@@ -86,6 +87,7 @@ func reset_state() -> void:
 	phishing_shown = false
 	final_ending = Ending.NONE
 	selected_map_point = ""
+	emit_signal("state_reset")
 
 func _process(delta: float) -> void:
 	if not is_timer_active or final_ending != Ending.NONE:
@@ -156,7 +158,7 @@ func verify_work_password(input_password: String) -> bool:
 
 func verify_decryption(file_name: String, key: String) -> bool:
 	var normalized_file = file_name.strip_edges().to_lower()
-	var normalized_key = key.strip_edges().to_upper().replace(" ", "")
+	var normalized_key = _normalize_key(key)
 	
 	if normalized_file == "location.enc" and normalized_key == DECRYPT_KEY:
 		is_location_decrypted = true
@@ -166,6 +168,13 @@ func verify_decryption(file_name: String, key: String) -> bool:
 		print("[GameState] location.enc успешно дешифрован!")
 		return true
 	return false
+
+
+func _normalize_key(raw: String) -> String:
+	var normalized := raw.strip_edges().to_upper()
+	for sep in [" ", "\t", "+", "-", "_", ",", ";", ":", "/"]:
+		normalized = normalized.replace(sep, "")
+	return normalized
 
 func mark_audio_listened() -> void:
 	if is_audio_listened:
