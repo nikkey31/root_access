@@ -16,6 +16,7 @@ signal bribe_triggered()
 signal phishing_triggered()
 signal game_ended(ending_id: int, details: Dictionary)
 signal state_reset()
+signal game_key_fragment_found(fragment: String)
 
 enum Difficulty {
 	EASY,
@@ -44,6 +45,14 @@ var is_work_folder_unlocked: bool = false
 var is_location_decrypted: bool = false
 var is_trash_inspected: bool = false
 var is_audio_listened: bool = false
+
+# Папка «Игры» и пасхалки мини-игр
+var is_games_folder_inspected: bool = false
+var fishing_catch_count: int = 0
+var has_game_key_fragment: bool = false
+var game_key_fragment: String = ""
+var is_chess_puzzle_solved: bool = false
+var is_shadow_fight_error_seen: bool = false
 
 # Финальный таймер и ловушки
 var is_timer_active: bool = false
@@ -79,6 +88,12 @@ func reset_state() -> void:
 	is_location_decrypted = false
 	is_trash_inspected = false
 	is_audio_listened = false
+	is_games_folder_inspected = false
+	fishing_catch_count = 0
+	has_game_key_fragment = false
+	game_key_fragment = ""
+	is_chess_puzzle_solved = false
+	is_shadow_fight_error_seen = false
 	is_timer_active = false
 	time_remaining = 60.0
 	bribe_shown = false
@@ -183,6 +198,47 @@ func mark_audio_listened() -> void:
 	emit_signal("audio_record_completed")
 	trigger_thought("Звонок из дежурной части: Саймон вышел на связь! У меня ровно 60 секунд, чтобы назвать точку на карте!", false)
 	start_final_timer(60.0)
+
+## Первое открытие папки C:\ROOT_ACCESS\Игры в Проводнике.
+func mark_games_folder_inspected() -> void:
+	if is_games_folder_inspected:
+		return
+	is_games_folder_inspected = true
+	trigger_thought("Папка «Игры»... Рыбалка, шахматы, какой-то Shadow Fight. Даже у таких чудовищ есть бытовые слабости, помогающие убивать время между расправами.", false)
+	print("[GameState] Папка «Игры» исследована.")
+
+## Учёт пойманной рыбы. После третьего улова игра сама подкинет кейс.
+func register_fishing_catch(_fish_name: String) -> void:
+	fishing_catch_count += 1
+	print("[GameState] Рыбалка: поймано рыб — ", fishing_catch_count)
+
+## Награда «Рыбалки»: старый кейс с фрагментом ключа дешифрования.
+func find_game_key_fragment(fragment: String = "LENINA") -> bool:
+	if has_game_key_fragment:
+		return false
+	has_game_key_fragment = true
+	game_key_fragment = fragment
+	emit_signal("game_key_fragment_found", fragment)
+	# Награду показываем всегда, вне зависимости от выбранной сложности.
+	emit_signal("notification_triggered", "Найден фрагмент ключа: «%s». Возможно, он подойдёт к зашифрованному файлу." % fragment)
+	trigger_thought("Старый кейс... На внутренней крышке процарапано: «%s». Это же часть ключа к location.enc!" % fragment, false)
+	print("[GameState] Найден фрагмент игрового ключа: ", fragment)
+	return true
+
+## Шахматная задача «мат в 2 хода» решена.
+func solve_chess_puzzle() -> void:
+	if is_chess_puzzle_solved:
+		return
+	is_chess_puzzle_solved = true
+	emit_signal("notification_triggered", "Шахматная задача решена. В истории ходов осталась странная пометка Саймона.")
+	trigger_thought("Мат в два хода. Он пожертвовал ферзя, чтобы зажать короля. Саймон всегда просчитывал жертвы наперёд... и оставил в нотации «Тихий омут, 54».", false)
+	print("[GameState] Шахматная задача решена.")
+
+## Попытка запуска битого shadow_fight_1.exe.
+func mark_shadow_fight_error() -> void:
+	is_shadow_fight_error_seen = true
+	trigger_thought("Shadow Fight 1... Критические файлы ресурсов повреждены. Похоже на битый пиратский бинарник из нулевых. Ничего, у нас есть дела поважнее.", false)
+	print("[GameState] Обнаружена ошибка CRC 0x8004F012 в shadow_fight_1.exe.")
 
 func trigger_thought(text: String, is_clue_hint: bool = false) -> void:
 	# На сложной сложности (и средней для части подсказок) отключаются наводящие мысли об уликах

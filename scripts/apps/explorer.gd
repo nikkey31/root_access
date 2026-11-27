@@ -278,6 +278,8 @@ func navigate_to(path: String, add_to_history: bool = true) -> void:
 	
 	if current_path.ends_with("\\Корзина") and GameState:
 		GameState.is_trash_inspected = true
+	if current_path.ends_with("\\Игры") and GameState:
+		GameState.mark_games_folder_inspected()
 
 func _update_nav_buttons() -> void:
 	btn_back.disabled = _history_back.is_empty()

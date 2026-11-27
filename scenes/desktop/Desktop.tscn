@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3]
+[gd_scene load_steps=34 format=3]
 
 [ext_resource type="Script" path="res://scripts/desktop/desktop.gd" id="1_desktop"]
 [ext_resource type="Script" path="res://scripts/desktop/scanlines.gd" id="2_scanlines"]
@@ -20,6 +20,7 @@
 [ext_resource type="Shader" path="res://shaders/crt_lens.gdshader" id="18_crt"]
 [ext_resource type="Script" path="res://scripts/desktop/crt_cursor.gd" id="19_cursor"]
 [ext_resource type="Texture2D" path="res://assets/icons/browser.png" id="24_browser"]
+[ext_resource type="Texture2D" path="res://assets/icons/games_folder.png" id="26_games"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ThoughtBox.tscn" id="20_thought"]
 [ext_resource type="PackedScene" path="res://scenes/ui/FinalTimerBar.tscn" id="21_timerbar"]
 [ext_resource type="PackedScene" path="res://scenes/ui/ToastBanner.tscn" id="22_toast"]
@@ -184,6 +185,12 @@ layout_mode = 2
 app_id = "notes"
 icon_title = "Заметки"
 icon_texture = ExtResource("8_notes")
+
+[node name="GamesIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
+layout_mode = 2
+app_id = "games"
+icon_title = "Игры"
+icon_texture = ExtResource("26_games")
 
 [node name="RecycleIcon" parent="DesktopSurface/Icons" instance=ExtResource("3_icon_scene")]
 layout_mode = 2

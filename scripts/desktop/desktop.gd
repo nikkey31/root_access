@@ -64,12 +64,49 @@ const APPS := [
 		"min_size": Vector2(420, 300),
 	},
 	{
+		"id": "games",
+		"title": "Игры",
+		"icon": preload("res://assets/icons/games_folder.png"),
+		"kind": "folder",
+		"size": Vector2(760, 500),
+		"min_size": Vector2(560, 340),
+	},
+	{
 		"id": "recycle",
 		"title": "Корзина",
 		"icon": preload("res://assets/icons/recycle_bin.png"),
 		"kind": "recycle",
 		"size": Vector2(760, 480),
 		"min_size": Vector2(520, 320),
+	},
+]
+
+## Скрытые приложения папки C:\ROOT_ACCESS\Игры. В меню «Пуск» они не
+## попадают: детектив должен найти их в Проводнике.
+const GAME_APPS := [
+	{
+		"id": "fishing",
+		"title": "Рыбалка",
+		"icon": preload("res://assets/icons/fishing.png"),
+		"kind": "fishing",
+		"size": Vector2(640, 500),
+		"min_size": Vector2(480, 400),
+	},
+	{
+		"id": "chess",
+		"title": "Шахматы",
+		"icon": preload("res://assets/icons/chess.png"),
+		"kind": "chess",
+		"size": Vector2(720, 600),
+		"min_size": Vector2(620, 520),
+	},
+	{
+		"id": "shadow_fight_1",
+		"title": "shadow_fight_1.exe",
+		"icon": preload("res://assets/icons/shadow_fight_1.png"),
+		"kind": "shadow_fight_error",
+		"size": Vector2(520, 300),
+		"min_size": Vector2(440, 260),
 	},
 ]
 
@@ -436,6 +473,21 @@ func open_app(app_id: String) -> void:
 		explorer.mode = "computer"
 		explorer.initial_path = "Мой компьютер"
 		app_content = explorer
+	elif app_id == "games":
+		var explorer_scene: PackedScene = load("res://scenes/apps/Explorer.tscn")
+		var explorer: ExplorerApp = explorer_scene.instantiate()
+		explorer.mode = "computer"
+		explorer.initial_path = "C:\\ROOT_ACCESS\\Игры"
+		app_content = explorer
+	elif app_id == "fishing":
+		var fishing_scene: PackedScene = load("res://scenes/apps/FishingMinigame.tscn")
+		app_content = fishing_scene.instantiate()
+	elif app_id == "chess":
+		var chess_scene: PackedScene = load("res://scenes/apps/ChessMinigame.tscn")
+		app_content = chess_scene.instantiate()
+	elif app_id == "shadow_fight_1":
+		var error_scene: PackedScene = load("res://scenes/apps/ShadowFightError.tscn")
+		app_content = error_scene.instantiate()
 	elif app_id == "recycle":
 		var explorer_scene: PackedScene = load("res://scenes/apps/Explorer.tscn")
 		var explorer: ExplorerApp = explorer_scene.instantiate()
@@ -467,6 +519,9 @@ func open_app(app_id: String) -> void:
 
 func _find_app(app_id: String) -> Dictionary:
 	for app in APPS:
+		if app["id"] == app_id:
+			return app
+	for app in GAME_APPS:
 		if app["id"] == app_id:
 			return app
 	return {}

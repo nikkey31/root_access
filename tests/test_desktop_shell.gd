@@ -13,8 +13,9 @@ func _ready() -> void:
 	await get_tree().process_frame
 	await get_tree().process_frame
 
-	_check(desktop.get_node("DesktopSurface/Icons").get_child_count() == 7, "На рабочем столе 7 иконок, включая Браузер")
+	_check(desktop.get_node("DesktopSurface/Icons").get_child_count() == 8, "На рабочем столе 8 иконок, включая Браузер и папку «Игры»")
 	_check(desktop.get_node_or_null("DesktopSurface/Icons/BrowserIcon") != null, "Иконка «Браузер» есть на рабочем столе")
+	_check(desktop.get_node_or_null("DesktopSurface/Icons/GamesIcon") != null, "Папка «Игры» есть на рабочем столе")
 	var browser_in_start := false
 	for item in desktop.start_items.get_children():
 		if item is StartMenuItem and item.app_id == "browser":

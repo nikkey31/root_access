@@ -171,30 +171,26 @@ var files_database: Dictionary = {
 		"type_str": "Папка"
 	},
 	"C:\\ROOT_ACCESS\\Игры\\fishing.exe": {
-		"type": "unsupported",
+		"type": "app_link",
 		"app_id": "fishing",
-		"cache_hint": "temp_catch.cache",
-		"error_msg": "Ярлык мини-игры fishing.exe.\nПри необходимости диагностики локального кэша воспользуйтесь утилитой chkdsk в Терминале.",
 		"size_str": "1,4 МБ",
-		"date_str": "27.09.2009 22:18",
+		"date_str": "14.07.2008 19:12",
 		"type_str": "Приложение"
 	},
 	"C:\\ROOT_ACCESS\\Игры\\chess.exe": {
-		"type": "unsupported",
+		"type": "app_link",
 		"app_id": "chess",
-		"error_msg": "Ярлык мини-игры chess.exe.",
-		"size_str": "980 КБ",
-		"date_str": "21.09.2009 19:05",
+		"size_str": "780 КБ",
+		"date_str": "03.02.2007 14:05",
 		"type_str": "Приложение"
 	},
 	"C:\\ROOT_ACCESS\\Игры\\shadow_fight_1.exe": {
-		"type": "unsupported",
+		"type": "app_link",
 		"app_id": "shadow_fight_1",
 		"is_corrupted": true,
 		"bad_sectors": 3,
-		"error_msg": "Ошибка запуска shadow_fight_1.exe (0xC0000005): обнаружены битые сектора исполняемого модуля.\nВыполните проверку тома командой chkdsk в Терминале.",
-		"size_str": "2,1 МБ",
-		"date_str": "01.10.2009 03:11",
+		"size_str": "12,8 МБ",
+		"date_str": "28.09.2009 01:14",
 		"type_str": "Приложение (повреждено)"
 	},
 	"C:\\ROOT_ACCESS\\Windows": {
